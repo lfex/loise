@@ -12,7 +12,25 @@
       (assert-exception 3)
       (assert-error 2)
       (assert-throw 2)
-      (assert-exit 2))))
+      (assert-exit 2))
+    (from loise
+      (dot 2)
+      (dot 3))))
 
-(defun example_test ()
+(defun dot-product_test ()
+  (assert `'true))
+
+(defun dot_test ()
+  (assert `'true))
+
+(defun mix_test ()
+  (assert `'true))
+
+(defun fade_test ()
+  (assert `'true))
+
+(defun perlin_test ()
+  (assert `'true))
+
+(defun simplex_test ()
   (assert `'true))

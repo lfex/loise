@@ -2,6 +2,8 @@
 A Noise-Generator for LFE
 #########################
 
+.. image:: resources/logos/ButterCrunchLettuce-2-small.png
+
 This is a port of the `Racket noise-generator`_ by `jpverkamp`_.
 
 .. Links

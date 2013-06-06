@@ -16,6 +16,7 @@
     (from loise
       (dot-product 2)
       (mix 3)
+      (fade 1)
       (dot 2)
       (dot 3))))
 
@@ -35,7 +36,15 @@
   (assert-equal 1.23 (mix 1.1 1.2 1.3)))
 
 (defun fade_test ()
-  (assert `'true))
+  (assert-equal 0.103515625 (fade 0.25))
+  (assert-equal 0.5 (fade 0.5))
+  (assert-equal 0.896484375 (fade 0.75))
+  (assert-equal 0.0 (fade 0.0))
+  (assert-equal 1.0 (fade 1.0))
+  (assert-equal 3.375 (fade 1.5))
+  (assert-equal 32.0 (fade 2.0))
+  (assert-equal 156.25 (fade 2.5))
+  (assert-equal 10625.0 (fade 5.0)))
 
 (defun perlin_test ()
   (assert `'true))

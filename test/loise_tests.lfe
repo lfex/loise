@@ -14,11 +14,13 @@
       (assert-throw 2)
       (assert-exit 2))
     (from loise
+      (dot-product 2)
       (dot 2)
       (dot 3))))
 
 (defun dot-product_test ()
-  (assert `'true))
+  (assert-equal 32 (dot-product '(1 2 3) '(4 5 6)))
+  (assert-equal 122 (dot-product '(9 2 7) '(4 8 10))))
 
 (defun dot_test ()
   (assert `'true))

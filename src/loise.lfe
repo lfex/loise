@@ -60,7 +60,9 @@
     (: lists zipwith #'*/2 a b)))
 
 (defun dot (g x y z)
-  )
+   (+ (* (vector-ref g 0) x)
+      (* (vector-ref g 1) y)
+      (* (vector-ref g 2) z)))
 
 (defun mix (a b t)
   (+ (* (- 1.0 t) a) (* t b)))

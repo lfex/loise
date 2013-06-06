@@ -15,6 +15,7 @@
       (assert-exit 2))
     (from loise
       (dot-product 2)
+      (mix 3)
       (dot 2)
       (dot 3))))
 
@@ -26,7 +27,12 @@
   (assert `'true))
 
 (defun mix_test ()
-  (assert `'true))
+  (assert-equal 4.0 (mix 1 2 3))
+  (assert-equal 90010.0 (mix 10 100 1000))
+  (assert-equal 11.0 (mix 1 2 10))
+  (assert-equal 31.0 (mix 1 2 30))
+  (assert-equal 71.0 (mix 1 2 70))
+  (assert-equal 1.23 (mix 1.1 1.2 1.3)))
 
 (defun fade_test ()
   (assert `'true))

@@ -15,6 +15,7 @@
       (assert-exit 2))
     (from loise
       (add-tuples 1)
+      (fast-floor 1)
       (vector-ref 2)
       (dot-product 2)
       (mix 3)
@@ -25,6 +26,15 @@
 (defun add-tuples_test ()
   (let ((data (list (tuple 1 2 3) (tuple 2 3 4))))
     (assert-equal #(1 2 3 2 3 4) (add-tuples data))))
+
+(defun fast-floor_test ()
+  (assert-equal 0 (fast-floor 0.0))
+  (assert-equal 1 (fast-floor 1.0))
+  (assert-equal -5 (fast-floor -4.3))
+  (assert-equal 3 (fast-floor 3.1))
+  (assert-equal 3 (fast-floor 3.4))
+  (assert-equal 3 (fast-floor 3.5))
+  (assert-equal 3 (fast-floor 3.9)))
 
 (defun vector-ref_test ()
   (assert-equal 42 (vector-ref #(99 4 7 42 13) 3)))

@@ -2,11 +2,14 @@
   (export all)
   (import
     (from erlang
-      (tuple_to_list 1)
-      (list_to_tuple 1))
+      (list_to_tuple 1)
+      (trunc 1)
+      (tuple_to_list 1))
     (from lists
       (flatten 1)
-      (map 2))))
+      (foldl 3)
+      (map 2)
+      (zipwith 3))))
 
 (defmacro grad3
   '#(#( 1.0  1.0  0.0) #(-1.0  1.0  0.0) #( 1.0 -1.0  0.0) #(-1.0 -1.0  0.0)
@@ -41,13 +44,27 @@
          127 4 150 254 138 236 205 93 222 114 67 29 24 72 243
          141 128 195 78 66 215 61 156 180))
 
+(defmacro perm ()
+  (add-tuples (list (perm-half) (perm-half))))
+
 (defun add-tuples (a)
   (list_to_tuple
     (flatten
       (map (lambda (x) (tuple_to_list x)) a))))
 
-(defmacro perm ()
-  (add-tuples (list (perm-half) (perm-half))))
+(defun fast-floor (int)
+  "
+  Sadly, this is named 'fast-floor' only because the Racket version was given
+  that name (it makes copying and pasting the code that much easier!). There
+  is no good floor function in Erlang... so this should probably have been
+  called 'slow-floor'.
+  "
+  (let* ((trunc (trunc int))
+         (check (- int trunc)))
+    (cond
+      ((< check 0) (- trunc 1))
+      ((> check 0) trunc)
+      ('true trunc))))
 
 (defun vector-ref (tuple position)
   "
@@ -56,8 +73,8 @@
   (: erlang element (+ 1 position) tuple))
 
 (defun dot-product (a b)
-  (: lists foldl #'+/2 0
-    (: lists zipwith #'*/2 a b)))
+  (foldl #'+/2 0
+    (zipwith #'*/2 a b)))
 
 (defun dot (g x y z)
    (+ (* (vector-ref g 0) x)

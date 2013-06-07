@@ -101,12 +101,12 @@
   (: n000 Float) (: n001 Float) (: n010 Float) (: n011 Float)
   (: n100 Float) (: n101 Float) (: n110 Float) (: n111 Float)
   (define n000 (dot (vector-ref grad3 gi000) x       y       z))
-  (define n100 (dot (vector-ref grad3 gi100) (- x 1) y       z))
-  (define n010 (dot (vector-ref grad3 gi010) x       (- y 1) z))
-  (define n110 (dot (vector-ref grad3 gi110) (- x 1) (- y 1) z))
   (define n001 (dot (vector-ref grad3 gi001) x       y       (- z 1)))
-  (define n101 (dot (vector-ref grad3 gi101) (- x 1) y       (- z 1)))
+  (define n010 (dot (vector-ref grad3 gi010) x       (- y 1) z))
   (define n011 (dot (vector-ref grad3 gi011) x       (- y 1) (- z 1)))
+  (define n100 (dot (vector-ref grad3 gi100) (- x 1) y       z))
+  (define n101 (dot (vector-ref grad3 gi101) (- x 1) y       (- z 1)))
+  (define n110 (dot (vector-ref grad3 gi110) (- x 1) (- y 1) z))
   (define n111 (dot (vector-ref grad3 gi111) (- x 1) (- y 1) (- z 1)))
 
   ; Compute the fade curve value for each of x, y, z

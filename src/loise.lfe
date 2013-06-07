@@ -3,6 +3,7 @@
   (import
     (from erlang
       (list_to_tuple 1)
+      (rem 2)
       (trunc 1)
       (tuple_to_list 1))
     (from lists
@@ -48,6 +49,9 @@
   (add-tuples (list (perm-half) (perm-half))))
 
 (defun add-tuples (a)
+  "
+  If there's a better way to do this, pull requests welcome!
+  "
   (list_to_tuple
     (flatten
       (map (lambda (x) (tuple_to_list x)) a))))
@@ -72,7 +76,17 @@
   "
   (: erlang element (+ 1 position) tuple))
 
+(defun remainder (a b)
+  "
+  This is another function added to provide the same interface as Racket.
+  "
+  (rem a b))
+
 (defun dot-product (a b)
+  "
+  This doesn't appear to be needed for this particular library, but it was fun
+  to write, and is quite pretty, so it's staying ;-)
+  "
   (foldl #'+/2 0
     (zipwith #'*/2 a b)))
 

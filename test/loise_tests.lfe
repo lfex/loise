@@ -17,6 +17,7 @@
       (add-tuples 1)
       (fast-floor 1)
       (vector-ref 2)
+      (remainder 2)
       (dot-product 2)
       (mix 3)
       (fade 1)
@@ -38,6 +39,14 @@
 
 (defun vector-ref_test ()
   (assert-equal 42 (vector-ref #(99 4 7 42 13) 3)))
+
+(defun remainder_test ()
+  (assert-equal 0 (remainder 5 1))
+  (assert-equal 1 (remainder 5 2))
+  (assert-equal 2 (remainder 5 3))
+  (assert-equal 1 (remainder 5 4))
+  (assert-equal 0 (remainder 5 5))
+  (assert-equal -2 (remainder -5 3)))
 
 (defun dot-product_test ()
   (assert-equal 32 (dot-product '(1 2 3) '(4 5 6)))

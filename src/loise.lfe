@@ -46,7 +46,7 @@
          141 128 195 78 66 215 61 156 180))
 
 (defmacro perm ()
-  (add-tuples (list (perm-half) (perm-half))))
+  `(add-tuples (list (perm-half) (perm-half))))
 
 (defun add-tuples (a)
   "
@@ -78,9 +78,15 @@
 
 (defun remainder (a b)
   "
-  This is another function added to provide the same interface as Racket.
+  This is essentially an alias so that Racket-based code will be easier to use.
   "
   (rem a b))
+
+(defun bitwise-and (a b)
+  "
+  This is essentially an alias so that Racket-based code will be easier to use.
+  "
+  (band a b))
 
 (defun dot-product (a b)
   "
@@ -101,8 +107,80 @@
 (defun fade (t)
   (* t t t (+ (* t (- (* t 6.0) 15.0)) 10.0)))
 
-(defun perlin (x y z)
-  )
+(defun get-gradient-index (a b c)
+  (remainder
+    (vector-ref (perm)
+      (+ a
+        (vector-ref (perm)
+          (+ b
+            (vector-ref (perm) c))))) 12))
+
+(defun get-noise-contribution (g x y z)
+  (dot
+    (vector-ref (grad3) g)
+    x y z))
+
+(defun perlin (a b c)
+  "
+  Perlin  noise is a computer-generated visual effect developed by Ken Perlin,
+  who won an Academy Award for Technical Achievement for inventing it. It can
+  be used to simulate elements from nature, and is especially useful in
+  circumstances where computer memory is limited.
+  "
+  (let*
+    (
+      ; find unit grid cell containing point
+      (A (fast-floor a))
+      (B (fast-floor b))
+      (C (fast-floor c))
+      ; get relative xyz coordinates of point within cell
+      (x (- a A))
+      (y (- b B))
+      (z (- c C))
+      ; wrap the integer cells at 255 (smaller integer period can be
+      ; introduced here)
+      (X (bitwise-and A 255))
+      (Y (bitwise-and B 255))
+      (Z (bitwise-and C 255))
+      ; calculate a set of eight hashed gradient indices
+      (gi000 (get-gradient-index X Y Z))
+      (gi001 (get-gradient-index X Y (+ Z 1)))
+      (gi010 (get-gradient-index X (+ Y 1) Z))
+      (gi011 (get-gradient-index X (+ Y 1) (+ Z 1)))
+      (gi100 (get-gradient-index (+ X 1) Y Z))
+      (gi101 (get-gradient-index (+ X 1) Y (+ Z 1)))
+      (gi110 (get-gradient-index (+ X 1) (+ Y 1) Z))
+      (gi111 (get-gradient-index (+ X 1) (+ Y 1) (+ Z 1)))
+      ; calculate noise contributions from each of the eight corners
+      (n000 (get-noise-contribution gi000 x y z))
+      (n001 (get-noise-contribution gi001 x y (- z 1)))
+      (n010 (get-noise-contribution gi010 x (- y 1) z))
+      (n011 (get-noise-contribution gi011 x (- y 1) (- z 1)))
+      (n100 (get-noise-contribution gi100 (- x 1) y z))
+      (n101 (get-noise-contribution gi101 (- x 1) y (- z 1)))
+      (n110 (get-noise-contribution gi110 (- x 1) (- y 1) z))
+      (n111 (get-noise-contribution gi111 (- x 1) (- y 1) (- z 1)))
+      ; compute the fade curve value for each of x, y, z
+      (u (fade x))
+      (v (fade y))
+      (w (fade z))
+      ; interpolate along x the contributions from each of the corners
+      (nx00 (mix n000 n100 u))
+      (nx01 (mix n001 n101 u))
+      (nx10 (mix n010 n110 u))
+      (nx11 (mix n011 n111 u))
+      ; interpolate the four results along y
+      (nxy0 (mix nx00 nx10 v))
+      (nxy1 (mix nx01 nx11 v)))
+      ; finally, interpolate the two last results along z and return the result
+      (mix nxy0 nxy1 w)))
 
 (defun simplex (x y z)
+  "
+  Simplex noise is a method for constructing an n-dimensional noise function
+  comparable to Perlin noise ('classic' noise) but with a lower computational
+  overhead, especially in larger dimensions. Ken Perlin designed the algorithm
+  in 2001 to address the limitations of his classic noise function, especially
+  in higher dimensions.
+  "
   )

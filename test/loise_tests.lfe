@@ -13,6 +13,11 @@
       (assert-error 2)
       (assert-throw 2)
       (assert-exit 2))
+    (from lists
+      (foreach 2)
+      (map 2)
+      (seq 2)
+      (zipwith 3))
     (from loise
       (add-tuples 1)
       (dot 4)
@@ -22,7 +27,7 @@
       (get-gradient-index 3)
       (get-noise-contribution 4)
       (mix 3)
-      (perlin 3)
+      (perlin 1) (perlin 2) (perlin 3)
       (remainder 2)
       (simplex 3)
       (vector-ref 2))))
@@ -104,7 +109,9 @@
 
 (defun perlin_test ()
   (assert-equal -0.3772216257243449 (perlin 3.14 1.59 2.65))
-  )
+  (let ((expected (list 0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11))
+        (input (seq 1 10)))
+    (zipwith (lambda (a b) (assert-equal a (perlin b))) expected input)))
 
 (defun simplex_test ()
   (assert `'true))

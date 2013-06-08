@@ -13,6 +13,8 @@
       (assert-error 2)
       (assert-throw 2)
       (assert-exit 2))
+    (from erlang
+      (round 1))
     (from lists
       (foreach 2)
       (map 2)
@@ -29,6 +31,7 @@
       (mix 3)
       (perlin 1) (perlin 2) (perlin 3)
       (remainder 2)
+      (round 2)
       (simplex 3)
       (vector-ref 2))))
 
@@ -44,6 +47,19 @@
   (assert-equal 3 (fast-floor 3.4))
   (assert-equal 3 (fast-floor 3.5))
   (assert-equal 3 (fast-floor 3.9)))
+
+(defun round_test ()
+  (assert-equal 2 (round 2 2))
+  (assert-equal 2.11 (round 2.11 2))
+  (assert-equal 2.11 (round 2.111 2))
+  (assert-equal 2.12 (round 2.115 2))
+  (assert-equal 2.99985 (round 2.999849 5))
+  (let* ((inputs (seq 1 10))
+         (results (map (lambda (x) (round (/ x 11) 3)) inputs))
+         (expected (list 0.091 0.182 0.273 0.364 0.455
+                         0.545 0.636 0.727 0.818 0.909)))
+    (zipwith (lambda (a b) (assert-equal a b)) expected results))
+  )
 
 (defun vector-ref_test ()
   (assert-equal 42 (vector-ref #(99 4 7 42 13) 3)))
@@ -110,8 +126,12 @@
 (defun perlin_test ()
   (assert-equal -0.3772216257243449 (perlin 3.14 1.59 2.65))
   (let ((expected (list 0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11))
-        (input (seq 1 10)))
-    (zipwith (lambda (a b) (assert-equal a (perlin b))) expected input)))
+        (input (map (lambda (x) (/ x 10)) (seq 0 9))))
+    (zipwith
+      (lambda (a b)
+        (assert-equal a (round (perlin b) 2)))
+      expected
+      input)))
 
 (defun simplex_test ()
   (assert `'true))

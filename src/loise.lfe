@@ -120,6 +120,12 @@
     (vector-ref (grad3) g)
     x y z))
 
+(defun perlin (a)
+  (perlin a 0.0 0.0))
+
+(defun perlin (a b)
+  (perlin a b 0.0))
+
 (defun perlin (a b c)
   "
   Perlin  noise is a computer-generated visual effect developed by Ken Perlin,

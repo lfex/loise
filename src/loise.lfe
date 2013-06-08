@@ -4,8 +4,11 @@
     (from erlang
       (list_to_tuple 1)
       (rem 2)
+      (round 1)
       (trunc 1)
       (tuple_to_list 1))
+    (from math
+      (pow 2))
     (from lists
       (flatten 1)
       (foldl 3)
@@ -69,6 +72,17 @@
       ((< check 0) (- trunc 1))
       ((> check 0) trunc)
       ('true trunc))))
+
+(defun round (number precision)
+  "
+  Round a floating point number to the given number of decimal places.
+  "
+  (let ((p (pow 10 precision)))
+    (/ (round (* number p)) p)))
+
+;round(Number, Precision) ->
+;    P = math:pow(10, Precision),
+;    round(Number * P) / P.
 
 (defun vector-ref (tuple position)
   "

@@ -66,6 +66,12 @@ You can now use loise by itself, if you so desire. Here is some example usage:
 
     > (: loise perlin 3.14 1.59 2.65)
     -0.3772216257243449
+    > (: loise simplex 0.1)
+    0.4410072765
+    > (: loise simplex 0.1 0.2)
+    0.9410934374999996
+    > (: loise simplex 0.1 0.2 0.9)
+    -0.07602014100000003
 
 Or, iterating over some values:
 
@@ -100,6 +106,10 @@ In a Module
 
     (def get-perlin-pie ()
       (perlin 3.14 1.59 2.65))
+
+    (def get-simplex-pie ()
+      (simplex 3.14 1.59 2.65))
+
 
 .. Links
 .. -----

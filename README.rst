@@ -32,7 +32,7 @@ Dependencies
 This project assumes that you have `rebar`_ installed somwhere in your
 ``$PATH``.
 
-This project depends upon the following, which installed to the ``deps``
+This project depends upon the following, which are installed to the ``deps``
 directory of this project when you run ``make deps``:
 
 * `LFE`_ (Lisp Flavored Erlang; needed only to compile)
@@ -43,9 +43,9 @@ Using Loise
 ===========
 
 The first place to start is ensuring that the code you obtained works as
-epxected. To find out, run the unit tests:
+expected. To find out, run the unit tests:
 
-..code:: shell
+.. code:: bash
 
     $ cd loise
     $ make check
@@ -56,7 +56,7 @@ From the REPL
 
 Once everything is working, start up an LFE REPL:
 
-..code:: shell
+.. code:: bash
 
     $ make shell
 

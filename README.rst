@@ -67,6 +67,24 @@ You can now use loise by itself, if you so desire. Here is some example usage:
     > (: loise perlin 3.14 1.59 2.65)
     -0.3772216257243449
 
+Or, iterating over some values:
+
+.. code:: lisp
+
+    > (set input
+        (: lists map
+          (lambda (x)
+            (/ x 10))
+          (: lists seq 0 9))))
+    (0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9)
+    > (: lists map
+        (lambda (x)
+          (: loise round
+            (: loise perlin x)
+          2))
+        input)
+    (0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11)
+
 
 In a Module
 -----------
@@ -77,10 +95,10 @@ In a Module
       (export all)
       (import
         (from loise
-          (perlin 1) (perlin 2) (perlin 3)
+          (perlin 3)
           (simplex 3))))
 
-    (def get-perlin-pi ()
+    (def get-perlin-pie ()
       (perlin 3.14 1.59 2.65))
 
 .. Links

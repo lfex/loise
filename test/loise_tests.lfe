@@ -57,7 +57,7 @@
   (assert-equal -2 (remainder -5 3)))
 
 (defun dot-product_test ()
-  (assert-equal 32 (dot-product '(1 2 3) '(4 5 6)))
+  (assert-equal 32 (dot-product '(1 2 3) '(4 5 6)) )
   (assert-equal 122 (dot-product '(9 2 7) '(4 8 10))))
 
 (defun dot_test ()

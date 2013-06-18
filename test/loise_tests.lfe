@@ -36,7 +36,7 @@
       (perlin 1) (perlin 2) (perlin 3)
       (remainder 2)
       (round 2)
-      (simplex 3)
+      (simplex 1) (simplex 2) (simplex 3)
       (vector-ref 2)
       (which-simplex 3))))
 
@@ -150,10 +150,11 @@
   (assert-equal '"010110" (list->string (which-simplex 0 1 0)))
   (assert-equal '"010011" (list->string (which-simplex 0 1 1)))
   (assert-equal '"100101" (list->string (which-simplex 1 0 1)))
-  (assert-equal '"001011" (list->string (which-simplex 1 2 3)))
-  )
+  (assert-equal '"001011" (list->string (which-simplex 1 2 3))))
 
 (defun simplex_test ()
-  (assert-equal -0.3772216257243449 (simplex 3.14 1.59 2.65))
-
-  )
+  (assert-equal 0.44 (round (simplex 0.1) 2))
+  (assert-equal 0.81 (round (simplex 0.1 0.1) 2))
+  (assert-equal -0.39 (round (simplex 0.9 0.9) 2))
+  (assert-equal 0.94 (round (simplex 0.1 0.2) 2))
+  (assert-equal -0.08 (round (simplex 0.1 0.2 0.9) 2)))

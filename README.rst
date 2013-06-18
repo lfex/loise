@@ -45,14 +45,18 @@ Using Loise
 The first place to start is ensuring that the code you obtained works as
 epxected. To find out, run the unit tests:
 
-..code:: bash
+..code:: shell
 
     $ cd loise
     $ make check
 
+
+From the REPL
+-------------
+
 Once everything is working, start up an LFE REPL:
 
-..code:: bash
+..code:: shell
 
     $ make shell
 
@@ -63,6 +67,21 @@ You can now use loise by itself, if you so desire. Here is some example usage:
     > (: loise perlin 3.14 1.59 2.65)
     -0.3772216257243449
 
+
+In a Module
+-----------
+
+.. code:: lisp
+
+    (defmodule mymodule
+      (export all)
+      (import
+        (from loise
+          (perlin 1) (perlin 2) (perlin 3)
+          (simplex 3))))
+
+    (def get-perlin-pi ()
+      (perlin 3.14 1.59 2.65))
 
 .. Links
 .. -----

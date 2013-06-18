@@ -195,7 +195,27 @@
       ; finally, interpolate the two last results along z and return the result
       (mix nxy0 nxy1 w)))
 
-(defun simplex (x y z)
+(defun which-simplex (a b c)
+  "
+  For the 3D case, the simplex shape is a slightly irregular tetrahedron.
+  This function determines which simplex we are in.
+  "
+  (cond
+    ((and (>= a b) (>= b c)) (list 1 0 0 1 1 0)) ; X Y Z order
+    ((and (>= a b) (>= a c)) (list 1 0 0 1 0 1)) ; X Z Y order
+    ((>= a b) (list 0 0 1 1 0 1)) ; Z X Y order
+    ((< b c) (list 0 0 1 0 1 1)) ; Z Y X order
+    ((< a c) (list 0 1 0 0 1 1)) ; Y Z X order
+    (else (list 0 1 0 1 1 0)))) ; Y X Z order
+
+(defun corner-contribution (g x y z)
+  (let* ((t (- 0.5 (* x x) (* y y) (* z z)))
+         (t^2 (* t t)))
+    (if (< t 0)
+      0.0
+      (* t^2 t^2 (dot (vector-ref (grad3) g) x y z)))))
+
+(defun simplex (a b c)
   "
   Simplex noise is a method for constructing an n-dimensional noise function
   comparable to Perlin noise ('classic' noise) but with a lower computational
@@ -203,4 +223,57 @@
   in 2001 to address the limitations of his classic noise function, especially
   in higher dimensions.
   "
-  )
+  (let*
+    (
+      ; skew the input space to determine which simplex cell we're in
+      (s (* (+ a b c) (F3)))
+      (i (fast-floor (+ a s)))
+      (j (fast-floor (+ b s)))
+      (k (fast-floor (+ c s)))
+      (t (* (+ i j k) (G3)))
+      ; unskew the cell origin back to (x,y,z) space
+      (X0 (- i t))
+      (Y0 (- j t))
+      (Z0 (- k t))
+      ; the x,y,z distances from the cell origin
+      (x0 (- a X0))
+      (y0 (- b Y0))
+      (z0 (- c Z0))
+      ; find out which simplex we are in
+      ((list i1 j1 k1 i2 j2 k2) (which-simplex x0 y0 z0))
+      ; A step of (1,0,0) in (i,j,k) means a step of (1-c,-c,-c) in (x,y,z),
+      ; a step of (0,1,0) in (i,j,k) means a step of (-c,1-c,-c) in (x,y,z),
+      ; and a step of (0,0,1) in (i,j,k) means a step of (-c,-c,1-c) in
+      ; (x,y,z), where c = 1/6.
+      ;
+      ; Offsets for second corner in (x,y,z) coords
+      (x1 (+ (- x0 i1) (G3)))
+      (y1 (+ (- y0 j1) (G3)))
+      (z1 (+ (- z0 k1) (G3)))
+      ; Offsets for third corner in (x,y,z) coords
+      (x2 (+ (- x0 i2) (* 2.0 (G3))))
+      (y2 (+ (- y0 j2) (* 2.0 (G3))))
+      (z2 (+ (- z0 k2) (* 2.0 (G3))))
+      ; Offsets for last corner in (x,y,z) coords
+      (x3 (+ (- x0 1.0) (* 3.0 (G3))))
+      (y3 (+ (- y0 1.0) (* 3.0 (G3))))
+      (z3 (+ (- z0 1.0) (* 3.0 (G3))))
+      ; Work out the hashed gradient indices of the four simplex corners
+      (ii (bitwise-and i 255))
+      (jj (bitwise-and j 255))
+      (kk (bitwise-and k 255))
+      (gi0 (get-gradient-index ii jj kk))
+      (gi1 (get-gradient-index (+ ii i1) (+ jj j1) (+ kk k1)))
+      (gi2 (get-gradient-index (+ ii i2) (+ jj j2) (+ kk k2)))
+      (gi3 (get-gradient-index (+ ii 1) (+ jj 1) (+ kk 1)))
+      ; Calculate the contribution from the four corners
+      (n0 (corner-contribution gi0 x0 y0 z0))
+      (n1 (corner-contribution gi1 x1 y1 z1))
+      (n2 (corner-contribution gi2 x2 y2 z2))
+      (n3 (corner-contribution gi3 x3 y3 z3)))
+    ; Add contributions from each corner to get the final noise value.
+    ; The result is scaled to stay just inside [-1,1]
+    ; NOTE: This scaling factor seems to work better than the given one
+    ;       I'm not sure why
+    (* 76.5 (+ n0 n1 n2 n3))))
+

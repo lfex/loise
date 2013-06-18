@@ -14,12 +14,16 @@
       (assert-throw 2)
       (assert-exit 2))
     (from erlang
+      (integer_to_list 1)
       (round 1))
+    (from string
+      (join 2))
     (from lists
       (foreach 2)
       (map 2)
       (seq 2)
-      (zipwith 3))
+      (zipwith 3)
+      (zipwith3 4))
     (from loise
       (add-tuples 1)
       (dot 4)
@@ -33,7 +37,14 @@
       (remainder 2)
       (round 2)
       (simplex 3)
-      (vector-ref 2))))
+      (vector-ref 2)
+      (which-simplex 3))))
+
+(defun list->string (data)
+  `(quote
+    ,(join
+      (map (lambda (x) (integer_to_list x)) data)
+      '"")))
 
 (defun add-tuples_test ()
   (let ((data (list (tuple 1 2 3) (tuple 2 3 4))))
@@ -133,5 +144,16 @@
       expected
       input)))
 
+(defun which-simplex_test ()
+  (assert-equal '"100110" (list->string (which-simplex 0 0 0)))
+  (assert-equal '"001101" (list->string (which-simplex 0 0 1)))
+  (assert-equal '"010110" (list->string (which-simplex 0 1 0)))
+  (assert-equal '"010011" (list->string (which-simplex 0 1 1)))
+  (assert-equal '"100101" (list->string (which-simplex 1 0 1)))
+  (assert-equal '"001011" (list->string (which-simplex 1 2 3)))
+  )
+
 (defun simplex_test ()
-  (assert `'true))
+  (assert-equal -0.3772216257243449 (simplex 3.14 1.59 2.65))
+
+  )

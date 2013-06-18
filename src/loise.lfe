@@ -215,6 +215,12 @@
       0.0
       (* t^2 t^2 (dot (vector-ref (grad3) g) x y z)))))
 
+(defun simplex (a)
+  (simplex a 0.0 0.0))
+
+(defun simplex (a b)
+  (simplex a b 0.0))
+
 (defun simplex (a b c)
   "
   Simplex noise is a method for constructing an n-dimensional noise function

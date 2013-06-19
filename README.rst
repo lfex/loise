@@ -19,7 +19,7 @@ noise function comparable to Perlin noise ("classic" noise) but with a lower
 computational overhead, especially in larger dimensions. Ken Perlin designe
 the algorithm in 2001 to address the limitations of his classic noise
 function, especially in higher dimensions. (See the complete `Simplex Wikipedia
-article `_ for more.)
+article`_ for more.)
 
 Background
 ----------

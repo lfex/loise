@@ -114,8 +114,8 @@ In a Module
 .. Links
 .. -----
 .. _Racket noise-generator: https://github.com/jpverkamp/noise
-.. _Perlin Wikipedia artic: http://en.wikipedia.org/wiki/Perlin_noise
-.. _Simplex Wikipedia artic: http://en.wikipedia.org/wiki/Simplex_noise
+.. _Perlin Wikipedia article: http://en.wikipedia.org/wiki/Perlin_noise
+.. _Simplex Wikipedia article: http://en.wikipedia.org/wiki/Simplex_noise
 .. _jpverkamp: https://github.com/jpverkamp
 .. _LFE: http://lfe.github.io/
 .. _rebar: https://github.com/rebar/rebar

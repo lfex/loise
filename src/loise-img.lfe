@@ -6,7 +6,8 @@
       (simplex 1) (simplex 2) (simplex 3))
     (from loise-util
       (color-scale 2)
-      (get-perlin-for-point 3))
+      (get-perlin-for-point 3)
+      (get-simplex-for-point 3))
     (from lists
       (foreach 2)
       (seq 2))))
@@ -100,5 +101,26 @@
     (lambda (x y)
       (let* ((value (get-perlin-for-point
                       (tuple x y) (tuple width height) multiplier))
-             (adjusted (color-scale value #(-0.5 0.5))))
+             (adjusted (color-scale value #(-1 1))))
+        (list x y (: egd color (tuple adjusted adjusted adjusted)))))))
+
+(defun create-simplex-image (filename filetype)
+  "
+  "
+  (create-perlin-image filename filetype 256 256))
+
+(defun create-simplex-image (filename filetype width height)
+  "
+  "
+  (create-perlin-image filename filetype width height 1.0))
+
+
+(defun create-simplex-image (filename filetype width height multiplier)
+  "
+  "
+  (create-image filename filetype width height
+    (lambda (x y)
+      (let* ((value (get-simplex-for-point
+                      (tuple x y) (tuple width height) multiplier))
+             (adjusted (color-scale value #(-1 1))))
         (list x y (: egd color (tuple adjusted adjusted adjusted)))))))

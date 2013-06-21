@@ -1,9 +1,10 @@
 (defmodule loise
   (export all)
   (import
-    (from loise-util
+    (from lfe-utils
       (add-tuples 1)
-      (fast-floor 1)
+      (fast-floor 1))
+    (from loise-util
       (vector-ref 2)
       (remainder 2)
       (bitwise-and 2)

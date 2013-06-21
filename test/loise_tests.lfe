@@ -1,6 +1,8 @@
 (defmodule loise_tests
   (export all)
   (import
+    (from lfe-utils
+      (round 2))
     (from lfeunit-util
       (check-failed-assert 2)
       (check-wrong-assert-exception 2))
@@ -33,12 +35,8 @@
       (simplex 1) (simplex 2) (simplex 3)
       (which-simplex 3))
     (from loise-util
-      (add-tuples 1)
       (dot 4)
-      (dot-product 2)
-      (fast-floor 1)
       (remainder 2)
-      (round 2)
       (vector-ref 2))))
 
 (defun list->string (data)
@@ -46,32 +44,6 @@
     ,(join
       (map (lambda (x) (integer_to_list x)) data)
       '"")))
-
-(defun add-tuples_test ()
-  (let ((data (list (tuple 1 2 3) (tuple 2 3 4))))
-    (assert-equal #(1 2 3 2 3 4) (add-tuples data))))
-
-(defun fast-floor_test ()
-  (assert-equal 0 (fast-floor 0.0))
-  (assert-equal 1 (fast-floor 1.0))
-  (assert-equal -5 (fast-floor -4.3))
-  (assert-equal 3 (fast-floor 3.1))
-  (assert-equal 3 (fast-floor 3.4))
-  (assert-equal 3 (fast-floor 3.5))
-  (assert-equal 3 (fast-floor 3.9)))
-
-(defun round_test ()
-  (assert-equal 2 (round 2 2))
-  (assert-equal 2.11 (round 2.11 2))
-  (assert-equal 2.11 (round 2.111 2))
-  (assert-equal 2.12 (round 2.115 2))
-  (assert-equal 2.99985 (round 2.999849 5))
-  (let* ((inputs (seq 1 10))
-         (results (map (lambda (x) (round (/ x 11) 3)) inputs))
-         (expected (list 0.091 0.182 0.273 0.364 0.455
-                         0.545 0.636 0.727 0.818 0.909)))
-    (zipwith (lambda (a b) (assert-equal a b)) expected results))
-  )
 
 (defun vector-ref_test ()
   (assert-equal 42 (vector-ref #(99 4 7 42 13) 3)))
@@ -83,10 +55,6 @@
   (assert-equal 1 (remainder 5 4))
   (assert-equal 0 (remainder 5 5))
   (assert-equal -2 (remainder -5 3)))
-
-(defun dot-product_test ()
-  (assert-equal 32 (dot-product '(1 2 3) '(4 5 6)) )
-  (assert-equal 122 (dot-product '(9 2 7) '(4 8 10))))
 
 (defun dot_test ()
   (assert `'true))

@@ -7,11 +7,17 @@
 
 (defun draw-point (image x y color)
   "
+  egd doesn't have a function for drawing just a point.
+
+  This has got to be an incredibly inefficient function; please don't treat
+  like anything othat that what this is: A toy.
   "
   (: egd line image (tuple x y) (tuple x y) color))
 
 (defun process-pixel (image func x-in y-in)
   "
+  Call the passed function to get a color value, and then draw that color at
+  the given point.
   "
   (let* (((list x-out y-out color) (funcall func x-in y-in)))
     (draw-point image x-out y-out color)))
@@ -49,12 +55,14 @@
 
 (defun create-image (filename filetype width height func)
   "
+  A wrapper function for build- and write-image.
   "
   (let ((image (build-image width height func)))
     (write-image image filename filetype)))
 
 (defun create-white-image (filename filetype width height)
   "
+  A convenience function for creating test images.
   "
   (create-image filename filetype width height
     (lambda (x y)
@@ -62,6 +70,7 @@
 
 (defun create-black-image (filename filetype width height)
   "
+  A convenience function for creating test images.
   "
   (create-image filename filetype width height
     (lambda (x y)

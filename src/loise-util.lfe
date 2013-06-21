@@ -1,6 +1,9 @@
 (defmodule loise-util
   (export all)
   (import
+    (from lists
+      (flatten 1)
+      (map 2))
     (from loise
       (perlin 1) (perlin 2) (perlin 3)
       (simplex 1) (simplex 2) (simplex 3))
@@ -105,3 +108,70 @@
   "
   "
   (round (scale value current-frame #(0.0 255.0))))
+
+(defun get-perlin-for-point
+  "
+  "
+  (((tuple x) (tuple width) multiplier)
+    (perlin (* multiplier (/ x width))))
+  (((tuple x y) (tuple width height) multiplier)
+    (perlin (* multiplier (/ x width))
+            (* multiplier (/ y height))))
+  (((tuple x y z) (tuple width height depth) multiplier)
+    (perlin (* multiplier (/ x width))
+            (* multiplier (/ y height))
+            (* multiplier (/ z depth)))))
+
+(defun get-perlin-range
+  "
+  This function is used for generating large lists of perlin noise numbers
+  across a range of multipliers and sizes.
+  "
+  (((tuple mult-start mult-end) (tuple width))
+    (flatten
+      (map
+        (lambda (multiplier)
+          (map
+            (lambda (x)
+              (get-perlin-for-point (tuple x) (tuple width) multiplier))
+            (seq 0 (- width 1))))
+          (seq mult-start mult-end))))
+  (((tuple mult-start mult-end) (tuple width height))
+    (flatten
+      (map
+        (lambda (multiplier)
+          (map
+            (lambda (x)
+              (map
+                (lambda (y)
+                  (get-perlin-for-point
+                    (tuple x y)
+                    (tuple width height)
+                    multiplier))
+                (seq 0 (- height 1))))
+            (seq 0 (- width 1))))
+          (seq mult-start mult-end))))
+  (((tuple mult-start mult-end) (tuple width height depth)))
+  ; let's save this one for later...
+  )
+
+(defun create-perlin-image (filename filetype)
+  "
+  "
+  (create-perlin-image filename filetype 256 256))
+
+(defun create-perlin-image (filename filetype width height)
+  "
+  "
+  (create-perlin-image filename filetype width height 1.0))
+
+
+(defun create-perlin-image (filename filetype width height multiplier)
+  "
+  "
+  (create-image filename filetype width height
+    (lambda (x y)
+      (let* ((value (get-perlin-for-point
+                      (tuple x y) (tuple width height) multiplier))
+             (adjusted (color-scale value #(-0.5 0.5))))
+        (list x y (: egd color (tuple adjusted adjusted adjusted)))))))

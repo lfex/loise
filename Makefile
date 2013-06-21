@@ -3,8 +3,9 @@ LFE_DIR = $(DEPS)/lfe
 LFE_EBIN = $(LFE_DIR)/ebin
 LFE = $(LFE_DIR)/bin/lfe
 LFEC = $(LFE_DIR)/bin/lfec
+LFE_UTILS_DIR = $(DEPS)/lfe-utils
 LFEUNIT_DIR = $(DEPS)/lfeunit
-ERL_LIBS = $(LFE_DIR):$(LFEUNIT_DIR):./
+ERL_LIBS = $(LFE_DIR):$(LFE_UTILS_DIR):$(LFEUNIT_DIR):./
 SOURCE_DIR = ./src
 OUT_DIR = ./ebin
 TEST_DIR = ./test
@@ -28,7 +29,8 @@ compile-tests: clean-eunit
 	mkdir -p $(TEST_OUT_DIR)
 	ERL_LIBS=$(ERL_LIBS) $(LFEC) -o $(TEST_OUT_DIR) $(TEST_DIR)/*_tests.lfe
 
-shell:
+shell: compile
+	clear
 	ERL_LIBS=$(ERL_LIBS) $(LFE) -pa $(TEST_OUT_DIR)
 
 clean: clean-ebin clean-eunit

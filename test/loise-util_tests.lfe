@@ -6,11 +6,10 @@
       (assert-not 1)
       (assert-equal 2)
       (assert-not-equal 2))
-    (from loise
-      (round 2))
     (from loise-util
       (color-scale 2)
       (get-perlin-for-point 3)
+      (round 2)
       (scale 3)
       (unit-scale 2))))
 

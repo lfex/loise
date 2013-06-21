@@ -1,19 +1,13 @@
 (defmodule loise
   (export all)
   (import
-    (from erlang
-      (list_to_tuple 1)
-      (rem 2)
-      (round 1)
-      (trunc 1)
-      (tuple_to_list 1))
-    (from math
-      (pow 2))
-    (from lists
-      (flatten 1)
-      (foldl 3)
-      (map 2)
-      (zipwith 3))))
+    (from loise-util
+      (add-tuples 1)
+      (fast-floor 1)
+      (vector-ref 2)
+      (remainder 2)
+      (bitwise-and 2)
+      (dot 4))))
 
 (defmacro grad3
   '#(#( 1.0  1.0  0.0) #(-1.0  1.0  0.0) #( 1.0 -1.0  0.0) #(-1.0 -1.0  0.0)
@@ -50,70 +44,6 @@
 
 (defmacro perm ()
   `(add-tuples (list (perm-half) (perm-half))))
-
-(defun add-tuples (a)
-  "
-  If there's a better way to do this, pull requests welcome!
-  "
-  (list_to_tuple
-    (flatten
-      (map (lambda (x) (tuple_to_list x)) a))))
-
-(defun fast-floor (int)
-  "
-  Sadly, this is named 'fast-floor' only because the Racket version was given
-  that name (it makes copying and pasting the code that much easier!). There
-  is no good floor function in Erlang... so this should probably have been
-  called 'slow-floor'.
-  "
-  (let* ((trunc (trunc int))
-         (check (- int trunc)))
-    (cond
-      ((< check 0) (- trunc 1))
-      ((> check 0) trunc)
-      ('true trunc))))
-
-(defun round (number precision)
-  "
-  Round a floating point number to the given number of decimal places.
-  "
-  (let ((p (pow 10 precision)))
-    (/ (round (* number p)) p)))
-
-;round(Number, Precision) ->
-;    P = math:pow(10, Precision),
-;    round(Number * P) / P.
-
-(defun vector-ref (tuple position)
-  "
-  This provides the same interface as the Racket function of the same name.
-  "
-  (: erlang element (+ 1 position) tuple))
-
-(defun remainder (a b)
-  "
-  This is essentially an alias so that Racket-based code will be easier to use.
-  "
-  (rem a b))
-
-(defun bitwise-and (a b)
-  "
-  This is essentially an alias so that Racket-based code will be easier to use.
-  "
-  (band a b))
-
-(defun dot-product (a b)
-  "
-  This doesn't appear to be needed for this particular library, but it was fun
-  to write, and is quite pretty, so it's staying ;-)
-  "
-  (foldl #'+/2 0
-    (zipwith #'*/2 a b)))
-
-(defun dot (g x y z)
-   (+ (* (vector-ref g 0) x)
-      (* (vector-ref g 1) y)
-      (* (vector-ref g 2) z)))
 
 (defun mix (a b t)
   (+ (* (- 1.0 t) a) (* t b)))

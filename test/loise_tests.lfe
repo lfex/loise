@@ -25,20 +25,21 @@
       (zipwith 3)
       (zipwith3 4))
     (from loise
-      (add-tuples 1)
-      (dot 4)
-      (dot-product 2)
       (fade 1)
-      (fast-floor 1)
       (get-gradient-index 3)
       (get-noise-contribution 4)
       (mix 3)
       (perlin 1) (perlin 2) (perlin 3)
+      (simplex 1) (simplex 2) (simplex 3)
+      (which-simplex 3))
+    (from loise-util
+      (add-tuples 1)
+      (dot 4)
+      (dot-product 2)
+      (fast-floor 1)
       (remainder 2)
       (round 2)
-      (simplex 1) (simplex 2) (simplex 3)
-      (vector-ref 2)
-      (which-simplex 3))))
+      (vector-ref 2))))
 
 (defun list->string (data)
   `(quote

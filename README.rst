@@ -26,6 +26,7 @@ Background
 
 This is a port of the `Racket noise-generator`_ by `jpverkamp`_ to `LFE`_.
 
+
 Dependencies
 ------------
 
@@ -37,6 +38,67 @@ directory of this project when you run ``make deps``:
 
 * `LFE`_ (Lisp Flavored Erlang; needed only to compile)
 * `lfeunit`_ (needed only to run the unit tests)
+
+
+Eye Candy
+=========
+
+The data generated with the ``perlin`` and ``simplex`` functions can be used to
+create images. Erlang is not a good language for image generation, however this
+library does provide some convenience functions for generating images.
+
+
+Perlin
+------
+
+Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
+
+.. image:: images/perlin-1.png
+
+.. image:: images/perlin-2.png
+
+.. image:: images/perlin-4.png
+
+.. image:: images/perlin-8.png
+
+These were generated with the following from the REPL:
+
+.. code:: lisp
+
+    > (: loise-img create-perlin-image '"perlin-1.png" 'png 256 128 1)
+    ok
+    > (: loise-img create-perlin-image '"perlin-2.png" 'png 256 128 2)
+    ok
+    > (: loise-img create-perlin-image '"perlin-4.png" 'png 256 128 4)
+    ok
+    > (: loise-img create-perlin-image '"perlin-8.png" 'png 256 128 8)
+    ok
+
+
+Simplex
+-------
+
+Below are 4 simplex noise images generated at 1x, 2x, 4x, and 8x, respectively.
+
+.. image:: images/simplex-1.png
+
+.. image:: images/simplex-2.png
+
+.. image:: images/simplex-4.png
+
+.. image:: images/simplex-8.png
+
+These were generated with the following from the REPL:
+
+.. code:: lisp
+
+    > (: loise-img create-simplex-image '"simplex-1.png" 'png 256 128 1)
+    ok
+    > (: loise-img create-simplex-image '"simplex-2.png" 'png 256 128 2)
+    ok
+    > (: loise-img create-simplex-image '"simplex-4.png" 'png 256 128 4)
+    ok
+    > (: loise-img create-simplex-image '"simplex-8.png" 'png 256 128 8)
 
 
 Using Loise

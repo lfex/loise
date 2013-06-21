@@ -1,6 +1,9 @@
 (defmodule loise-util
   (export all)
   (import
+    (from loise
+      (perlin 1) (perlin 2) (perlin 3)
+      (simplex 1) (simplex 2) (simplex 3))
     (from lists
       (foreach 2)
       (seq 2))))
@@ -75,3 +78,30 @@
   (create-image filename filetype width height
     (lambda (x y)
       (list x y (: egd color 'black)))))
+
+(defun shift (value amount)
+  (+ value amount))
+
+(defun scale (value amount)
+  (* value amount))
+
+(defun scale (value current-frame new-frame)
+  "
+  "
+  (let* (((tuple lower-bound upper-bound) current-frame)
+         ((tuple lower-bound-prime upper-bound-prime) new-frame)
+         (fraction (/
+                     (+ (abs lower-bound) value)
+                     (+ (abs lower-bound) upper-bound)))
+         (new-range (- upper-bound-prime lower-bound-prime)))
+    (+ (* fraction new-range) lower-bound-prime)))
+
+(defun unit-scale (value current-frame)
+  "
+  "
+  (scale value current-frame #(0.0 1.0)))
+
+(defun color-scale (value current-frame)
+  "
+  "
+  (round (scale value current-frame #(0.0 255.0))))

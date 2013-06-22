@@ -1,11 +1,12 @@
 (defmodule loise-img
   (export all)
   (import
+    (from lfe-utils
+      (color-scale 2))
     (from loise
       (perlin 1) (perlin 2) (perlin 3)
       (simplex 1) (simplex 2) (simplex 3))
     (from loise-util
-      (color-scale 2)
       (get-perlin-for-point 3)
       (get-simplex-for-point 3))
     (from lists

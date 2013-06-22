@@ -1,46 +1,25 @@
 (defmodule loise-util
   (export all)
   (import
-    (from erlang
-      (list_to_tuple 1)
-      (rem 2)
-      (round 1)
-      (trunc 1)
-      (tuple_to_list 1))
     (from lists
       (flatten 1)
-      (foldl 3)
       (map 2)
-      (seq 2)
-      (zipwith 3))
+      (seq 2))
     (from loise
       (perlin 1) (perlin 2) (perlin 3)
-      (simplex 1) (simplex 2) (simplex 3))
-    (from math
-      (pow 2))))
+      (simplex 1) (simplex 2) (simplex 3))))
 
-(defun vector-ref (tuple position)
+(defun element-index (tuple position)
   "
-  This provides the same interface as the Racket function of the same name.
+  This provides the same interface as the Racket function 'vector-ref' upon
+  which it is based.
   "
   (: erlang element (+ 1 position) tuple))
 
-(defun remainder (a b)
-  "
-  This is essentially an alias so that Racket-based code will be easier to use.
-  "
-  (rem a b))
-
-(defun bitwise-and (a b)
-  "
-  This is essentially an alias so that Racket-based code will be easier to use.
-  "
-  (band a b))
-
 (defun dot (g x y z)
-   (+ (* (vector-ref g 0) x)
-      (* (vector-ref g 1) y)
-      (* (vector-ref g 2) z)))
+   (+ (* (element-index g 0) x)
+      (* (element-index g 1) y)
+      (* (element-index g 2) z)))
 
 (defun get-perlin-for-point
   "

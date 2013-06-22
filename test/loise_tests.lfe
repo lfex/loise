@@ -36,8 +36,8 @@
       (which-simplex 3))
     (from loise-util
       (dot 4)
-      (remainder 2)
-      (vector-ref 2))))
+      (rem 2)
+      (element-index 2))))
 
 (defun list->string (data)
   `(quote
@@ -45,16 +45,8 @@
       (map (lambda (x) (integer_to_list x)) data)
       '"")))
 
-(defun vector-ref_test ()
-  (assert-equal 42 (vector-ref #(99 4 7 42 13) 3)))
-
-(defun remainder_test ()
-  (assert-equal 0 (remainder 5 1))
-  (assert-equal 1 (remainder 5 2))
-  (assert-equal 2 (remainder 5 3))
-  (assert-equal 1 (remainder 5 4))
-  (assert-equal 0 (remainder 5 5))
-  (assert-equal -2 (remainder -5 3)))
+(defun element-index_test ()
+  (assert-equal 42 (element-index #(99 4 7 42 13) 3)))
 
 (defun dot_test ()
   (assert `'true))

@@ -5,9 +5,7 @@
       (add-tuples 1)
       (fast-floor 1))
     (from loise-util
-      (vector-ref 2)
-      (remainder 2)
-      (bitwise-and 2)
+      (element-index 2)
       (dot 4))))
 
 (defmacro grad3
@@ -53,16 +51,16 @@
   (* t t t (+ (* t (- (* t 6.0) 15.0)) 10.0)))
 
 (defun get-gradient-index (a b c)
-  (remainder
-    (vector-ref (perm)
+  (rem
+    (element-index (perm)
       (+ a
-        (vector-ref (perm)
+        (element-index (perm)
           (+ b
-            (vector-ref (perm) c))))) 12))
+            (element-index (perm) c))))) 12))
 
 (defun get-noise-contribution (g x y z)
   (dot
-    (vector-ref (grad3) g)
+    (element-index (grad3) g)
     x y z))
 
 (defun perlin (a)
@@ -90,9 +88,9 @@
       (z (- c C))
       ; wrap the integer cells at 255 (smaller integer period can be
       ; introduced here)
-      (X (bitwise-and A 255))
-      (Y (bitwise-and B 255))
-      (Z (bitwise-and C 255))
+      (X (band A 255))
+      (Y (band B 255))
+      (Z (band C 255))
       ; calculate a set of eight hashed gradient indices
       (gi000 (get-gradient-index X Y Z))
       (gi001 (get-gradient-index X Y (+ Z 1)))
@@ -144,7 +142,7 @@
          (t^2 (* t t)))
     (if (< t 0)
       0.0
-      (* t^2 t^2 (dot (vector-ref (grad3) g) x y z)))))
+      (* t^2 t^2 (dot (element-index (grad3) g) x y z)))))
 
 (defun simplex (a)
   (simplex a 0.0 0.0))
@@ -196,9 +194,9 @@
       (y3 (+ (- y0 1.0) (* 3.0 (G3))))
       (z3 (+ (- z0 1.0) (* 3.0 (G3))))
       ; Work out the hashed gradient indices of the four simplex corners
-      (ii (bitwise-and i 255))
-      (jj (bitwise-and j 255))
-      (kk (bitwise-and k 255))
+      (ii (band i 255))
+      (jj (band j 255))
+      (kk (band k 255))
       (gi0 (get-gradient-index ii jj kk))
       (gi1 (get-gradient-index (+ ii i1) (+ jj j1) (+ kk k1)))
       (gi2 (get-gradient-index (+ ii i2) (+ jj j2) (+ kk k2)))

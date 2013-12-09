@@ -13,6 +13,52 @@
       (foreach 2)
       (seq 2))))
 
+; An LFE version of image_object from egd.hrl
+(defrecord image_object
+  type
+  (points (list))
+  span
+  internals
+  intervals
+  color)
+
+; An LFE version of image from egd.hrl
+(defrecord image
+  width
+  height
+  (objects (list))
+  (backgound (tuple 1.0 1.0 1.0 1.0))
+  image)
+
+(defun span (points)
+  "
+  An LFE-version of egd_primitives:span.
+  "
+  (let ((x-vals (lc ((<- (tuple tx _) points)) tx))
+        (y-vals (lc ((<- (tuple _ ty) points)) ty)))
+    (tuple
+      (: lists min x-vals)
+      (: lists min y-vals)
+      (: lists max x-vals)
+      (: lists max y-vals))))
+
+
+;pixel(I, Point, Color) ->
+;    I#image{objects = [
+;    #image_object{
+;    type = pixel,
+;    points = [Point],
+;    span = span([Point]),
+;    color = Color} | I#image.objects]}.
+
+(defun pixel (passed-image point color)
+  "
+  "
+  (let ((img-obj (make-image_object type 'pixel
+                                    points (list point)
+                                    span (span (list point))
+                                    color color)))))
+
 (defun draw-point (image x y color)
   "
   egd doesn't have a function for drawing just a point.
@@ -20,7 +66,8 @@
   This has got to be an incredibly inefficient function; please don't treat
   like anything othat that what this is: A toy.
   "
-  (: egd line image (tuple x y) (tuple x y) color))
+  (: egd_primitives pixel image (tuple x y) color))
+  ;(: egd line image (tuple x y) (tuple x y) color))
 
 (defun process-pixel (image func x-in y-in)
   "
@@ -28,7 +75,8 @@
   the given point.
   "
   (let* (((list x-out y-out color) (funcall func x-in y-in)))
-    (draw-point image x-out y-out color)))
+    ;(draw-point image x-out y-out color)))
+    (: egd_primitives pixel image (tuple x-out y-out) color)))
 
 (defun build-image (width height func)
   "

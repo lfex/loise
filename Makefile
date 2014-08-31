@@ -1,105 +1,125 @@
+ifeq ($(shell which erl),)
+$(error Can't find Erlang executable 'erl')
+exit 1
+endif
+PROJECT = loise
+LIB = $(PROJECT)
 DEPS = ./deps
-BIN_DIR=./bin
-EXPM=$(BIN_DIR)/expm
-PROJECT=lfe-utils
-LIB=$(PROJECT)
-LFE_DIR = $(DEPS)/lfe
-LFE_EBIN = $(LFE_DIR)/ebin
-LFE = $(LFE_DIR)/bin/lfe
-LFEC = $(LFE_DIR)/bin/lfec
-LFE_UTILS_DIR = $(DEPS)/lfe-utils
-LFEUNIT_DIR = $(DEPS)/lfeunit
-ERL_LIBS = $(LFE_DIR):$(LFE_UTILS_DIR):$(LFEUNIT_DIR):./
+BIN_DIR = ./bin
+EXPM = $(BIN_DIR)/expm
+
 SOURCE_DIR = ./src
 OUT_DIR = ./ebin
 TEST_DIR = ./test
 TEST_OUT_DIR = ./.eunit
-FINISH=-run init stop -noshell
-
-get-version:
-	@echo
-	@echo -n app.src: ''
-	@erl -eval 'io:format("~p~n", [ \
-		proplists:get_value(vsn,element(3,element(2,hd(element(3, \
-		erl_eval:exprs(element(2, erl_parse:parse_exprs(element(2, \
-		erl_scan:string("Data = " ++ binary_to_list(element(2, \
-		file:read_file("src/$(LIB).app.src"))))))), []))))))])' \
-		$(FINISH)
-	@echo -n package.exs: ''
-	@grep version package.exs |awk '{print $$2}'|sed -e 's/,//g'
-
-# Note that this make target expects to be used like so:
-#	$ ERL_LIB=some/path make get-install-dir
-#
-# Which would give the following result:
-#	some/path/lfe-rackspace-1.0.0
-#
-get-install-dir:
-	@echo $(ERL_LIB)/$(PROJECT)-$(shell make get-version)
+SCRIPT_PATH=$(DEPS)/lfe/bin:.:./bin:"$(PATH)":/usr/local/bin
+ERL_LIBS=$(shell $(LFETOOL) info erllibs)
+EMPTY =
+ifeq ($(shell which lfetool),$EMPTY)
+	LFETOOL=$(BIN_DIR)/lfetool
+else
+	LFETOOL=lfetool
+endif
+OS := $(shell uname -s)
+ifeq ($(OS),Linux)
+        HOST=$(HOSTNAME)
+endif
+ifeq ($(OS),Darwin)
+        HOST = $(shell scutil --get ComputerName)
+endif
 
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-$(EXPM): $(BIN_DIR)
-	curl -o $(EXPM) http://expm.co/__download__/expm
-	chmod +x $(EXPM)
+$(LFETOOL): $(BIN_DIR)
+	@[ -f $(LFETOOL) ] || \
+	curl -L -o ./lfetool https://raw.github.com/lfe/lfetool/master/lfetool && \
+	chmod 755 ./lfetool && \
+	mv ./lfetool $(BIN_DIR)
 
-get-deps: $(EXPM)
-	rebar get-deps
-	for DIR in $(wildcard $(DEPS)/*); do \
-	cd $$DIR; git pull; cd - ; done
+get-version:
+	@PATH=$(SCRIPT_PATH) lfetool info version
+
+$(EXPM): $(BIN_DIR)
+	@[ -f $(EXPM) ] || \
+	PATH=$(SCRIPT_PATH) lfetool install expm $(BIN_DIR)
+
+get-deps:
+	@echo "Getting dependencies ..."
+	@which rebar.cmd >/dev/null 2>&1 && rebar.cmd get-deps || rebar get-deps
+	@PATH=$(SCRIPT_PATH) lfetool update deps
 
 clean-ebin:
-	-rm -f $(OUT_DIR)/*.beam
+	@echo "Cleaning ebin dir ..."
+	@rm -f $(OUT_DIR)/*.beam
 
 clean-eunit:
-	-rm -rf $(TEST_OUT_DIR)
+	@PATH=$(SCRIPT_PATH) lfetool tests clean
 
 compile: get-deps clean-ebin
-	rebar compile
+	@echo "Compiling project code and dependencies ..."
+	@which rebar.cmd >/dev/null 2>&1 && rebar.cmd compile || rebar compile
 
-compile-only: clean-ebin
-	rebar compile skip_deps=true
+compile-no-deps: clean-ebin
+	@echo "Compiling only project code ..."
+	@which rebar.cmd >/dev/null 2>&1 && rebar.cmd compile skip_deps=true || rebar compile skip_deps=true
 
-compile-tests: clean-eunit
-	mkdir -p $(TEST_OUT_DIR)
-	ERL_LIBS=$(ERL_LIBS) $(LFEC) -o $(TEST_OUT_DIR) $(TEST_DIR)/*_tests.lfe
+compile-tests:
+	@PATH=$(SCRIPT_PATH) lfetool tests build
 
-shell: compile
-	clear
-	ERL_LIBS=$(ERL_LIBS) $(LFE) -pa $(TEST_OUT_DIR)
+repl: compile
+	@which clear >/dev/null 2>&1 && clear || printf "\033c"
+	@echo "Starting shell ..."
+	@PATH=$(SCRIPT_PATH) lfetool repl
+
+repl-no-deps: compile-no-deps
+	@which clear >/dev/null 2>&1 && clear || printf "\033c"
+	@echo "Starting shell ..."
+	@PATH=$(SCRIPT_PATH) lfetool repl
 
 clean: clean-ebin clean-eunit
-	rebar clean
+	@which rebar.cmd >/dev/null 2>&1 && rebar.cmd clean || rebar clean
 
-check: compile compile-tests
-	@clear;
-	@rebar eunit verbose=1 skip_deps=true
+check-unit-only:
+	@PATH=$(SCRIPT_PATH) lfetool tests unit
 
-check-only: compile-only compile-tests
-	@clear;
-	@rebar eunit verbose=1 skip_deps=true
+check-integration-only:
+	@PATH=$(SCRIPT_PATH) lfetool tests integration
 
-# Note that this make target expects to be used like so:
-#	$ ERL_LIB=some/path make install
-#
-install: INSTALLDIR=$(shell make get-install-dir)
-install: compile
-	if [ "$$ERL_LIB" != "" ]; \
-	then mkdir -p $(INSTALLDIR)/$(EBIN); \
-		mkdir -p $(INSTALLDIR)/$(SRC); \
-		cp -pPR $(EBIN) $(INSTALLDIR); \
-		cp -pPR $(SRC) $(INSTALLDIR); \
-	else \
-		echo "ERROR: No 'ERL_LIB' value is set in the env." \
-		&& exit 1; \
-	fi
+check-system-only:
+	@PATH=$(SCRIPT_PATH) lfetool tests system
+
+check-unit-with-deps: get-deps compile compile-tests check-unit-only
+check-unit: compile-no-deps check-unit-only
+check-integration: compile check-integration-only
+check-system: compile check-system-only
+check-all-with-deps: compile check-unit-only check-integration-only \
+	check-system-only
+check-all: get-deps compile-no-deps
+	@PATH=$(SCRIPT_PATH) lfetool tests all
+
+check: check-unit-with-deps
+
+check-travis: $(LFETOOL) check
 
 push-all:
+	@echo "Pusing code to github ..."
 	git push --all
 	git push upstream --all
 	git push --tags
 	git push upstream --tags
 
-upload:
+install: compile
+	@echo "Installing lmug-yaws ..."
+	@PATH=$(SCRIPT_PATH) lfetool install lfe
+
+upload: $(EXPM) get-version
+	@echo "Preparing to upload lmug-yaws ..."
+	@echo
+	@echo "Package file:"
+	@echo
+	@cat package.exs
+	@echo
+	@echo "Continue with upload? "
+	@read
 	$(EXPM) publish

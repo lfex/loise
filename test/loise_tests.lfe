@@ -1,7 +1,7 @@
 (defmodule loise_tests
   (export all)
   (import
-    (from lfe-utils
+    (from lutil
       (round 2))
     (from lfeunit-util
       (check-failed-assert 2)

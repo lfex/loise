@@ -9,6 +9,13 @@
       (perlin 1) (perlin 2) (perlin 3)
       (simplex 1) (simplex 2) (simplex 3))))
 
+(defun get-loise-version ()
+  (lutil:get-app-src-version "src/loise.app.src"))
+
+(defun get-version ()
+  (++ (lutil:get-version)
+      `(#(loise ,(get-loise-version)))))
+
 (defun element-index (tuple position)
   "
   This provides the same interface as the Racket function 'vector-ref' upon

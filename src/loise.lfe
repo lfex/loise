@@ -1,7 +1,7 @@
 (defmodule loise
   (export all)
   (import
-    (from lfe-utils
+    (from lutil
       (add-tuples 1)
       (fast-floor 1))
     (from loise-util

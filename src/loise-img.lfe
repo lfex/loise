@@ -1,7 +1,7 @@
 (defmodule loise-img
   (export all)
   (import
-    (from lfe-utils
+    (from lutil
       (color-scale 2))
     (from loise
       (perlin 1) (perlin 2) (perlin 3)

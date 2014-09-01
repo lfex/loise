@@ -12,7 +12,7 @@
 (defun get-loise-version ()
   (lutil:get-app-src-version "src/loise.app.src"))
 
-(defun get-version ()
+(defun get-versions ()
   (++ (lutil:get-version)
       `(#(loise ,(get-loise-version)))))
 

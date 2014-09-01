@@ -73,16 +73,13 @@
       (list x y (: egd color 'black)))))
 
 (defun create-perlin-image (filename filetype)
-  ""
   (create-perlin-image filename filetype 256 256))
 
 (defun create-perlin-image (filename filetype width height)
-  ""
   (create-perlin-image filename filetype width height 1.0))
 
 
 (defun create-perlin-image (filename filetype width height multiplier)
-  ""
   (create-image filename filetype width height
     (lambda (x y)
       (let* ((value (get-perlin-for-point
@@ -91,16 +88,13 @@
         (list x y (: egd color (tuple adjusted adjusted adjusted)))))))
 
 (defun create-simplex-image (filename filetype)
-  ""
   (create-perlin-image filename filetype 256 256))
 
 (defun create-simplex-image (filename filetype width height)
-  ""
   (create-perlin-image filename filetype width height 1.0))
 
 
 (defun create-simplex-image (filename filetype width height multiplier)
-  ""
   (create-image filename filetype width height
     (lambda (x y)
       (let* ((value (get-simplex-for-point

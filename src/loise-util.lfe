@@ -19,7 +19,7 @@
 (defun element-index (tuple position)
   "This provides the same interface as the Racket function 'vector-ref' upon
   which it is based."
-  (: erlang element (+ 1 position) tuple))
+  (element (+ 1 position) tuple))
 
 (defun dot (g x y z)
    (+ (* (element-index g 0) x)
@@ -102,7 +102,6 @@
   )
 
 (defun get-simplex-for-point
-  ""
   (((tuple x) (tuple width) multiplier)
     (simplex (* multiplier (/ x width))))
   (((tuple x y) (tuple width height) multiplier)

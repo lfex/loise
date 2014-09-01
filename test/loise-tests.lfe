@@ -23,11 +23,7 @@
       (mix 3)
       (perlin 1) (perlin 2) (perlin 3)
       (simplex 1) (simplex 2) (simplex 3)
-      (which-simplex 3))
-    (from loise-util
-      (dot 4)
-      (index 2)
-      (rem 2))))
+      (which-simplex 3))))
 
 (include-lib "ltest/include/ltest-macros.lfe")
 
@@ -35,16 +31,6 @@
   (string:join
     (lists:map #'integer_to_list/1 data)
     ""))
-
-(deftest index
-  (is-equal 42 (index '(99 4 7 42 13) 3))
-  (is-equal '(-1.0 -1.0 0.0) (index (loise:grad3) 3)))
-
-(deftest dot
-  (is-equal 3.0 (dot (index (loise:grad3) 0) 1 2 3))
-  (is-equal 1.0 (dot (index (loise:grad3) 1) 1 2 3))
-  (is-equal -1.0 (dot (index (loise:grad3) 2) 1 2 3))
-  (is-equal 4.0 (dot (index (loise:grad3) 4) 1 2 3)))
 
 (deftest mix
   (is-equal 4.0 (mix 1 2 3))

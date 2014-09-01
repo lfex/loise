@@ -1,7 +1,7 @@
 (defmodule loise-img
   (export all)
   (import
-    (from lutil
+    (from lutil-math
       (color-scale 2))
     (from loise
       (perlin 1) (perlin 2) (perlin 3)
@@ -18,12 +18,13 @@
 
   This has got to be an incredibly inefficient function; please don't treat
   like anything othat that what this is: A toy."
-  (: egd line image (tuple x y) (tuple x y) color))
+  (egd:line image (tuple x y) (tuple x y) color))
 
 (defun process-pixel (image func x-in y-in)
   "Call the passed function to get a color value, and then draw that color at
   the given point."
   (let* (((list x-out y-out color) (funcall func x-in y-in)))
+    ;;(io:format "~p " (list color))
     (draw-point image x-out y-out color)))
 
 (defun build-image (width height func)
@@ -35,7 +36,7 @@
 
   Based on the Racket function defined here:
     http://docs.racket-lang.org/picturing-programs/#%28def._%28%28lib._picturing-programs/private/map-image..rkt%29._build-image%29%29"
-  (let ((image (: egd create width height)))
+  (let ((image (egd:create width height)))
     (foreach
       (lambda (x)
         (foreach

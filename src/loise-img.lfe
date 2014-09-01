@@ -52,8 +52,8 @@
   image is an egd image type
   filename is a string value
   filetype is an atom, e.g., 'png"
-  (: egd save
-    (: egd render image filetype)
+  (egd:save
+    (egd:render image filetype)
     filename))
 
 (defun create-image (filename filetype width height func)

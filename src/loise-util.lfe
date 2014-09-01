@@ -16,12 +16,21 @@
   (++ (lutil:get-version)
       `(#(loise ,(get-loise-version)))))
 
+(defun index (data position)
+  "A list-based version of element-index."
+  (lists:nth (+ 1 position) data))
+
 (defun element-index (tuple position)
   "This provides the same interface as the Racket function 'vector-ref' upon
   which it is based."
   (element (+ 1 position) tuple))
 
 (defun dot (g x y z)
+   (+ (* (index g 0) x)
+      (* (index g 1) y)
+      (* (index g 2) z)))
+
+(defun element-dot (g x y z)
    (+ (* (element-index g 0) x)
       (* (element-index g 1) y)
       (* (element-index g 2) z)))

@@ -18,6 +18,7 @@
     (from loise
       (fade 1)
       (get-gradient-index 3)
+      (get-gradient-index-list 3)
       (get-noise-contribution 4)
       (mix 3)
       (perlin 1) (perlin 2) (perlin 3)
@@ -25,7 +26,9 @@
       (which-simplex 3))
     (from loise-util
       (dot 4)
+      (element-dot 4)
       (rem 2)
+      (index 2)
       (element-index 2))))
 
 (include-lib "ltest/include/ltest-macros.lfe")
@@ -35,11 +38,25 @@
     (lists:map #'integer_to_list/1 data)
     ""))
 
+(deftest index
+  (is-equal 42 (index '(99 4 7 42 13) 3))
+  (is-equal '(-1.0 -1.0 0.0) (index (loise:grad3-list) 3)))
+
 (deftest element-index
-  (is-equal 42 (element-index #(99 4 7 42 13) 3)))
+  (is-equal 42 (element-index #(99 4 7 42 13) 3))
+  (is-equal '#(-1.0 -1.0 0.0) (element-index (loise:grad3) 3)))
 
 (deftest dot
-  (is 'true))
+  (is-equal 3.0 (dot (index (loise:grad3-list) 0) 1 2 3))
+  (is-equal 1.0 (dot (index (loise:grad3-list) 1) 1 2 3))
+  (is-equal -1.0 (dot (index (loise:grad3-list) 2) 1 2 3))
+  (is-equal 4.0 (dot (index (loise:grad3-list) 4) 1 2 3)))
+
+(deftest element-dot
+  (is-equal 3.0 (element-dot (element-index (loise:grad3) 0) 1 2 3))
+  (is-equal 1.0 (element-dot (element-index (loise:grad3) 1) 1 2 3))
+  (is-equal -1.0 (element-dot (element-index (loise:grad3) 2) 1 2 3))
+  (is-equal 4.0 (element-dot (element-index (loise:grad3) 4) 1 2 3)))
 
 (deftest mix
   (is-equal 4.0 (mix 1 2 3))
@@ -71,6 +88,18 @@
   (is-equal 3 (get-gradient-index 1 1 1))
   (is-equal 8 (get-gradient-index 1 10 100))
   (is-equal 6 (get-gradient-index 100 10 1)))
+
+(deftest get-gradient-index-list
+  (is-equal 0 (get-gradient-index-list 0 0 0))
+  (is-equal 2 (get-gradient-index-list 0 0 1))
+  (is-equal 0 (get-gradient-index-list 0 1 0))
+  (is-equal 8 (get-gradient-index-list 0 1 1))
+  (is-equal 7 (get-gradient-index-list 1 0 0))
+  (is-equal 8 (get-gradient-index-list 1 0 1))
+  (is-equal 2 (get-gradient-index-list 1 1 0))
+  (is-equal 3 (get-gradient-index-list 1 1 1))
+  (is-equal 8 (get-gradient-index-list 1 10 100))
+  (is-equal 6 (get-gradient-index-list 100 10 1)))
 
 (deftest get-noise-contribution
   (is-equal 0.0 (get-noise-contribution 0 0 0 0))

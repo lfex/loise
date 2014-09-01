@@ -2,13 +2,20 @@
   (export all)
   (import
     (from loise-util
+      (dot 4)
       (element-index 2)
-      (dot 4))))
+      (element-dot 4)
+      (index 2))))
 
 (defun grad3 ()
   '#(#(1.0  1.0  0.0) #(-1.0  1.0  0.0) #(1.0 -1.0  0.0) #(-1.0 -1.0  0.0)
      #(1.0  0.0  1.0) #(-1.0  0.0  1.0) #(1.0  0.0 -1.0) #(-1.0  0.0 -1.0)
      #(0.0  1.0  1.0) #( 0.0 -1.0  1.0) #(0.0  1.0 -1.0) #( 0.0 -1.0 -1.0)))
+
+(defun grad3-list ()
+  '((1.0  1.0  0.0) (-1.0  1.0  0.0) (1.0 -1.0  0.0) (-1.0 -1.0  0.0)
+    (1.0  0.0  1.0) (-1.0  0.0  1.0) (1.0  0.0 -1.0) (-1.0  0.0 -1.0)
+    (0.0  1.0  1.0) ( 0.0 -1.0  1.0) (0.0  1.0 -1.0) ( 0.0 -1.0 -1.0)))
 
 (defun F3 ()
   "Very nice and simple skew factor for 3D"
@@ -18,28 +25,34 @@
   "Very nice and simple unskew factor, too"
   (/ 1.0 6.0))
 
+(defun perm-half-list ()
+  `(151 160 137 91 90 15 131 13 201 95 96 53 194 233 7
+    225 140 36 103 30 69 142 8 99 37 240 21 10 23 190 6
+    148 247 120 234 75 0 26 197 62 94 252 219 203 117 35
+    11 32 57 177 33 88 237 149 56 87 174 20 125 136 171
+    168 68 175 74 165 71 134 139 48 27 166 77 146 158
+    231 83 111 229 122 60 211 133 230 220 105 92 41 55
+    46 245 40 244 102 143 54 65 25 63 161 1 216 80 73
+    209 76 132 187 208 89 18 169 200 196 135 130 116 188
+    159 86 164 100 109 198 173 186 3 64 52 217 226 250
+    124 123 5 202 38 147 118 126 255 82 85 212 207 206
+    59 227 47 16 58 17 182 189 28 42 223 183 170 213 119
+    248 152 2 44 154 163 70 221 153 101 155 167 43 172 9
+    129 22 39 253 19 98 108 110 79 113 224 232 178 185
+    112 104 218 246 97 228 251 34 242 193 238 210 144 12
+    191 179 162 241 81 51 145 235 249 14 239 107 49 192
+    214 31 181 199 106 157 184 84 204 176 115 121 50 45
+    127 4 150 254 138 236 205 93 222 114 67 29 24 72 243
+    141 128 195 78 66 215 61 156 180))
+
 (defun perm-half ()
-  (tuple 151 160 137 91 90 15 131 13 201 95 96 53 194 233 7
-         225 140 36 103 30 69 142 8 99 37 240 21 10 23 190 6
-         148 247 120 234 75 0 26 197 62 94 252 219 203 117 35
-         11 32 57 177 33 88 237 149 56 87 174 20 125 136 171
-         168 68 175 74 165 71 134 139 48 27 166 77 146 158
-         231 83 111 229 122 60 211 133 230 220 105 92 41 55
-         46 245 40 244 102 143 54 65 25 63 161 1 216 80 73
-         209 76 132 187 208 89 18 169 200 196 135 130 116 188
-         159 86 164 100 109 198 173 186 3 64 52 217 226 250
-         124 123 5 202 38 147 118 126 255 82 85 212 207 206
-         59 227 47 16 58 17 182 189 28 42 223 183 170 213 119
-         248 152 2 44 154 163 70 221 153 101 155 167 43 172 9
-         129 22 39 253 19 98 108 110 79 113 224 232 178 185
-         112 104 218 246 97 228 251 34 242 193 238 210 144 12
-         191 179 162 241 81 51 145 235 249 14 239 107 49 192
-         214 31 181 199 106 157 184 84 204 176 115 121 50 45
-         127 4 150 254 138 236 205 93 222 114 67 29 24 72 243
-         141 128 195 78 66 215 61 156 180))
+  (list_to_tuple (perm-half-list)))
 
 (defun perm ()
   (lutil-type:add-tuples (list (perm-half) (perm-half))))
+
+(defun perm-list ()
+  (++ (perm-half-list) (perm-half-list)))
 
 (defun mix (a b t)
   (+ (* (- 1.0 t) a) (* t b)))
@@ -55,8 +68,21 @@
           (+ b
             (element-index (perm) c))))) 12))
 
-(defun get-noise-contribution (g x y z)
+(defun get-gradient-index-list (a b c)
+  (rem
+    (index (perm-list)
+      (+ a
+        (index (perm-list)
+          (+ b
+            (index (perm-list) c))))) 12))
+
+(defun get-noise-contribution-list (g x y z)
   (dot
+    (index (grad3-list) g)
+    x y z))
+
+(defun get-noise-contribution (g x y z)
+  (element-dot
     (element-index (grad3) g)
     x y z))
 
@@ -86,23 +112,23 @@
      (Y (band B 255))
      (Z (band C 255))
      ; calculate a set of eight hashed gradient indices
-     (gi000 (get-gradient-index X Y Z))
-     (gi001 (get-gradient-index X Y (+ Z 1)))
-     (gi010 (get-gradient-index X (+ Y 1) Z))
-     (gi011 (get-gradient-index X (+ Y 1) (+ Z 1)))
-     (gi100 (get-gradient-index (+ X 1) Y Z))
-     (gi101 (get-gradient-index (+ X 1) Y (+ Z 1)))
-     (gi110 (get-gradient-index (+ X 1) (+ Y 1) Z))
-     (gi111 (get-gradient-index (+ X 1) (+ Y 1) (+ Z 1)))
+     (gi000 (get-gradient-index-list X Y Z))
+     (gi001 (get-gradient-index-list X Y (+ Z 1)))
+     (gi010 (get-gradient-index-list X (+ Y 1) Z))
+     (gi011 (get-gradient-index-list X (+ Y 1) (+ Z 1)))
+     (gi100 (get-gradient-index-list (+ X 1) Y Z))
+     (gi101 (get-gradient-index-list (+ X 1) Y (+ Z 1)))
+     (gi110 (get-gradient-index-list (+ X 1) (+ Y 1) Z))
+     (gi111 (get-gradient-index-list (+ X 1) (+ Y 1) (+ Z 1)))
      ; calculate noise contributions from each of the eight corners
-     (n000 (get-noise-contribution gi000 x y z))
-     (n001 (get-noise-contribution gi001 x y (- z 1)))
-     (n010 (get-noise-contribution gi010 x (- y 1) z))
-     (n011 (get-noise-contribution gi011 x (- y 1) (- z 1)))
-     (n100 (get-noise-contribution gi100 (- x 1) y z))
-     (n101 (get-noise-contribution gi101 (- x 1) y (- z 1)))
-     (n110 (get-noise-contribution gi110 (- x 1) (- y 1) z))
-     (n111 (get-noise-contribution gi111 (- x 1) (- y 1) (- z 1)))
+     (n000 (get-noise-contribution-list gi000 x y z))
+     (n001 (get-noise-contribution-list gi001 x y (- z 1)))
+     (n010 (get-noise-contribution-list gi010 x (- y 1) z))
+     (n011 (get-noise-contribution-list gi011 x (- y 1) (- z 1)))
+     (n100 (get-noise-contribution-list gi100 (- x 1) y z))
+     (n101 (get-noise-contribution-list gi101 (- x 1) y (- z 1)))
+     (n110 (get-noise-contribution-list gi110 (- x 1) (- y 1) z))
+     (n111 (get-noise-contribution-list gi111 (- x 1) (- y 1) (- z 1)))
      ; compute the fade curve value for each of x, y, z
      (u (fade x))
      (v (fade y))
@@ -134,7 +160,14 @@
          (t^2 (* t t)))
     (if (< t 0)
       0.0
-      (* t^2 t^2 (dot (element-index (grad3) g) x y z)))))
+      (* t^2 t^2 (element-dot (element-index (grad3) g) x y z)))))
+
+(defun corner-contribution-list (g x y z)
+  (let* ((t (- 0.5 (* x x) (* y y) (* z z)))
+         (t^2 (* t t)))
+    (if (< t 0)
+      0.0
+      (* t^2 t^2 (dot (index (grad3-list) g) x y z)))))
 
 (defun simplex (a)
   (simplex a 0.0 0.0))
@@ -186,15 +219,15 @@
      (ii (band i 255))
      (jj (band j 255))
      (kk (band k 255))
-     (gi0 (get-gradient-index ii jj kk))
-     (gi1 (get-gradient-index (+ ii i1) (+ jj j1) (+ kk k1)))
-     (gi2 (get-gradient-index (+ ii i2) (+ jj j2) (+ kk k2)))
-     (gi3 (get-gradient-index (+ ii 1) (+ jj 1) (+ kk 1)))
+     (gi0 (get-gradient-index-list ii jj kk))
+     (gi1 (get-gradient-index-list (+ ii i1) (+ jj j1) (+ kk k1)))
+     (gi2 (get-gradient-index-list (+ ii i2) (+ jj j2) (+ kk k2)))
+     (gi3 (get-gradient-index-list (+ ii 1) (+ jj 1) (+ kk 1)))
      ; Calculate the contribution from the four corners
-     (n0 (corner-contribution gi0 x0 y0 z0))
-     (n1 (corner-contribution gi1 x1 y1 z1))
-     (n2 (corner-contribution gi2 x2 y2 z2))
-     (n3 (corner-contribution gi3 x3 y3 z3)))
+     (n0 (corner-contribution-list gi0 x0 y0 z0))
+     (n1 (corner-contribution-list gi1 x1 y1 z1))
+     (n2 (corner-contribution-list gi2 x2 y2 z2))
+     (n3 (corner-contribution-list gi3 x3 y3 z3)))
      ; Add contributions from each corner to get the final noise value.
      ; The result is scaled to stay just inside [-1,1]
      ; NOTE: This scaling factor seems to work better than the given one

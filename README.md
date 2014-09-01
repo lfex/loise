@@ -91,6 +91,7 @@ These were generated with the following from the REPL:
     > (loise-img:create-simplex-image "simplex-4.png" 'png 256 128 4)
     ok
     > (loise-img:create-simplex-image "simplex-8.png" 'png 256 128 8)
+    ok
 ```
 
 

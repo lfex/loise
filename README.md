@@ -110,7 +110,7 @@ expected. To find out, run the unit tests:
 Once everything is working, start up an LFE REPL:
 
 ```bash
-    $ make shell
+    $ make repl
 ```
 
 You can now use loise by itself, if you so desire. Here is some example usage:

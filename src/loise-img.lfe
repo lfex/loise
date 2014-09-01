@@ -64,13 +64,13 @@
   "A convenience function for creating test images."
   (create-image filename filetype width height
     (lambda (x y)
-      (list x y (: egd color (tuple 255 255 255))))))
+      (list x y (egd:color (tuple 255 255 255))))))
 
 (defun create-black-image (filename filetype width height)
   "A convenience function for creating test images."
   (create-image filename filetype width height
     (lambda (x y)
-      (list x y (: egd color 'black)))))
+      (list x y (egd:color 'black)))))
 
 (defun create-perlin-image (filename filetype)
   (create-perlin-image filename filetype 256 256))
@@ -85,7 +85,7 @@
       (let* ((value (get-perlin-for-point
                       (tuple x y) (tuple width height) multiplier))
              (adjusted (color-scale value #(-1 1))))
-        (list x y (: egd color (tuple adjusted adjusted adjusted)))))))
+        (list x y (egd:color (tuple adjusted adjusted adjusted)))))))
 
 (defun create-simplex-image (filename filetype)
   (create-perlin-image filename filetype 256 256))
@@ -100,4 +100,4 @@
       (let* ((value (get-simplex-for-point
                       (tuple x y) (tuple width height) multiplier))
              (adjusted (color-scale value #(-1 1))))
-        (list x y (: egd color (tuple adjusted adjusted adjusted)))))))
+        (list x y (egd:color (tuple adjusted adjusted adjusted)))))))

@@ -17,10 +17,8 @@
       `(#(loise ,(get-loise-version)))))
 
 (defun element-index (tuple position)
-  "
-  This provides the same interface as the Racket function 'vector-ref' upon
-  which it is based.
-  "
+  "This provides the same interface as the Racket function 'vector-ref' upon
+  which it is based."
   (: erlang element (+ 1 position) tuple))
 
 (defun dot (g x y z)
@@ -42,10 +40,8 @@
             (* multiplier (/ z depth)))))
 
 (defun get-perlin-range
-  "
-  This function is used for generating large lists of perlin noise numbers
-  across a range of multipliers and sizes.
-  "
+  "This function is used for generating large lists of perlin noise numbers
+  across a range of multipliers and sizes."
   (((tuple mult-start mult-end) (tuple width))
     (flatten
       (map
@@ -75,10 +71,8 @@
   )
 
 (defun get-simplex-range
-  "
-  This function is used for generating large lists of perlin noise numbers
-  across a range of multipliers and sizes.
-  "
+  "This function is used for generating large lists of perlin noise numbers
+  across a range of multipliers and sizes."
   (((tuple mult-start mult-end) (tuple width))
     (flatten
       (map
@@ -108,8 +102,7 @@
   )
 
 (defun get-simplex-for-point
-  "
-  "
+  ""
   (((tuple x) (tuple width) multiplier)
     (simplex (* multiplier (/ x width))))
   (((tuple x y) (tuple width height) multiplier)

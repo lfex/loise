@@ -67,12 +67,10 @@
   (perlin a b 0.0))
 
 (defun perlin (a b c)
-  "
-  Perlin  noise is a computer-generated visual effect developed by Ken Perlin,
+  "Perlin  noise is a computer-generated visual effect developed by Ken Perlin,
   who won an Academy Award for Technical Achievement for inventing it. It can
   be used to simulate elements from nature, and is especially useful in
-  circumstances where computer memory is limited.
-  "
+  circumstances where computer memory is limited."
   (let*
     (
       ; find unit grid cell containing point
@@ -122,10 +120,8 @@
       (mix nxy0 nxy1 w)))
 
 (defun which-simplex (a b c)
-  "
-  For the 3D case, the simplex shape is a slightly irregular tetrahedron.
-  This function determines which simplex we are in.
-  "
+  "For the 3D case, the simplex shape is a slightly irregular tetrahedron.
+  This function determines which simplex we are in."
   (cond
     ((and (>= a b) (>= b c)) (list 1 0 0 1 1 0)) ; X Y Z order
     ((and (>= a b) (>= a c)) (list 1 0 0 1 0 1)) ; X Z Y order
@@ -148,13 +144,11 @@
   (simplex a b 0.0))
 
 (defun simplex (a b c)
-  "
-  Simplex noise is a method for constructing an n-dimensional noise function
+  "Simplex noise is a method for constructing an n-dimensional noise function
   comparable to Perlin noise ('classic' noise) but with a lower computational
   overhead, especially in larger dimensions. Ken Perlin designed the algorithm
   in 2001 to address the limitations of his classic noise function, especially
-  in higher dimensions.
-  "
+  in higher dimensions."
   (let*
     (
       ; skew the input space to determine which simplex cell we're in

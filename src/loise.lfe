@@ -1,9 +1,6 @@
 (defmodule loise
   (export all)
   (import
-    (from lutil
-      (add-tuples 1)
-      (fast-floor 1))
     (from loise-util
       (element-index 2)
       (dot 4))))
@@ -42,7 +39,7 @@
          141 128 195 78 66 215 61 156 180))
 
 (defmacro perm ()
-  `(add-tuples (list (perm-half) (perm-half))))
+  `(lutil-type:add-tuples (list (perm-half) (perm-half))))
 
 (defun mix (a b t)
   (+ (* (- 1.0 t) a) (* t b)))
@@ -79,9 +76,9 @@
   (let*
     (
       ; find unit grid cell containing point
-      (A (fast-floor a))
-      (B (fast-floor b))
-      (C (fast-floor c))
+      (A (lutil-math:fast-floor a))
+      (B (lutil-math:fast-floor b))
+      (C (lutil-math:fast-floor c))
       ; get relative xyz coordinates of point within cell
       (x (- a A))
       (y (- b B))
@@ -162,9 +159,9 @@
     (
       ; skew the input space to determine which simplex cell we're in
       (s (* (+ a b c) (F3)))
-      (i (fast-floor (+ a s)))
-      (j (fast-floor (+ b s)))
-      (k (fast-floor (+ c s)))
+      (i (lutil-math:fast-floor (+ a s)))
+      (j (lutil-math:fast-floor (+ b s)))
+      (k (lutil-math:fast-floor (+ c s)))
       (t (* (+ i j k) (G3)))
       ; unskew the cell origin back to (x,y,z) space
       (X0 (- i t))

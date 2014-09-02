@@ -26,12 +26,12 @@
       (* (index g 2) z)))
 
 (defun get-perlin-for-point
-  (((tuple x) (tuple width) multiplier)
+  ((`(,x) `(,width) multiplier)
     (perlin (* multiplier (/ x width))))
-  (((tuple x y) (tuple width height) multiplier)
+  ((`(,x ,y) `(,width ,height) multiplier)
     (perlin (* multiplier (/ x width))
             (* multiplier (/ y height))))
-  (((tuple x y z) (tuple width height depth) multiplier)
+  ((`(,x ,y ,z) `(,width ,height ,depth) multiplier)
     (perlin (* multiplier (/ x width))
             (* multiplier (/ y height))
             (* multiplier (/ z depth)))))
@@ -99,12 +99,12 @@
   )
 
 (defun get-simplex-for-point
-  (((tuple x) (tuple width) multiplier)
+  ((`(,x) `(,width) multiplier)
     (simplex (* multiplier (/ x width))))
-  (((tuple x y) (tuple width height) multiplier)
+  ((`(,x ,y) `(,width ,height) multiplier)
     (simplex (* multiplier (/ x width))
              (* multiplier (/ y height))))
-  (((tuple x y z) (tuple width height depth) multiplier)
+  ((`(,x ,y ,z) `(,width ,height ,depth) multiplier)
     (simplex (* multiplier (/ x width))
              (* multiplier (/ y height))
              (* multiplier (/ z depth)))))

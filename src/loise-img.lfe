@@ -18,14 +18,32 @@
 
   This has got to be an incredibly inefficient function; please don't treat
   like anything othat that what this is: A toy."
-  (egd:line image (tuple x y) (tuple x y) color))
+  (egd:line image `#(,x ,y) `#(,x ,y) color))
+
+(defun grade-color-tuple (color grades)
+  (list_to_tuple
+    (lists:map
+      (lambda (x)
+        (lutil-math:get-closest x grades))
+      (tuple_to_list color))))
 
 (defun process-pixel (image func x-in y-in)
   "Call the passed function to get a color value, and then draw that color at
   the given point."
-  (let* (((list x-out y-out color) (funcall func x-in y-in)))
-    ;;(io:format "~p " (list color))
+  (let* ((`(,x-out ,y-out ,color) (funcall func x-in y-in)))
     (draw-point image x-out y-out color)))
+
+(defun process-pixel (image func x-in y-in grades)
+  "Call the passed function to get a color value, and then draw that color at
+  the given point."
+  (let* ((`(,x-out ,y-out ,color) (funcall func x-in y-in))
+         (graded-color (grade-color-tuple color grades))
+         )
+    (io:format "~p~n" (list color))
+    (io:format "~p~n" (list graded-color))
+    ;;(exit "stopping ...")
+    ;;(draw-point image x-out y-out color)))
+    (draw-point image x-out y-out graded-color)))
 
 (defun build-image (width height func)
   "Builds an image of the specified size and shape by calling the specified
@@ -46,6 +64,25 @@
       (seq 0 width))
     image))
 
+(defun build-image (width height func grades)
+  "Builds an image of the specified size and shape by calling the specified
+  function on the coordinates of each pixel.
+
+  The function takes an x and y coordinate as agument and returns an x y
+  coordinate as well as an egd color value.
+
+  Based on the Racket function defined here:
+    http://docs.racket-lang.org/picturing-programs/#%28def._%28%28lib._picturing-programs/private/map-image..rkt%29._build-image%29%29"
+  (let ((image (egd:create width height)))
+    (foreach
+      (lambda (x)
+        (foreach
+          (lambda (y)
+            (process-pixel image func x y grades))
+          (seq 0 height)))
+      (seq 0 width))
+    image))
+
 (defun write-image (image filename filetype)
   "Write the image data.
 
@@ -59,6 +96,11 @@
 (defun create-image (filename filetype width height func)
   "A wrapper function for build- and write-image."
   (let ((image (build-image width height func)))
+    (write-image image filename filetype)))
+
+(defun create-image (filename filetype width height func grades)
+  "A wrapper function for build- and write-image."
+  (let ((image (build-image width height func grades)))
     (write-image image filename filetype)))
 
 (defun create-white-image (filename filetype width height)
@@ -79,7 +121,6 @@
 (defun create-perlin-image (filename filetype width height)
   (create-perlin-image filename filetype width height 1.0))
 
-
 (defun create-perlin-image (filename filetype width height multiplier)
   (create-image filename filetype width height
     (lambda (x y)
@@ -87,6 +128,15 @@
                       (tuple x y) (tuple width height) multiplier))
              (adjusted (color-scale value #(-1 1))))
         (list x y (egd:color (tuple adjusted adjusted adjusted)))))))
+
+(defun create-perlin-image (filename filetype width height multiplier grades)
+  (create-image filename filetype width height
+    (lambda (x y)
+      (let* ((value (get-perlin-for-point
+                      (tuple x y) (tuple width height) multiplier))
+             (adjusted (color-scale value #(-1 1))))
+        (list x y (egd:color (tuple adjusted adjusted adjusted)))))
+    grades))
 
 (defun create-simplex-image (filename filetype)
   (create-perlin-image filename filetype 256 256))

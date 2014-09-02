@@ -68,6 +68,20 @@ These were generated with the following from the REPL:
     ok
 ```
 
+You can also limit the number of gradations for the shades of grey, giving
+the images a more "layered" or "topographical" look:
+
+```cl
+> (set grades (get-gradations '(0 255) 6))
+(0 42.5 85.0 127.5 170.0 212.5 255.0)
+> (create-perlin-image "perlin-8.png" 'png 256 128 8 grades)
+ok
+```
+
+Which will create the following:
+
+<img src="resources/images/perlin-6-shades.png" />
+
 
 ### Simplex
 
@@ -93,6 +107,20 @@ These were generated with the following from the REPL:
     > (loise-img:create-simplex-image "simplex-8.png" 'png 256 128 8)
     ok
 ```
+
+Just as with perlin, simplex allows you to limit the number of gradations for
+the shades of grey:
+
+```cl
+> (set grades (get-gradations '(0 255) 4))
+(0 63.75 127.5 191.25 255.0)
+> (create-simplex-image "simplex-8.png" 'png 256 128 8 grades)
+ok
+```
+
+Which will create the following:
+
+<img src="resources/images/simplex-4-shades.png" />
 
 
 ## Using Loise

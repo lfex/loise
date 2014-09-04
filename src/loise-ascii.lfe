@@ -34,7 +34,7 @@
          (adjusted (lutil-math:color-scale value #(-1 1)))
          (graded (lutil-math:get-closest adjusted (get_value 'grades options)))
          (ascii-map (get-ascii-map options)))
-    `(,x ,y ,(get_value graded ascii-map))))
+    `#((,x ,y) ,(get_value graded ascii-map))))
 
 (defun get-perlin-point (x y options)
   (get-point x y #'get-perlin-for-point/3 options))
@@ -52,32 +52,49 @@
               (<- y (lists:seq 0 (get_value 'height options))))
              (funcall func x y options)))
 
-(defun write (data filename)
-  )
+(defun render (data options)
+  (list-comp ((<- x (lists:seq 0 (get_value 'width options)))
+              (<- y (lists:seq 0 (get_value 'height options))))
+             (get_value `(,x ,y) data)))
 
-(defun print (data)
-  )
+(defun print (data options)
+  (io:format "~s" (list (render data options))))
+
+(defun write (filename data options)
+  (file:write_file filename (render data options)))
 
 (defun create-perlin ()
-  (print (build-ascii #'get-perlin-point/3 (get-default-options))))
+  (let ((options (get-default-options)))
+    (print (build-ascii #'get-perlin-point/3 options) options)))
 
 (defun create-perlin
   ((filename) (when (is_list filename))
-   (write filename (build-ascii #'get-perlin-point/3 (get-default-options))))
+    (let ((options (get-default-options)))
+      (write filename
+             (build-ascii #'get-perlin-point/3 options)
+             options)))
   ((options)
-   (print (build-ascii #'get-perlin-point/3 options))))
+   (print (build-ascii #'get-perlin-point/3 options) options)))
 
 (defun create-perlin (filename options)
-  )
+  (write filename
+         (build-ascii #'get-perlin-point/3 options)
+         options))
 
 (defun create-simplex ()
-  )
+  (let ((options (get-default-options)))
+    (print (build-ascii #'get-simplex-point/3 options) options)))
 
 (defun create-simplex
   ((filename) (when (is_list filename))
-   )
+    (let ((options (get-default-options)))
+      (write filename
+             (build-ascii #'get-simplex-point/3 options)
+             options)))
   ((options)
-   ))
+   (print (build-ascii #'get-simplex-point/3 options) options)))
 
 (defun create-simplex (filename options)
-  )
+  (write filename
+         (build-ascii #'get-simplex-point/3 options)
+         options))

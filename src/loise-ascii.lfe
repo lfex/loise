@@ -83,13 +83,13 @@
     (print (build-ascii #'get-perlin-point/3 options) options)))
 
 (defun create-perlin
-  ((filename) (when (is_list filename))
+  (((= (cons `#(,_ ,_) _) options))
+   (print (build-ascii #'get-perlin-point/3 options) options))
+  ((filename)
     (let ((options (get-default-options)))
       (write filename
              (build-ascii #'get-perlin-point/3 options)
-             options)))
-  ((options)
-   (print (build-ascii #'get-perlin-point/3 options) options)))
+             options))))
 
 (defun create-perlin (filename options)
   (write filename
@@ -101,13 +101,13 @@
     (print (build-ascii #'get-simplex-point/3 options) options)))
 
 (defun create-simplex
-  ((filename) (when (is_list filename))
+  (((= (cons `#(,_ ,_) _) options))
+   (print (build-ascii #'get-simplex-point/3 options) options))
+  ((filename)
     (let ((options (get-default-options)))
       (write filename
              (build-ascii #'get-simplex-point/3 options)
-             options)))
-  ((options)
-   (print (build-ascii #'get-simplex-point/3 options) options)))
+             options))))
 
 (defun create-simplex (filename options)
   (write filename

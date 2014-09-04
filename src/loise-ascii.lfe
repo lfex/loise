@@ -30,10 +30,10 @@
   (let* ((value (funcall func
                   `(,x ,y)
                   (get-dimensions options)
-                  (get_value 'multiplier options))
+                  (get_value 'multiplier options)))
          (adjusted (lutil-math:color-scale value #(-1 1)))
          (graded (lutil-math:get-closest adjusted (get_value 'grades options)))
-         (ascii-map (get-ascii-map options))))
+         (ascii-map (get-ascii-map options)))
     `(,x ,y ,(get_value graded ascii-map))))
 
 (defun get-perlin-point (x y options)

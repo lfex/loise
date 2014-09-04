@@ -128,26 +128,36 @@ Which will create the following:
 ### ASCII
 
 You can also generate ASCII "images" with loise. As an example of this, we can
-map this range:
+map the default values represented by this range:
 
 ```cl
   > (loise-util:get-gradations 6)
   (0 51.0 102.0 153.0 204.0 255.0)
 ```
 
-To the following ASCII characters:
+And by this set of ASCII characters:
 
 * Level 6 - ``A``
 * Level 5 - ``^``
 * Level 4 - ``n``
 * Level 3 - ``*``
-* Level 2 - ``.``
+* Level 2 - ``~``
 * Level 1 - ``~``
 
-Like so:
+By making calls like this:
 
 ```cl
+> (loise-ascii:create-perlin)
 ```
+<img src="resources/images/perlin-ascii.png" />
+
+And this:
+
+```cl
+> (loise-ascii:create-simplex)
+```
+<img src="resources/images/simplex-ascii.png" />
+
 
 ## Using Loise
 

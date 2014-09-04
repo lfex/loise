@@ -108,3 +108,12 @@
     (simplex (* multiplier (/ x width))
              (* multiplier (/ y height))
              (* multiplier (/ z depth)))))
+
+(defun get-gradations (count)
+  "The number 'count' passed in this function represents the total number of
+  gradations we expect to get back. The 'lutil-math:get-gradations' function
+  expects a different parameter: 'divisions'. In other words, 'Tell me how many
+  divisions you want in the given range.' These two parameters differ by one.
+
+  Loise uses the same color range that Erlang's egd does: 0 to 255."
+  (lutil-math:get-gradations '(0 255) (- count 1)))

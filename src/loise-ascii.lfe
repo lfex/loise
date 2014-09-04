@@ -4,26 +4,34 @@
     (from proplists
       (get_value 2))
     (from color
-      (white 1)
-      )
+      (whiteb 1)
+      (yellow 1)
+      (green 1)
+      (greenb 1)
+      (blue 1))
     (from loise-util
       (get-perlin-for-point 3)
       (get-simplex-for-point 3))))
 
 (defun get-default-options ()
-  `(#(width 32)
-    #(height 64)
+  `(#(width 36)
+    #(height 56)
     #(multiplier 4.0)
     #(grades ,(loise-util:get-gradations 6))
     #(ascii-map ("A" "^" "n" "*" "~" "~"))
-    #(colors '())
+    #(colors (#'whiteb/1 #'yellow/1 #'green/1 #'greenb/1 #'blue/1 #'blue/1))
     #(random false)
-    #(seed 43)))
+    #(seed 42)))
 
 (defun get-ascii-map (options)
   (lists:zip
     (get_value 'grades options)
     (get_value 'ascii-map options)))
+
+(defun get-color-map (options)
+  (lists:zip
+    (get_value 'ascii-map options)
+    (get_value 'colors options)))
 
 (defun get-dimensions (options)
   `(,(get_value 'width options)
@@ -56,10 +64,12 @@
              (funcall func x y options)))
 
 (defun render-row (x data options)
-  (string:join
-    (list-comp ((<- y (lists:seq 0 (get_value 'height options))))
-                (get_value `(,x ,y) data))
-    " "))
+  (let ((color-map (get-color-map options)))
+    (string:join
+      (list-comp ((<- y (lists:seq 0 (get_value 'height options))))
+                  (let ((ascii (get_value `(,x ,y) data)))
+                    (funcall (get_value ascii color-map) ascii)))
+      " ")))
 
 (defun render (data options)
   (string:join

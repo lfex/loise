@@ -58,14 +58,14 @@ Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-    > (loise-img:create-perlin-image "perlin-1.png" 'png 256 128 1)
-    ok
-    > (loise-img:create-perlin-image "perlin-2.png" 'png 256 128 2)
-    ok
-    > (loise-img:create-perlin-image "perlin-4.png" 'png 256 128 4)
-    ok
-    > (loise-img:create-perlin-image "perlin-8.png" 'png 256 128 8)
-    ok
+  > (loise-img:create-perlin-image "perlin-1.png" 'png 256 128 1)
+  ok
+  > (loise-img:create-perlin-image "perlin-2.png" 'png 256 128 2)
+  ok
+  > (loise-img:create-perlin-image "perlin-4.png" 'png 256 128 4)
+  ok
+  > (loise-img:create-perlin-image "perlin-8.png" 'png 256 128 8)
+  ok
 ```
 
 You can also limit the number of gradations for the shades of grey, giving
@@ -99,25 +99,25 @@ Below are 4 simplex noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-    > (loise-img:create-simplex-image "simplex-1.png" 'png 256 128 1)
-    ok
-    > (loise-img:create-simplex-image "simplex-2.png" 'png 256 128 2)
-    ok
-    > (loise-img:create-simplex-image "simplex-4.png" 'png 256 128 4)
-    ok
-    > (loise-img:create-simplex-image "simplex-8.png" 'png 256 128 8)
-    ok
+  > (loise-img:create-simplex-image "simplex-1.png" 'png 256 128 1)
+  ok
+  > (loise-img:create-simplex-image "simplex-2.png" 'png 256 128 2)
+  ok
+  > (loise-img:create-simplex-image "simplex-4.png" 'png 256 128 4)
+  ok
+  > (loise-img:create-simplex-image "simplex-8.png" 'png 256 128 8)
+  ok
 ```
 
 Just as with perlin, simplex allows you to limit the number of gradations for
 the shades of grey:
 
 ```cl
-> (set grades (loise-util:get-gradations 5))
-(0 63.75 127.5 191.25 255.0)
-> (loise-img:create-simplex-image
-    "simplex-5-shades.png" 'png 256 128 8 grades)
-ok
+  > (set grades (loise-util:get-gradations 5))
+  (0 63.75 127.5 191.25 255.0)
+  > (loise-img:create-simplex-image
+      "simplex-5-shades.png" 'png 256 128 8 grades)
+  ok
 ```
 
 Which will create the following:
@@ -125,14 +125,38 @@ Which will create the following:
 <img src="resources/images/simplex-5-shades.png" />
 
 
+### ASCII
+
+You can also generate ASCII "images" with loise. As an example of this, we can
+map this range:
+
+```cl
+  > (loise-util:get-gradations 6)
+  (0 51.0 102.0 153.0 204.0 255.0)
+```
+
+To the following ASCII characters:
+
+* Level 6 - ``A``
+* Level 5 - ``^``
+* Level 4 - ``n``
+* Level 3 - ``*``
+* Level 2 - ``.``
+* Level 1 - ``~``
+
+Like so:
+
+```cl
+```
+
 ## Using Loise
 
 The first place to start is ensuring that the code you obtained works as
 expected. To find out, run the unit tests:
 
 ```bash
-    $ cd loise
-    $ make check
+  $ cd loise
+  $ make check
 ```
 
 
@@ -141,54 +165,54 @@ expected. To find out, run the unit tests:
 Once everything is working, start up an LFE REPL:
 
 ```bash
-    $ make repl
+  $ make repl
 ```
 
 You can now use loise by itself, if you so desire. Here is some example usage:
 
 ```cl
-    > (loise:perlin 3.14 1.59 2.65)
-    -0.3772216257243449
-    > (loise:simplex 0.1)
-    0.4410072765
-    > (loise:simplex 0.1 0.2)
-    0.9410934374999996
-    > (loise:simplex 0.1 0.2 0.9)
-    -0.07602014100000003
+  > (loise:perlin 3.14 1.59 2.65)
+  -0.3772216257243449
+  > (loise:simplex 0.1)
+  0.4410072765
+  > (loise:simplex 0.1 0.2)
+  0.9410934374999996
+  > (loise:simplex 0.1 0.2 0.9)
+  -0.07602014100000003
 ```
 
 Or, iterating over some values:
 
 ```cl
-    > (set input
-        (lists:map
-          (lambda (x)
-            (/ x 10))
-          (lists:seq 0 9))))
-    (0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9)
-    > (lists:map
+  > (set input
+      (lists:map
         (lambda (x)
-          (loise:round
-            (loise:perlin x)
-          2))
-        input)
-    (0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11)
+          (/ x 10))
+        (lists:seq 0 9))))
+  (0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9)
+  > (lists:map
+      (lambda (x)
+        (loise:round
+          (loise:perlin x)
+        2))
+      input)
+  (0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11)
 ```
 
 
 ### In a Module
 
 ```cl
-    (defmodule mymodule
-      (export all)
-      (import
-        (from loise
-          (perlin 3)
-          (simplex 3))))
+  (defmodule mymodule
+    (export all)
+    (import
+      (from loise
+        (perlin 3)
+        (simplex 3))))
 
-    (def get-perlin-pie ()
-      (perlin 3.14 1.59 2.65))
+  (def get-perlin-pie ()
+    (perlin 3.14 1.59 2.65))
 
-    (def get-simplex-pie ()
-      (simplex 3.14 1.59 2.65))
+  (def get-simplex-pie ()
+    (simplex 3.14 1.59 2.65))
 ```

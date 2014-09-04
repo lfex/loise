@@ -3,12 +3,6 @@
   (import
     (from proplists
       (get_value 2))
-    (from color
-      (whiteb 1)
-      (yellow 1)
-      (green 1)
-      (greenb 1)
-      (blue 1))
     (from loise-util
       (get-perlin-for-point 3)
       (get-simplex-for-point 3))))
@@ -19,7 +13,8 @@
     #(multiplier 4.0)
     #(grades ,(loise-util:get-gradations 6))
     #(ascii-map ("A" "^" "n" "*" "~" "~"))
-    #(colors (#'whiteb/1 #'yellow/1 #'green/1 #'greenb/1 #'blue/1 #'blue/1))
+    #(colors (,#'color:whiteb/1 ,#'color:yellow/1 ,#'color:green/1
+              ,#'color:greenb/1 ,#'color:blue/1 ,#'color:blue/1))
     #(random false)
     #(seed 42)))
 

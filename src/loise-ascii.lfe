@@ -3,16 +3,19 @@
   (import
     (from proplists
       (get_value 2))
+    (from color
+      (white 1)
+      )
     (from loise-util
       (get-perlin-for-point 3)
       (get-simplex-for-point 3))))
 
 (defun get-default-options ()
   `(#(width 32)
-    #(height 16)
-    #(multiplier 1.0)
+    #(height 64)
+    #(multiplier 4.0)
     #(grades ,(loise-util:get-gradations 6))
-    #(ascii-map ("A" "^" "n" "*" "." "~"))
+    #(ascii-map ("A" "^" "n" "*" "~" "~"))
     #(colors '())
     #(random false)
     #(seed 43)))
@@ -52,13 +55,20 @@
               (<- y (lists:seq 0 (get_value 'height options))))
              (funcall func x y options)))
 
+(defun render-row (x data options)
+  (string:join
+    (list-comp ((<- y (lists:seq 0 (get_value 'height options))))
+                (get_value `(,x ,y) data))
+    " "))
+
 (defun render (data options)
-  (list-comp ((<- x (lists:seq 0 (get_value 'width options)))
-              (<- y (lists:seq 0 (get_value 'height options))))
-             (get_value `(,x ,y) data)))
+  (string:join
+    (list-comp ((<- x (lists:seq 0 (get_value 'width options))))
+               (render-row x data options))
+    "\n"))
 
 (defun print (data options)
-  (io:format "~s" (list (render data options))))
+  (io:format "~s~n" (list (render data options))))
 
 (defun write (filename data options)
   (file:write_file filename (render data options)))

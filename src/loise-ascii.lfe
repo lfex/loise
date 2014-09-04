@@ -48,9 +48,9 @@
 
   The function takes an x and y coordinate as agument and returns an x y
   coordinate as well as an egd color value."
-     (list-comp ((<- x (lists:seq 0 (get_value 'width options)))
-                 (<- y (lists:seq 0 (get_value 'height options))))
-                (funcall func x y options)))
+  (list-comp ((<- x (lists:seq 0 (get_value 'width options)))
+              (<- y (lists:seq 0 (get_value 'height options))))
+             (funcall func x y options)))
 
 (defun write (data filename)
   )

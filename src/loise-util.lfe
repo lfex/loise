@@ -36,68 +36,6 @@
             (* multiplier (/ y height))
             (* multiplier (/ z depth)))))
 
-(defun get-perlin-range
-  "This function is used for generating large lists of perlin noise numbers
-  across a range of multipliers and sizes."
-  (((tuple mult-start mult-end) (tuple width))
-    (flatten
-      (map
-        (lambda (multiplier)
-          (map
-            (lambda (x)
-              (get-perlin-for-point (tuple x) (tuple width) multiplier))
-            (seq 0 (- width 1))))
-          (seq mult-start mult-end))))
-  (((tuple mult-start mult-end) (tuple width height))
-    (flatten
-      (map
-        (lambda (multiplier)
-          (map
-            (lambda (x)
-              (map
-                (lambda (y)
-                  (get-perlin-for-point
-                    (tuple x y)
-                    (tuple width height)
-                    multiplier))
-                (seq 0 (- height 1))))
-            (seq 0 (- width 1))))
-          (seq mult-start mult-end))))
-  (((tuple mult-start mult-end) (tuple width height depth)))
-  ; let's save this one for later...
-  )
-
-(defun get-simplex-range
-  "This function is used for generating large lists of perlin noise numbers
-  across a range of multipliers and sizes."
-  (((tuple mult-start mult-end) (tuple width))
-    (flatten
-      (map
-        (lambda (multiplier)
-          (map
-            (lambda (x)
-              (get-simplex-for-point (tuple x) (tuple width) multiplier))
-            (seq 0 (- width 1))))
-          (seq mult-start mult-end))))
-  (((tuple mult-start mult-end) (tuple width height))
-    (flatten
-      (map
-        (lambda (multiplier)
-          (map
-            (lambda (x)
-              (map
-                (lambda (y)
-                  (get-simplex-for-point
-                    (tuple x y)
-                    (tuple width height)
-                    multiplier))
-                (seq 0 (- height 1))))
-            (seq 0 (- width 1))))
-          (seq mult-start mult-end))))
-  (((tuple mult-start mult-end) (tuple width height depth)))
-  ; let's save this one for later...
-  )
-
 (defun get-simplex-for-point
   ((`(,x) `(,width) multiplier)
     (simplex (* multiplier (/ x width))))

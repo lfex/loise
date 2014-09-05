@@ -58,18 +58,18 @@
               (<- y (lists:seq 0 (get_value 'height options))))
              (funcall func x y options)))
 
-(defun render-row (x data options)
+(defun render-row (y data options)
   (let ((color-map (get-color-map options)))
     (string:join
-      (list-comp ((<- y (lists:seq 0 (get_value 'height options))))
+      (list-comp ((<- x (lists:seq 0 (get_value 'width options))))
                   (let ((ascii (get_value `(,x ,y) data)))
                     (funcall (get_value ascii color-map) ascii)))
       " ")))
 
 (defun render (data options)
   (string:join
-    (list-comp ((<- x (lists:seq 0 (get_value 'width options))))
-               (render-row x data options))
+    (list-comp ((<- y (lists:seq 0 (get_value 'height options))))
+               (render-row y data options))
     "\n"))
 
 (defun print (data options)

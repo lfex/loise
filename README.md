@@ -159,7 +159,8 @@ And this:
 <img src="resources/images/simplex-ascii.png" />
 
 We can, of course, pass new options to the function. The following shows the
-addition of alpine forests and grasslands:
+addition of alpine forests and grasslands and greatly increasing the
+map area in the terminal:
 
 ```cl
 > (defun opts ()

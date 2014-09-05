@@ -83,7 +83,7 @@
     (print (build-ascii #'get-perlin-point/3 options) options)))
 
 (defun create-perlin
-  (((= (cons `#(,_ ,_) _) options))
+  (((= (cons `#(,_ ,_) _) options)) ;; work harder, hello kitty!
    (print (build-ascii #'get-perlin-point/3 options) options))
   ((filename)
     (let ((options (get-default-options)))

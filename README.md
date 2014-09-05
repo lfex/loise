@@ -171,9 +171,7 @@ map area in the terminal:
       #(ascii-map ("A" "^" "!" "n" "*" "-" "~" "~" "~"))
       #(colors (,#'color:whiteb/1 ,#'color:yellow/1 ,#'color:green/1
                 ,#'color:green/1 ,#'color:greenb/1 ,#'color:green/1
-                ,#'color:blue/1 ,#'color:blue/1 ,#'color:blue/1))
-      #(random false)
-      #(seed 42)))
+                ,#'color:blue/1 ,#'color:blue/1 ,#'color:blue/1))))
 
 > (loise-ascii:create-simplex (opts))
 ```

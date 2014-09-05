@@ -158,6 +158,27 @@ And this:
 ```
 <img src="resources/images/simplex-ascii.png" />
 
+We can, of course, pass new options to the function. The following shows the
+addition of alpine forests and grasslands:
+
+```cl
+> (defun opts ()
+    `(#(width 100)
+      #(height 42)
+      #(multiplier 3.0)
+      #(grades ,(loise-util:get-gradations 9))
+      #(ascii-map ("A" "^" "!" "n" "*" "-" "~" "~" "~"))
+      #(colors (,#'color:whiteb/1 ,#'color:yellow/1 ,#'color:green/1
+                ,#'color:green/1 ,#'color:greenb/1 ,#'color:green/1
+                ,#'color:blue/1 ,#'color:blue/1 ,#'color:blue/1))
+      #(random false)
+      #(seed 42)))
+
+> (loise-ascii:create-simplex (opts))
+```
+<a href="resources/images/simplex-ascii-2.png"><img src="resources/images/simplex-ascii-2-small.png" /></a>
+
+
 
 ## Using Loise
 

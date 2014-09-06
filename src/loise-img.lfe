@@ -1,34 +1,6 @@
 (defmodule loise-img
   (export all))
 
-(defun partial
-  "Something akin to a partial that will suit our purposes ;-)
-  See code comments for usage."
-  ;;
-  ;; > (defun do-things (m x y w h)
-  ;;     (lfe_io:format "m: ~p, x: ~p, y: ~p, w: ~p, h: ~p~n" (list m x y w h)))
-  ;; do-things
-  ;;
-  ;; > (set func (partial #'do-things/5 10))
-  ;; #Fun<lfe_eval.10.132627770>
-  ;; > (funcall func '(1 2 100 200))
-  ;; m: 10, x: 1, y: 2, w: 100, h: 200
-  ;; ok
-  ;;
-  ;; > (set func-2 (partial #'do-things/5 '(10 1)))
-  ;; #Fun<lfe_eval.10.132627770>
-  ;; > (funcall func-2 '(2 100 200))
-  ;; m: 10, x: 1, y: 2, w: 100, h: 200
-  ;; ok
-  ((f (cons arg1 (cons arg2 '())))
-    (lambda (args)
-      (apply f
-        (++ `(,arg1 ,arg2) args))))
-  ((f arg)
-    (lambda (args)
-      (apply f
-        (cons arg args)))))
-
 (defun draw-graded-perlin-point! (multiplier grades image width height x y)
   (let* ((value (loise:get-perlin-point `(,x ,y) `(,width ,height) multiplier))
          (adjusted (lutil-math:color-scale value #(-1 1)))
@@ -117,12 +89,12 @@
 (defun create-perlin-image (filename filetype width height multiplier)
   (create-image filename filetype
                 width height
-                (partial #'draw-perlin-point!/6 multiplier)))
+                (loise-util:partial #'draw-perlin-point!/6 multiplier)))
 
 (defun create-perlin-image (filename filetype width height multiplier grades)
   (create-image filename filetype
                 width height
-                (partial #'draw-graded-perlin-point!/7
+                (loise-util:partial #'draw-graded-perlin-point!/7
                          `(,multiplier ,grades))))
 
 (defun create-simplex-image (filename filetype)
@@ -134,10 +106,10 @@
 (defun create-simplex-image (filename filetype width height multiplier)
   (create-image filename filetype
                 width height
-                (partial #'draw-simplex-point!/6 multiplier)))
+                (loise-util:partial #'draw-simplex-point!/6 multiplier)))
 
 (defun create-simplex-image (filename filetype width height multiplier grades)
   (create-image filename filetype
                 width height
-                (partial #'draw-graded-simplex-point!/7
+                (loise-util:partial #'draw-graded-simplex-point!/7
                          `(,multiplier ,grades))))

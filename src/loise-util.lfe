@@ -78,3 +78,15 @@
 
   Loise uses the same color range that Erlang's egd does: 0 to 255."
   (lutil-math:get-gradations '(0 255) (- count 1)))
+
+(defun partial
+  "Something akin to a partial that will suit our purposes ;-)
+  See unit tests for usage."
+  ((f (cons arg1 (cons arg2 '())))
+    (lambda (args)
+      (apply f
+        (++ `(,arg1 ,arg2) args))))
+  ((f arg)
+    (lambda (args)
+      (apply f
+        (cons arg args)))))

@@ -22,3 +22,12 @@
   (is-equal 1.0 (loise-util:dot (get-grad 1) 1 2 3))
   (is-equal -1.0 (loise-util:dot (get-grad 2) 1 2 3))
   (is-equal 4.0 (loise-util:dot (get-grad 4) 1 2 3)))
+
+(defun do-things (m x y w h)
+  (list m x y w h))
+
+(deftest partial
+  (let ((func-1 (loise-util:partial #'do-things/5 1))
+        (func-2 (loise-util:partial #'do-things/5 '(1 1))))
+    (is-equal '(1 1 2 6 24) (funcall func-1 '(1 2 6 24)))
+    (is-equal '(1 1 2 6 24) (funcall func-2 '(2 6 24)))))

@@ -5,6 +5,8 @@
       (dot 4)
       (index 2))))
 
+(include-lib "lutil/include/compose-macros.lfe")
+
 (defun grad3 ()
   '((1.0  1.0  0.0) (-1.0  1.0  0.0) (1.0 -1.0  0.0) (-1.0 -1.0  0.0)
     (1.0  0.0  1.0) (-1.0  0.0  1.0) (1.0  0.0 -1.0) (-1.0  0.0 -1.0)
@@ -25,12 +27,24 @@
   (* t t t (+ (* t (- (* t 6.0) 15.0)) 10.0)))
 
 (defun get-gradient-index (a b c perm)
-  (rem
-    (index perm
-      (+ a
-        (index perm
-          (+ b
-            (index perm c))))) 12))
+  ;; This code was originally written as a series of nested calls but was
+  ;; rewritten using the thrusing macro '->>'. Not sure whether this is
+  ;; more clear than the original:
+  ;;
+  ;; (rem
+  ;;   (index perm
+  ;;     (+ a
+  ;;       (index perm
+  ;;         (+ b
+  ;;           (index perm c))))) 12))
+  ;;
+  ;; Keeping it for now, though.
+  (rem (->> (index perm c)
+            (+ b)
+            (index perm)
+            (+ a)
+            (index perm))
+       12))
 
 (defun get-noise-contribution (g x y z)
   (dot

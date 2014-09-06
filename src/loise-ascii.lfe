@@ -15,7 +15,7 @@
                 ,#'color:greenb/1 ,#'color:blue/1 ,#'color:blue/1))
       #(random false)
       #(seed 42))
-    (loise-util:base-options)))
+    (loise-const:base-options)))
 
 (defun get-ascii-map (options)
   (lists:zip

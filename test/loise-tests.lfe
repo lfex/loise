@@ -10,10 +10,10 @@
     ""))
 
 (defun opts ()
-  (loise-util:base-options))
+  (loise-const:base-options))
 
 (defun perm ()
-  (loise-util:perm-default))
+  (loise-const:perm-default))
 
 (deftest mix
   (is-equal 4.0 (loise:mix 1 2 3))

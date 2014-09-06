@@ -1,30 +1,19 @@
 (defmodule loise
-  (export all))
+  (export all)
+  (import
+    (from proplists
+      (get_value 2))))
 
 (include-lib "lutil/include/compose-macros.lfe")
 
-(defun gradient-matrix ()
-  '((1.0  1.0  0.0) (-1.0  1.0  0.0) (1.0 -1.0  0.0) (-1.0 -1.0  0.0)
-    (1.0  0.0  1.0) (-1.0  0.0  1.0) (1.0  0.0 -1.0) (-1.0  0.0 -1.0)
-    (0.0  1.0  1.0) ( 0.0 -1.0  1.0) (0.0  1.0 -1.0) ( 0.0 -1.0 -1.0)))
-
-(defun skew-factor () (/ 1.0 3.0))
-(defun unskew-factor () (/ 1.0 6.0))
-(defun mix-shift () 1.0)
-(defun fade-factor () 6.0)
-(defun fade-shift-1 () 15.0)
-(defun fade-shift-2 () 10.0)
-(defun grad-modulus () 12)
-;; (defun simplex-scale-factor () 70.0)
-(defun simplex-scale-factor () 76.5)
 (defun mix (a b t)
-  (+ (* (- (mix-shift) t) a) (* t b)))
+  (+ (* (- (loise-const:mix-shift) t) a) (* t b)))
 
 (defun fade (t)
   (* t t t
-    (+ (fade-shift-2)
-       (* t (- (* t (fade-factor))
-               (fade-shift-1))))))
+    (+ (loise-const:fade-shift-2)
+       (* t (- (* t (loise-const:fade-factor))
+               (loise-const:fade-shift-1))))))
 
 (defun get-gradient-index (a b c perm)
   ;; This code was originally written as a series of nested calls but was
@@ -44,15 +33,15 @@
             (loise-util:index perm)
             (+ a)
             (loise-util:index perm))
-       (grad-modulus)))
+       (loise-const:grad-modulus)))
 
 (defun get-noise-contribution (g x y z)
   (loise-util:dot
-    (loise-util:index (gradient-matrix) g)
+    (loise-util:index (loise-const:gradient-matrix) g)
     x y z))
 
 (defun perlin (a)
-  (perlin a 0.0 0.0 (loise-util:base-options)))
+  (perlin a 0.0 0.0 (loise-const:base-options)))
 
 (defun perlin (a options)
   (perlin a 0.0 0.0 options))
@@ -130,11 +119,11 @@
     (if (< t 0)
       0.0
       (* t^2 t^2 (loise-util:dot
-                   (loise-util:index (gradient-matrix) g)
+                   (loise-util:index (loise-const:gradient-matrix) g)
                    x y z)))))
 
 (defun simplex (a)
-  (simplex a 0.0 0.0 (loise-util:base-options)))
+  (simplex a 0.0 0.0 (loise-const:base-options)))
 
 (defun simplex (a options)
   (simplex a 0.0 0.0 options))
@@ -150,11 +139,11 @@
   in higher dimensions."
   (let*
     (; skew the input space to determine which simplex cell we're in
-     (s (* (+ a b c) (skew-factor)))
+     (s (* (+ a b c) (loise-const:skew-factor)))
      (i (lutil-math:fast-floor (+ a s)))
      (j (lutil-math:fast-floor (+ b s)))
      (k (lutil-math:fast-floor (+ c s)))
-     (t (* (+ i j k) (unskew-factor)))
+     (t (* (+ i j k) (loise-const:unskew-factor)))
      ; unskew the cell origin back to (x,y,z) space
      (X0 (- i t))
      (Y0 (- j t))
@@ -171,17 +160,17 @@
      ; (x,y,z), where c = 1/6.
      ;
      ; Offsets for second corner in (x,y,z) coords
-     (x1 (+ (- x0 i1) (unskew-factor)))
-     (y1 (+ (- y0 j1) (unskew-factor)))
-     (z1 (+ (- z0 k1) (unskew-factor)))
+     (x1 (+ (- x0 i1) (loise-const:unskew-factor)))
+     (y1 (+ (- y0 j1) (loise-const:unskew-factor)))
+     (z1 (+ (- z0 k1) (loise-const:unskew-factor)))
      ; Offsets for third corner in (x,y,z) coords
-     (x2 (+ (- x0 i2) (* 2.0 (unskew-factor))))
-     (y2 (+ (- y0 j2) (* 2.0 (unskew-factor))))
-     (z2 (+ (- z0 k2) (* 2.0 (unskew-factor))))
+     (x2 (+ (- x0 i2) (* 2.0 (loise-const:unskew-factor))))
+     (y2 (+ (- y0 j2) (* 2.0 (loise-const:unskew-factor))))
+     (z2 (+ (- z0 k2) (* 2.0 (loise-const:unskew-factor))))
      ; Offsets for last corner in (x,y,z) coords
-     (x3 (+ (- x0 1.0) (* 3.0 (unskew-factor))))
-     (y3 (+ (- y0 1.0) (* 3.0 (unskew-factor))))
-     (z3 (+ (- z0 1.0) (* 3.0 (unskew-factor))))
+     (x3 (+ (- x0 1.0) (* 3.0 (loise-const:unskew-factor))))
+     (y3 (+ (- y0 1.0) (* 3.0 (loise-const:unskew-factor))))
+     (z3 (+ (- z0 1.0) (* 3.0 (loise-const:unskew-factor))))
      ; Work out the hashed gradient indices of the four simplex corners
      (ii (band i 255))
      (jj (band j 255))
@@ -200,10 +189,10 @@
      ; The result is scaled to stay just inside [-1,1]
      ; NOTE: This scaling factor seems to work better than the given one
      ;       I'm not sure why
-     (* (simplex-scale-factor) (+ n0 n1 n2 n3))))
+     (* (get_value 'simplex-scale options) (+ n0 n1 n2 n3))))
 
 (defun get-perlin-point (coords size multiplier)
-  (get-perlin-point coords size multiplier (loise-util:base-options)))
+  (get-perlin-point coords size multiplier (loise-const:base-options)))
 
 (defun get-perlin-point
   ((`(,x) `(,width) multiplier options)
@@ -219,7 +208,7 @@
             options)))
 
 (defun get-simplex-point (coords size multiplier)
-  (get-simplex-point coords size multiplier (loise-util:base-options)))
+  (get-simplex-point coords size multiplier (loise-const:base-options)))
 
 (defun get-simplex-point
   ((`(,x) `(,width) multiplier options)

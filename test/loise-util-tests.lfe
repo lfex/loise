@@ -5,7 +5,7 @@
 (include-lib "ltest/include/ltest-macros.lfe")
 
 (defun get-grad (index)
-  (loise-util:index (loise:gradient-matrix) index))
+  (loise-util:index (loise-const:gradient-matrix) index))
 
 (deftest get-seed
   (is-equal '#(1 0 0) (loise-util:get-seed 1))

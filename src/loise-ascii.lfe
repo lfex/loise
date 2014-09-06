@@ -4,19 +4,21 @@
     (from proplists
       (get_value 2))
     (from loise-util
-      (get-perlin-for-point 3)
-      (get-simplex-for-point 3))))
+      (get-perlin-for-point 4)
+      (get-simplex-for-point 4))))
 
 (defun get-default-options ()
-  `(#(width 36)
-    #(height 56)
-    #(multiplier 4.0)
-    #(grades ,(loise-util:get-gradations 6))
-    #(ascii-map ("A" "^" "n" "*" "~" "~"))
-    #(colors (,#'color:whiteb/1 ,#'color:yellow/1 ,#'color:green/1
-              ,#'color:greenb/1 ,#'color:blue/1 ,#'color:blue/1))
-    #(random false)
-    #(seed 42)))
+  (++
+    `(#(width 36)
+      #(height 56)
+      #(multiplier 4.0)
+      #(grades ,(loise-util:get-gradations 6))
+      #(ascii-map ("A" "^" "n" "*" "~" "~"))
+      #(colors (,#'color:whiteb/1 ,#'color:yellow/1 ,#'color:green/1
+                ,#'color:greenb/1 ,#'color:blue/1 ,#'color:blue/1))
+      #(random false)
+      #(seed 42))
+    (loise-util:base-options)))
 
 (defun get-ascii-map (options)
   (lists:zip
@@ -36,17 +38,18 @@
   (let* ((value (funcall func
                   `(,x ,y)
                   (get-dimensions options)
-                  (get_value 'multiplier options)))
+                  (get_value 'multiplier options)
+                  options))
          (adjusted (lutil-math:color-scale value #(-1 1)))
          (graded (lutil-math:get-closest adjusted (get_value 'grades options)))
          (ascii-map (get-ascii-map options)))
     `#((,x ,y) ,(get_value graded ascii-map))))
 
 (defun get-perlin-point (x y options)
-  (get-point x y #'get-perlin-for-point/3 options))
+  (get-point x y #'get-perlin-for-point/4 options))
 
 (defun get-simplex-point (x y options)
-  (get-point x y #'get-simplex-for-point/3 options))
+  (get-point x y #'get-simplex-for-point/4 options))
 
 (defun build-ascii (func options)
   "Builds an ASCII map of the specified size and shape by calling the specified
@@ -54,9 +57,10 @@
 
   The function takes an x and y coordinate as agument and returns an x y
   coordinate as well as an egd color value."
-  (list-comp ((<- x (lists:seq 0 (get_value 'width options)))
-              (<- y (lists:seq 0 (get_value 'height options))))
-             (funcall func x y options)))
+  (let ((new-opts (loise-util:add-perm options)))
+    (list-comp ((<- x (lists:seq 0 (get_value 'width options)))
+                (<- y (lists:seq 0 (get_value 'height options))))
+               (funcall func x y new-opts))))
 
 (defun render-row (y data options)
   (let ((color-map (get-color-map options)))

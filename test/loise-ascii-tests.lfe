@@ -9,7 +9,7 @@
 
 (defun tiny-opts ()
   (++ `(#(width 2) #(height 2))
-       (def-opts)))
+      (def-opts)))
 
 (deftest get-ascii-map
   (is-equal

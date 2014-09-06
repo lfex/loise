@@ -17,12 +17,11 @@
       (zipwith3 4))
     (from loise
       (fade 1)
-      (get-gradient-index 3)
-      (get-gradient-index-list 3)
+      (get-gradient-index 4)
       (get-noise-contribution 4)
       (mix 3)
-      (perlin 1) (perlin 2) (perlin 3)
-      (simplex 1) (simplex 2) (simplex 3)
+      (perlin 1) (perlin 2) (perlin 3) (perlin 4)
+      (simplex 1) (simplex 2) (simplex 3) (simplex 4)
       (which-simplex 3))))
 
 (include-lib "ltest/include/ltest-macros.lfe")
@@ -31,6 +30,12 @@
   (string:join
     (lists:map #'integer_to_list/1 data)
     ""))
+
+(defun opts ()
+  (loise-util:base-options))
+
+(defun perm ()
+  (loise-util:perm-default))
 
 (deftest mix
   (is-equal 4.0 (mix 1 2 3))
@@ -52,16 +57,16 @@
   (is-equal 10625.0 (fade 5.0)))
 
 (deftest get-gradient-index
-  (is-equal 0 (get-gradient-index 0 0 0))
-  (is-equal 2 (get-gradient-index 0 0 1))
-  (is-equal 0 (get-gradient-index 0 1 0))
-  (is-equal 8 (get-gradient-index 0 1 1))
-  (is-equal 7 (get-gradient-index 1 0 0))
-  (is-equal 8 (get-gradient-index 1 0 1))
-  (is-equal 2 (get-gradient-index 1 1 0))
-  (is-equal 3 (get-gradient-index 1 1 1))
-  (is-equal 8 (get-gradient-index 1 10 100))
-  (is-equal 6 (get-gradient-index 100 10 1)))
+  (is-equal 0 (get-gradient-index 0 0 0 (perm)))
+  (is-equal 2 (get-gradient-index 0 0 1 (perm)))
+  (is-equal 0 (get-gradient-index 0 1 0 (perm)))
+  (is-equal 8 (get-gradient-index 0 1 1 (perm)))
+  (is-equal 7 (get-gradient-index 1 0 0 (perm)))
+  (is-equal 8 (get-gradient-index 1 0 1 (perm)))
+  (is-equal 2 (get-gradient-index 1 1 0 (perm)))
+  (is-equal 3 (get-gradient-index 1 1 1 (perm)))
+  (is-equal 8 (get-gradient-index 1 10 100 (perm)))
+  (is-equal 6 (get-gradient-index 100 10 1 (perm))))
 
 (deftest get-noise-contribution
   (is-equal 0.0 (get-noise-contribution 0 0 0 0))
@@ -77,7 +82,7 @@
   (is-equal 110.0 (get-noise-contribution 8 1 10 100)))
 
 (deftest perlin
-  (is-equal -0.3772216257243449 (perlin 3.14 1.59 2.65))
+  (is-equal -0.3772216257243449 (perlin 3.14 1.59 2.65 (opts)))
   (let ((expected (list 0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11))
         (input (lists:map (lambda (x) (/ x 10)) (seq 0 9))))
     (zipwith
@@ -96,7 +101,8 @@
 
 (deftest simplex
   (is-equal 0.44 (round (simplex 0.1) 2))
-  (is-equal 0.81 (round (simplex 0.1 0.1) 2))
-  (is-equal -0.39 (round (simplex 0.9 0.9) 2))
-  (is-equal 0.94 (round (simplex 0.1 0.2) 2))
-  (is-equal -0.08 (round (simplex 0.1 0.2 0.9) 2)))
+  (is-equal 0.44 (round (simplex 0.1 (opts)) 2))
+  (is-equal 0.81 (round (simplex 0.1 0.1 (opts)) 2))
+  (is-equal -0.39 (round (simplex 0.9 0.9 (opts)) 2))
+  (is-equal 0.94 (round (simplex 0.1 0.2 (opts)) 2))
+  (is-equal -0.08 (round (simplex 0.1 0.2 0.9 (opts)) 2)))

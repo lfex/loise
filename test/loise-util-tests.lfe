@@ -12,6 +12,12 @@
 
 (include-lib "ltest/include/ltest-macros.lfe")
 
+(deftest get-seed
+  (is-equal '#(1 0 0) (loise-util:get-seed 1))
+  (is-equal '#(1 0 0) (loise-util:get-seed '(1)))
+  (is-equal '#(1 2 0) (loise-util:get-seed '(1 2)))
+  (is-equal '#(1 2 3) (loise-util:get-seed '(1 2 3))))
+
 (deftest index
   (is-equal 42 (index '(99 4 7 42 13) 3))
   (is-equal '(-1.0 -1.0 0.0) (index (loise:grad3) 3)))
@@ -22,7 +28,7 @@
   (is-equal -1.0 (dot (index (loise:grad3) 2) 1 2 3))
   (is-equal 4.0 (dot (index (loise:grad3) 4) 1 2 3)))
 
-(deftest get-perlin-for-point
+(deftest get-perlin-for-point-without-opts
   (is-equal 0.0 (round (get-perlin-for-point '(0 0) '(256 256) 1) 2))
   (is-equal 0.5 (round (get-perlin-for-point '(127) '(256) 1) 2))
   (is-equal 0.56 (round (get-perlin-for-point '(127 64) '(256 256) 1) 2))

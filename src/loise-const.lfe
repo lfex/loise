@@ -41,4 +41,10 @@
 
 (defun base-options ()
   `(#(perm ,(perm-default))
-    #(simplex-scale ,(simplex-scale-factor))))
+    #(simplex-scale ,(simplex-scale-factor))
+    #(mix-shift ,(mix-shift))
+    #(fade-factor ,(fade-factor))
+    #(fade-shift-1 ,(fade-shift-1))
+    #(fade-shift-2 ,(fade-shift-2))
+    #(grad-modulus ,(grad-modulus))
+    #(grad-matrix ,(gradient-matrix))))

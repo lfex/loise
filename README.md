@@ -177,7 +177,8 @@ map area in the terminal:
 ```
 <a href="https://raw.githubusercontent.com/lfex/loise/master/resources/images/simplex-ascii-2.png"><img src="resources/images/simplex-ascii-2-small.png" /></a>
 
-
+To see the full list of options available be sure to look at both
+``loise-const:base-options/0`` and ``loise-ascii:default-options``.
 
 ## Using Loise
 

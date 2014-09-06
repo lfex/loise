@@ -4,7 +4,7 @@
     (from proplists
       (get_value 2))))
 
-(defun get-default-options ()
+(defun default-options ()
   (++
     `(#(width 56)
       #(height 36)
@@ -54,7 +54,7 @@
 
   The function takes an x and y coordinate as agument and returns an x y
   coordinate as well as an egd color value."
-  (let ((new-opts (loise-util:add-perm options)))
+  (let ((new-opts (++ (loise-util:add-perm options) (default-options))))
     (list-comp ((<- x (lists:seq 0 (get_value 'width options)))
                 (<- y (lists:seq 0 (get_value 'height options))))
                (funcall func x y new-opts))))
@@ -80,14 +80,14 @@
   (file:write_file filename (render data options)))
 
 (defun create-perlin ()
-  (let ((options (get-default-options)))
+  (let ((options (default-options)))
     (print (build-ascii #'get-perlin-point/3 options) options)))
 
 (defun create-perlin
   (((= (cons `#(,_ ,_) _) options)) ;; work harder, hello kitty!
    (print (build-ascii #'get-perlin-point/3 options) options))
   ((filename)
-    (let ((options (get-default-options)))
+    (let ((options (default-options)))
       (write filename
              (build-ascii #'get-perlin-point/3 options)
              options))))
@@ -98,14 +98,14 @@
          options))
 
 (defun create-simplex ()
-  (let ((options (get-default-options)))
+  (let ((options (default-options)))
     (print (build-ascii #'get-simplex-point/3 options) options)))
 
 (defun create-simplex
   (((= (cons `#(,_ ,_) _) options))
    (print (build-ascii #'get-simplex-point/3 options) options))
   ((filename)
-    (let ((options (get-default-options)))
+    (let ((options (default-options)))
       (write filename
              (build-ascii #'get-simplex-point/3 options)
              options))))

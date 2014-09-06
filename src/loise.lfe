@@ -6,16 +6,16 @@
 
 (include-lib "lutil/include/compose-macros.lfe")
 
-(defun mix (a b t)
-  (+ (* (- (loise-const:mix-shift) t) a) (* t b)))
+(defun mix (a b t options)
+  (+ (* (- (get_value 'mix-shift options) t) a) (* t b)))
 
-(defun fade (t)
+(defun fade (t options)
   (* t t t
-    (+ (loise-const:fade-shift-2)
-       (* t (- (* t (loise-const:fade-factor))
-               (loise-const:fade-shift-1))))))
+    (+ (get_value 'fade-shift-2 options)
+       (* t (- (* t (get_value 'fade-factor options))
+               (get_value 'fade-shift-1 options))))))
 
-(defun get-gradient-index (a b c perm)
+(defun get-gradient-index (a b c options)
   ;; This code was originally written as a series of nested calls but was
   ;; rewritten using the thrusing macro '->>'. Not sure whether this is
   ;; more clear than the original:
@@ -28,16 +28,18 @@
   ;;           (loise-util:index perm c))))) 12))
   ;;
   ;; Keeping it for now, though.
-  (rem (->> (loise-util:index perm c)
-            (+ b)
-            (loise-util:index perm)
-            (+ a)
-            (loise-util:index perm))
-       (loise-const:grad-modulus)))
+  (let ((perm (get_value 'perm options))
+        (modulus (get_value 'grad-modulus options)))
+    (rem (->> (loise-util:index perm c)
+              (+ b)
+              (loise-util:index perm)
+              (+ a)
+              (loise-util:index perm))
+         modulus)))
 
-(defun get-noise-contribution (g x y z)
+(defun get-noise-contribution (g x y z options)
   (loise-util:dot
-    (loise-util:index (loise-const:gradient-matrix) g)
+    (loise-util:index (get_value 'grad-matrix options) g)
     x y z))
 
 (defun perlin (a)
@@ -69,38 +71,37 @@
      (Y (band B 255))
      (Z (band C 255))
      ; calculate a set of eight hashed gradient indices
-     (perm (proplists:get_value 'perm options))
-     (gi000 (get-gradient-index X Y Z perm))
-     (gi001 (get-gradient-index X Y (+ Z 1) perm))
-     (gi010 (get-gradient-index X (+ Y 1) Z perm))
-     (gi011 (get-gradient-index X (+ Y 1) (+ Z 1) perm))
-     (gi100 (get-gradient-index (+ X 1) Y Z perm))
-     (gi101 (get-gradient-index (+ X 1) Y (+ Z 1) perm))
-     (gi110 (get-gradient-index (+ X 1) (+ Y 1) Z perm))
-     (gi111 (get-gradient-index (+ X 1) (+ Y 1) (+ Z 1) perm))
+     (gi000 (get-gradient-index X Y Z options))
+     (gi001 (get-gradient-index X Y (+ Z 1) options))
+     (gi010 (get-gradient-index X (+ Y 1) Z options))
+     (gi011 (get-gradient-index X (+ Y 1) (+ Z 1) options))
+     (gi100 (get-gradient-index (+ X 1) Y Z options))
+     (gi101 (get-gradient-index (+ X 1) Y (+ Z 1) options))
+     (gi110 (get-gradient-index (+ X 1) (+ Y 1) Z options))
+     (gi111 (get-gradient-index (+ X 1) (+ Y 1) (+ Z 1) options))
      ; calculate noise contributions from each of the eight corners
-     (n000 (get-noise-contribution gi000 x y z))
-     (n001 (get-noise-contribution gi001 x y (- z 1)))
-     (n010 (get-noise-contribution gi010 x (- y 1) z))
-     (n011 (get-noise-contribution gi011 x (- y 1) (- z 1)))
-     (n100 (get-noise-contribution gi100 (- x 1) y z))
-     (n101 (get-noise-contribution gi101 (- x 1) y (- z 1)))
-     (n110 (get-noise-contribution gi110 (- x 1) (- y 1) z))
-     (n111 (get-noise-contribution gi111 (- x 1) (- y 1) (- z 1)))
+     (n000 (get-noise-contribution gi000 x y z options))
+     (n001 (get-noise-contribution gi001 x y (- z 1) options))
+     (n010 (get-noise-contribution gi010 x (- y 1) z options))
+     (n011 (get-noise-contribution gi011 x (- y 1) (- z 1) options))
+     (n100 (get-noise-contribution gi100 (- x 1) y z options))
+     (n101 (get-noise-contribution gi101 (- x 1) y (- z 1) options))
+     (n110 (get-noise-contribution gi110 (- x 1) (- y 1) z options))
+     (n111 (get-noise-contribution gi111 (- x 1) (- y 1) (- z 1) options))
      ; compute the fade curve value for each of x, y, z
-     (u (fade x))
-     (v (fade y))
-     (w (fade z))
+     (u (fade x options))
+     (v (fade y options))
+     (w (fade z options))
      ; interpolate along x the contributions from each of the corners
-     (nx00 (mix n000 n100 u))
-     (nx01 (mix n001 n101 u))
-     (nx10 (mix n010 n110 u))
-     (nx11 (mix n011 n111 u))
+     (nx00 (mix n000 n100 u options))
+     (nx01 (mix n001 n101 u options))
+     (nx10 (mix n010 n110 u options))
+     (nx11 (mix n011 n111 u options))
      ; interpolate the four results along y
-     (nxy0 (mix nx00 nx10 v))
-     (nxy1 (mix nx01 nx11 v)))
+     (nxy0 (mix nx00 nx10 v options))
+     (nxy1 (mix nx01 nx11 v options)))
      ; finally, interpolate the two last results along z and return the result
-     (mix nxy0 nxy1 w)))
+     (mix nxy0 nxy1 w options)))
 
 (defun which-simplex (a b c)
   "For the 3D case, the simplex shape is a slightly irregular tetrahedron.
@@ -113,13 +114,13 @@
     ((< a c) (list 0 1 0 0 1 1)) ; Y Z X order
     (else (list 0 1 0 1 1 0)))) ; Y X Z order
 
-(defun corner-contribution (g x y z)
+(defun corner-contribution (g x y z options)
   (let* ((t (- 0.5 (* x x) (* y y) (* z z)))
          (t^2 (* t t)))
     (if (< t 0)
       0.0
       (* t^2 t^2 (loise-util:dot
-                   (loise-util:index (loise-const:gradient-matrix) g)
+                   (loise-util:index (get_value 'grad-matrix options) g)
                    x y z)))))
 
 (defun simplex (a)
@@ -175,16 +176,15 @@
      (ii (band i 255))
      (jj (band j 255))
      (kk (band k 255))
-     (perm (proplists:get_value 'perm options))
-     (gi0 (get-gradient-index ii jj kk perm))
-     (gi1 (get-gradient-index (+ ii i1) (+ jj j1) (+ kk k1) perm))
-     (gi2 (get-gradient-index (+ ii i2) (+ jj j2) (+ kk k2) perm))
-     (gi3 (get-gradient-index (+ ii 1) (+ jj 1) (+ kk 1) perm))
+     (gi0 (get-gradient-index ii jj kk options))
+     (gi1 (get-gradient-index (+ ii i1) (+ jj j1) (+ kk k1) options))
+     (gi2 (get-gradient-index (+ ii i2) (+ jj j2) (+ kk k2) options))
+     (gi3 (get-gradient-index (+ ii 1) (+ jj 1) (+ kk 1) options))
      ; Calculate the contribution from the four corners
-     (n0 (corner-contribution gi0 x0 y0 z0))
-     (n1 (corner-contribution gi1 x1 y1 z1))
-     (n2 (corner-contribution gi2 x2 y2 z2))
-     (n3 (corner-contribution gi3 x3 y3 z3)))
+     (n0 (corner-contribution gi0 x0 y0 z0 options))
+     (n1 (corner-contribution gi1 x1 y1 z1 options))
+     (n2 (corner-contribution gi2 x2 y2 z2 options))
+     (n3 (corner-contribution gi3 x3 y3 z3 options)))
      ; Add contributions from each corner to get the final noise value.
      ; The result is scaled to stay just inside [-1,1]
      ; NOTE: This scaling factor seems to work better than the given one

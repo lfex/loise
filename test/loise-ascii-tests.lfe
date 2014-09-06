@@ -5,7 +5,7 @@
 (include-lib "ltest/include/ltest-macros.lfe")
 
 (defun def-opts ()
-  (loise-ascii:get-default-options))
+  (loise-ascii:default-options))
 
 (defun tiny-opts ()
   (++ `(#(width 2) #(height 2))

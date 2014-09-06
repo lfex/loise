@@ -3,7 +3,7 @@
 
 (include-lib "lutil/include/compose-macros.lfe")
 
-(defun grad3 ()
+(defun gradient-matrix ()
   '((1.0  1.0  0.0) (-1.0  1.0  0.0) (1.0 -1.0  0.0) (-1.0 -1.0  0.0)
     (1.0  0.0  1.0) (-1.0  0.0  1.0) (1.0  0.0 -1.0) (-1.0  0.0 -1.0)
     (0.0  1.0  1.0) ( 0.0 -1.0  1.0) (0.0  1.0 -1.0) ( 0.0 -1.0 -1.0)))
@@ -44,7 +44,7 @@
 
 (defun get-noise-contribution (g x y z)
   (loise-util:dot
-    (loise-util:index (grad3) g)
+    (loise-util:index (gradient-matrix) g)
     x y z))
 
 (defun perlin (a)
@@ -125,7 +125,7 @@
          (t^2 (* t t)))
     (if (< t 0)
       0.0
-      (* t^2 t^2 (loise-util:dot (loise-util:index (grad3) g) x y z)))))
+      (* t^2 t^2 (loise-util:dot (loise-util:index (gradient-matrix) g) x y z)))))
 
 (defun simplex (a)
   (simplex a 0.0 0.0 (loise-util:base-options)))

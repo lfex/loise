@@ -19,10 +19,10 @@
 
 (deftest index
   (is-equal 42 (index '(99 4 7 42 13) 3))
-  (is-equal '(-1.0 -1.0 0.0) (index (loise:grad3) 3)))
+  (is-equal '(-1.0 -1.0 0.0) (index (loise:gradient-matrix) 3)))
 
 (deftest dot
-  (is-equal 3.0 (dot (index (loise:grad3) 0) 1 2 3))
-  (is-equal 1.0 (dot (index (loise:grad3) 1) 1 2 3))
-  (is-equal -1.0 (dot (index (loise:grad3) 2) 1 2 3))
-  (is-equal 4.0 (dot (index (loise:grad3) 4) 1 2 3)))
+  (is-equal 3.0 (dot (index (loise:gradient-matrix) 0) 1 2 3))
+  (is-equal 1.0 (dot (index (loise:gradient-matrix) 1) 1 2 3))
+  (is-equal -1.0 (dot (index (loise:gradient-matrix) 2) 1 2 3))
+  (is-equal 4.0 (dot (index (loise:gradient-matrix) 4) 1 2 3)))

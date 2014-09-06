@@ -1,9 +1,5 @@
 (defmodule loise-util
-  (export all)
-  (import
-    (from loise
-      (perlin 2) (perlin 3) (perlin 4)
-      (simplex 2) (simplex 3) (simplex 4))))
+  (export all))
 
 (defun get-loise-version ()
   (lutil:get-app-src-version "src/loise.app.src"))

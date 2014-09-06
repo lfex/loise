@@ -3,10 +3,7 @@
   (import
     (from loise
       (perlin 1) (perlin 2) (perlin 3)
-      (simplex 1) (simplex 2) (simplex 3))
-    (from loise-util
-      (get-perlin-for-point 3)
-      (get-simplex-for-point 3))))
+      (simplex 1) (simplex 2) (simplex 3))))
 
 (defun partial
   "Something akin to a partial that will suit our purposes ;-)
@@ -37,7 +34,7 @@
         (cons arg args)))))
 
 (defun draw-graded-perlin-point! (multiplier grades image width height x y)
-  (let* ((value (get-perlin-for-point `(,x ,y) `(,width ,height) multiplier))
+  (let* ((value (loise:get-perlin-point `(,x ,y) `(,width ,height) multiplier))
          (adjusted (lutil-math:color-scale value #(-1 1)))
          (graded (lutil-math:get-closest adjusted grades)))
         (draw-point!
@@ -45,14 +42,14 @@
           `#(,graded ,graded ,graded))))
 
 (defun draw-perlin-point! (multiplier image width height x y)
-  (let* ((value (get-perlin-for-point `(,x ,y) `(,width ,height) multiplier))
+  (let* ((value (loise:get-perlin-point `(,x ,y) `(,width ,height) multiplier))
          (adjusted (lutil-math:color-scale value #(-1 1))))
         (draw-point!
           image x y
           `#(,adjusted ,adjusted ,adjusted))))
 
 (defun draw-graded-simplex-point! (multiplier grades image width height x y)
-  (let* ((value (get-simplex-for-point `(,x ,y) `(,width ,height) multiplier))
+  (let* ((value (loise:get-simplex-point `(,x ,y) `(,width ,height) multiplier))
          (adjusted (lutil-math:color-scale value #(-1 1)))
          (graded (lutil-math:get-closest adjusted grades)))
         (draw-point!
@@ -60,7 +57,7 @@
           `#(,graded ,graded ,graded))))
 
 (defun draw-simplex-point! (multiplier image width height x y)
-  (let* ((value (get-simplex-for-point `(,x ,y) `(,width ,height) multiplier))
+  (let* ((value (loise:get-simplex-point `(,x ,y) `(,width ,height) multiplier))
          (adjusted (lutil-math:color-scale value #(-1 1))))
         (draw-point!
           image x y

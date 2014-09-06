@@ -84,3 +84,15 @@
   (is-equal -0.39 (lutil-math:round (loise:simplex 0.9 0.9 (opts)) 2))
   (is-equal 0.94 (lutil-math:round (loise:simplex 0.1 0.2 (opts)) 2))
   (is-equal -0.08 (lutil-math:round (loise:simplex 0.1 0.2 0.9 (opts)) 2)))
+
+
+(deftest get-perlin-point-without-opts
+  (is-equal 0.0
+    (lutil-math:round (loise:get-perlin-point '(0 0) '(256 256) 1) 2))
+  (is-equal 0.5
+    (lutil-math:round (loise:get-perlin-point '(127) '(256) 1) 2))
+  (is-equal 0.56
+    (lutil-math:round (loise:get-perlin-point '(127 64) '(256 256) 1) 2))
+  (is-equal 0.49
+    (lutil-math:round
+      (loise:get-perlin-point '(127 64 32) '(256 256 256) 1) 2)))

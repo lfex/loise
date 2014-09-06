@@ -2,10 +2,7 @@
   (export all)
   (import
     (from proplists
-      (get_value 2))
-    (from loise-util
-      (get-perlin-for-point 4)
-      (get-simplex-for-point 4))))
+      (get_value 2))))
 
 (defun get-default-options ()
   (++
@@ -46,10 +43,10 @@
     `#((,x ,y) ,(get_value graded ascii-map))))
 
 (defun get-perlin-point (x y options)
-  (get-point x y #'get-perlin-for-point/4 options))
+  (get-point x y #'loise:get-perlin-point/4 options))
 
 (defun get-simplex-point (x y options)
-  (get-point x y #'get-simplex-for-point/4 options))
+  (get-point x y #'loise:get-simplex-point/4 options))
 
 (defun build-ascii (func options)
   "Builds an ASCII map of the specified size and shape by calling the specified

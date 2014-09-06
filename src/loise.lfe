@@ -196,3 +196,34 @@
      ;       I'm not sure why
      (* 76.5 (+ n0 n1 n2 n3))))
 
+(defun get-perlin-point (coords size multiplier)
+  (get-perlin-point coords size multiplier (loise-util:base-options)))
+
+(defun get-perlin-point
+  ((`(,x) `(,width) multiplier options)
+    (perlin (* multiplier (/ x width)) options))
+  ((`(,x ,y) `(,width ,height) multiplier options)
+    (perlin (* multiplier (/ x width))
+            (* multiplier (/ y height))
+            options))
+  ((`(,x ,y ,z) `(,width ,height ,depth) multiplier options)
+    (perlin (* multiplier (/ x width))
+            (* multiplier (/ y height))
+            (* multiplier (/ z depth))
+            options)))
+
+(defun get-simplex-point (coords size multiplier)
+  (get-simplex-point coords size multiplier (loise-util:base-options)))
+
+(defun get-simplex-point
+  ((`(,x) `(,width) multiplier options)
+    (simplex (* multiplier (/ x width)) options))
+  ((`(,x ,y) `(,width ,height) multiplier options)
+    (simplex (* multiplier (/ x width))
+             (* multiplier (/ y height))
+             options))
+  ((`(,x ,y ,z) `(,width ,height ,depth) multiplier options)
+    (simplex (* multiplier (/ x width))
+             (* multiplier (/ y height))
+             (* multiplier (/ z depth))
+             options)))

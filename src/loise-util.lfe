@@ -1,10 +1,6 @@
 (defmodule loise-util
   (export all)
   (import
-    (from lists
-      (flatten 1)
-      (map 2)
-      (seq 2))
     (from loise
       (perlin 2) (perlin 3) (perlin 4)
       (simplex 2) (simplex 3) (simplex 4))))
@@ -73,38 +69,6 @@
    (+ (* (index g 0) x)
       (* (index g 1) y)
       (* (index g 2) z)))
-
-(defun get-perlin-for-point (coords size multiplier)
-  (get-perlin-for-point coords size multiplier (base-options)))
-
-(defun get-perlin-for-point
-  ((`(,x) `(,width) multiplier options)
-    (perlin (* multiplier (/ x width)) options))
-  ((`(,x ,y) `(,width ,height) multiplier options)
-    (perlin (* multiplier (/ x width))
-            (* multiplier (/ y height))
-            options))
-  ((`(,x ,y ,z) `(,width ,height ,depth) multiplier options)
-    (perlin (* multiplier (/ x width))
-            (* multiplier (/ y height))
-            (* multiplier (/ z depth))
-            options)))
-
-(defun get-simplex-for-point (coords size multiplier)
-  (get-simplex-for-point coords size multiplier (base-options)))
-
-(defun get-simplex-for-point
-  ((`(,x) `(,width) multiplier options)
-    (simplex (* multiplier (/ x width)) options))
-  ((`(,x ,y) `(,width ,height) multiplier options)
-    (simplex (* multiplier (/ x width))
-             (* multiplier (/ y height))
-             options))
-  ((`(,x ,y ,z) `(,width ,height ,depth) multiplier options)
-    (simplex (* multiplier (/ x width))
-             (* multiplier (/ y height))
-             (* multiplier (/ z depth))
-             options)))
 
 (defun get-gradations (count)
   "The number 'count' passed in this function represents the total number of

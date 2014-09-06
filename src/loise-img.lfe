@@ -1,9 +1,5 @@
 (defmodule loise-img
-  (export all)
-  (import
-    (from loise
-      (perlin 1) (perlin 2) (perlin 3)
-      (simplex 1) (simplex 2) (simplex 3))))
+  (export all))
 
 (defun partial
   "Something akin to a partial that will suit our purposes ;-)

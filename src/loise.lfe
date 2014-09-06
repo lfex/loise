@@ -8,19 +8,23 @@
     (1.0  0.0  1.0) (-1.0  0.0  1.0) (1.0  0.0 -1.0) (-1.0  0.0 -1.0)
     (0.0  1.0  1.0) ( 0.0 -1.0  1.0) (0.0  1.0 -1.0) ( 0.0 -1.0 -1.0)))
 
-(defun skew-factor ()
-  "Very nice and simple skew factor for 3D"
-  (/ 1.0 3.0))
-
-(defun unskew-factor ()
-  "Very nice and simple unskew factor, too"
-  (/ 1.0 6.0))
-
+(defun skew-factor () (/ 1.0 3.0))
+(defun unskew-factor () (/ 1.0 6.0))
+(defun mix-shift () 1.0)
+(defun fade-factor () 6.0)
+(defun fade-shift-1 () 15.0)
+(defun fade-shift-2 () 10.0)
+(defun grad-modulus () 12)
+;; (defun simplex-scale-factor () 70.0)
+(defun simplex-scale-factor () 76.5)
 (defun mix (a b t)
-  (+ (* (- 1.0 t) a) (* t b)))
+  (+ (* (- (mix-shift) t) a) (* t b)))
 
 (defun fade (t)
-  (* t t t (+ (* t (- (* t 6.0) 15.0)) 10.0)))
+  (* t t t
+    (+ (fade-shift-2)
+       (* t (- (* t (fade-factor))
+               (fade-shift-1))))))
 
 (defun get-gradient-index (a b c perm)
   ;; This code was originally written as a series of nested calls but was
@@ -40,7 +44,7 @@
             (loise-util:index perm)
             (+ a)
             (loise-util:index perm))
-       12))
+       (grad-modulus)))
 
 (defun get-noise-contribution (g x y z)
   (loise-util:dot
@@ -125,7 +129,9 @@
          (t^2 (* t t)))
     (if (< t 0)
       0.0
-      (* t^2 t^2 (loise-util:dot (loise-util:index (gradient-matrix) g) x y z)))))
+      (* t^2 t^2 (loise-util:dot
+                   (loise-util:index (gradient-matrix) g)
+                   x y z)))))
 
 (defun simplex (a)
   (simplex a 0.0 0.0 (loise-util:base-options)))
@@ -194,7 +200,7 @@
      ; The result is scaled to stay just inside [-1,1]
      ; NOTE: This scaling factor seems to work better than the given one
      ;       I'm not sure why
-     (* 76.5 (+ n0 n1 n2 n3))))
+     (* (simplex-scale-factor) (+ n0 n1 n2 n3))))
 
 (defun get-perlin-point (coords size multiplier)
   (get-perlin-point coords size multiplier (loise-util:base-options)))

@@ -8,11 +8,11 @@
     (1.0  0.0  1.0) (-1.0  0.0  1.0) (1.0  0.0 -1.0) (-1.0  0.0 -1.0)
     (0.0  1.0  1.0) ( 0.0 -1.0  1.0) (0.0  1.0 -1.0) ( 0.0 -1.0 -1.0)))
 
-(defun F3 ()
+(defun skew-factor ()
   "Very nice and simple skew factor for 3D"
   (/ 1.0 3.0))
 
-(defun G3 ()
+(defun unskew-factor ()
   "Very nice and simple unskew factor, too"
   (/ 1.0 6.0))
 
@@ -144,11 +144,11 @@
   in higher dimensions."
   (let*
     (; skew the input space to determine which simplex cell we're in
-     (s (* (+ a b c) (F3)))
+     (s (* (+ a b c) (skew-factor)))
      (i (lutil-math:fast-floor (+ a s)))
      (j (lutil-math:fast-floor (+ b s)))
      (k (lutil-math:fast-floor (+ c s)))
-     (t (* (+ i j k) (G3)))
+     (t (* (+ i j k) (unskew-factor)))
      ; unskew the cell origin back to (x,y,z) space
      (X0 (- i t))
      (Y0 (- j t))
@@ -165,17 +165,17 @@
      ; (x,y,z), where c = 1/6.
      ;
      ; Offsets for second corner in (x,y,z) coords
-     (x1 (+ (- x0 i1) (G3)))
-     (y1 (+ (- y0 j1) (G3)))
-     (z1 (+ (- z0 k1) (G3)))
+     (x1 (+ (- x0 i1) (unskew-factor)))
+     (y1 (+ (- y0 j1) (unskew-factor)))
+     (z1 (+ (- z0 k1) (unskew-factor)))
      ; Offsets for third corner in (x,y,z) coords
-     (x2 (+ (- x0 i2) (* 2.0 (G3))))
-     (y2 (+ (- y0 j2) (* 2.0 (G3))))
-     (z2 (+ (- z0 k2) (* 2.0 (G3))))
+     (x2 (+ (- x0 i2) (* 2.0 (unskew-factor))))
+     (y2 (+ (- y0 j2) (* 2.0 (unskew-factor))))
+     (z2 (+ (- z0 k2) (* 2.0 (unskew-factor))))
      ; Offsets for last corner in (x,y,z) coords
-     (x3 (+ (- x0 1.0) (* 3.0 (G3))))
-     (y3 (+ (- y0 1.0) (* 3.0 (G3))))
-     (z3 (+ (- z0 1.0) (* 3.0 (G3))))
+     (x3 (+ (- x0 1.0) (* 3.0 (unskew-factor))))
+     (y3 (+ (- y0 1.0) (* 3.0 (unskew-factor))))
+     (z3 (+ (- z0 1.0) (* 3.0 (unskew-factor))))
      ; Work out the hashed gradient indices of the four simplex corners
      (ii (band i 255))
      (jj (band j 255))

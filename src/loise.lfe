@@ -1,9 +1,5 @@
 (defmodule loise
-  (export all)
-  (import
-    (from loise-util
-      (dot 4)
-      (index 2))))
+  (export all))
 
 (include-lib "lutil/include/compose-macros.lfe")
 
@@ -32,23 +28,23 @@
   ;; more clear than the original:
   ;;
   ;; (rem
-  ;;   (index perm
+  ;;   (loise-util:index perm
   ;;     (+ a
-  ;;       (index perm
+  ;;       (loise-util:index perm
   ;;         (+ b
-  ;;           (index perm c))))) 12))
+  ;;           (loise-util:index perm c))))) 12))
   ;;
   ;; Keeping it for now, though.
-  (rem (->> (index perm c)
+  (rem (->> (loise-util:index perm c)
             (+ b)
-            (index perm)
+            (loise-util:index perm)
             (+ a)
-            (index perm))
+            (loise-util:index perm))
        12))
 
 (defun get-noise-contribution (g x y z)
-  (dot
-    (index (grad3) g)
+  (loise-util:dot
+    (loise-util:index (grad3) g)
     x y z))
 
 (defun perlin (a)
@@ -129,7 +125,7 @@
          (t^2 (* t t)))
     (if (< t 0)
       0.0
-      (* t^2 t^2 (dot (index (grad3) g) x y z)))))
+      (* t^2 t^2 (loise-util:dot (loise-util:index (grad3) g) x y z)))))
 
 (defun simplex (a)
   (simplex a 0.0 0.0 (loise-util:base-options)))

@@ -9,8 +9,8 @@
 
 (defun get-default-options ()
   (++
-    `(#(width 36)
-      #(height 56)
+    `(#(width 56)
+      #(height 36)
       #(multiplier 4.0)
       #(grades ,(loise-util:get-gradations 6))
       #(ascii-map ("A" "^" "n" "*" "~" "~"))

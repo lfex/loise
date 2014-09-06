@@ -17,7 +17,7 @@
     (loise-ascii:get-ascii-map (def-opts))))
 
 (deftest get-dimensions
-  (is-equal '(36 56) (loise-ascii:get-dimensions (def-opts)))
+  (is-equal '(56 36) (loise-ascii:get-dimensions (def-opts)))
   (is-equal '(2 2) (loise-ascii:get-dimensions (tiny-opts))))
 
 (deftest get-perlin-point

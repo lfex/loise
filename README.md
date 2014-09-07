@@ -163,7 +163,7 @@ addition of alpine forests and grasslands and greatly increasing the
 map area in the terminal:
 
 ```cl
-> (defun opts ()
+> (set opts
     `(#(width 100)
       #(height 42)
       #(multiplier 3.0)
@@ -173,9 +173,31 @@ map area in the terminal:
                 ,#'color:green/1 ,#'color:greenb/1 ,#'color:green/1
                 ,#'color:blue/1 ,#'color:blue/1 ,#'color:blue/1))))
 
-> (loise-ascii:create-simplex (opts))
+> (loise-ascii:create-simplex opts)
 ```
 <a href="https://raw.githubusercontent.com/lfex/loise/master/resources/images/simplex-ascii-2.png"><img src="resources/images/simplex-ascii-2-small.png" /></a>
+
+By default, loise uses a "permutation table" to generate patterns. You can view
+this table in the source ``loise-const`` module. If you would like to generate
+random results, you will need to enable the ``random`` option:
+
+```cl
+> (set opts (++ `(#(random true)) opts))
+```
+
+If you do not
+provide a seed, the same "random" result will be given for every call. If you
+would like a different result each time, you will need to pass a new seed.
+For instance:
+
+```cl
+> (loise-ascii:create-simplex (++ `(#(seed 1)) opts))
+> (loise-ascii:create-simplex (++ `(#(seed (1 2))) opts))
+> (loise-ascii:create-simplex (++ `(#(seed (1 2 3))) opts))
+```
+
+You may either pass an integer or a list of 1, 2 or 3 integers as values
+for the ``seed`` option key.
 
 To see the full list of options available be sure to look at both
 ``loise-const:base-options/0`` and ``loise-ascii:default-options``.

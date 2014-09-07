@@ -58,13 +58,13 @@ Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-  > (loise-img:create-perlin-image "perlin-1.png" 'png 256 128 1)
+  > (loise-img:create-perlin "perlin-1.png" 'png 256 128 1)
   ok
-  > (loise-img:create-perlin-image "perlin-2.png" 'png 256 128 2)
+  > (loise-img:create-perlin "perlin-2.png" 'png 256 128 2)
   ok
-  > (loise-img:create-perlin-image "perlin-4.png" 'png 256 128 4)
+  > (loise-img:create-perlin "perlin-4.png" 'png 256 128 4)
   ok
-  > (loise-img:create-perlin-image "perlin-8.png" 'png 256 128 8)
+  > (loise-img:create-perlin "perlin-8.png" 'png 256 128 8)
   ok
 ```
 
@@ -74,7 +74,7 @@ the images a more "layered" or "topographical" look:
 ```cl
 > (set grades (loise-util:get-gradations 7))
 (0 42.5 85.0 127.5 170.0 212.5 255.0)
-> (loise-img:create-perlin-image
+> (loise-img:create-perlin
     "perlin-7-shades.png" 'png 256 128 8 grades)
 ok
 ```
@@ -99,13 +99,13 @@ Below are 4 simplex noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-  > (loise-img:create-simplex-image "simplex-1.png" 'png 256 128 1)
+  > (loise-img:create-simplex "simplex-1.png" 'png 256 128 1)
   ok
-  > (loise-img:create-simplex-image "simplex-2.png" 'png 256 128 2)
+  > (loise-img:create-simplex "simplex-2.png" 'png 256 128 2)
   ok
-  > (loise-img:create-simplex-image "simplex-4.png" 'png 256 128 4)
+  > (loise-img:create-simplex "simplex-4.png" 'png 256 128 4)
   ok
-  > (loise-img:create-simplex-image "simplex-8.png" 'png 256 128 8)
+  > (loise-img:create-simplex "simplex-8.png" 'png 256 128 8)
   ok
 ```
 
@@ -115,7 +115,7 @@ the shades of grey:
 ```cl
   > (set grades (loise-util:get-gradations 5))
   (0 63.75 127.5 191.25 255.0)
-  > (loise-img:create-simplex-image
+  > (loise-img:create-simplex
       "simplex-5-shades.png" 'png 256 128 8 grades)
   ok
 ```
@@ -179,6 +179,7 @@ map area in the terminal:
 
 To see the full list of options available be sure to look at both
 ``loise-const:base-options/0`` and ``loise-ascii:default-options``.
+
 
 ## Using Loise
 

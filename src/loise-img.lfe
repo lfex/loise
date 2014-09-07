@@ -53,7 +53,7 @@
                 (funcall func (list image width height x y)))
      image))
 
-(defun write-image (image filename filetype)
+(defun write (image filename filetype)
   "Write the image data.
 
   image is an egd image type
@@ -63,53 +63,50 @@
     (egd:render image filetype)
     filename))
 
-(defun create-image (filename filetype width height func)
-  "A wrapper function for build- and write-image."
+(defun create (filename filetype width height func)
+  "A wrapper function for 'build-image' and 'write'."
   (let ((image (build-image width height func)))
-    (write-image image filename filetype)))
+    (write image filename filetype)))
 
-(defun create-white-image (filename filetype width height)
+(defun create-white (filename filetype width height)
   "A convenience function for creating test images."
-  (create-image filename filetype width height
+  (create filename filetype width height
     (lambda (x y)
       (list x y (egd:color (tuple 255 255 255))))))
 
-(defun create-black-image (filename filetype width height)
+(defun create-black (filename filetype width height)
   "A convenience function for creating test images."
-  (create-image filename filetype width height
+  (create filename filetype width height
     (lambda (x y)
       (list x y (egd:color 'black)))))
 
-(defun create-perlin-image (filename filetype)
-  (create-perlin-image filename filetype 256 256 1.0))
+(defun create-perlin (filename filetype)
+  (create-perlin filename filetype 256 256 1.0))
 
-(defun create-perlin-image (filename filetype width height)
-  (create-perlin-image filename filetype width height 1.0))
+(defun create-perlin (filename filetype width height)
+  (create-perlin filename filetype width height 1.0))
 
-(defun create-perlin-image (filename filetype width height multiplier)
-  (create-image filename filetype
-                width height
-                (loise-util:partial #'draw-perlin-point!/6 multiplier)))
+(defun create-perlin (filename filetype width height multiplier)
+  (create filename filetype width height
+          (loise-util:partial #'draw-perlin-point!/6 multiplier)))
 
-(defun create-perlin-image (filename filetype width height multiplier grades)
-  (create-image filename filetype
-                width height
-                (loise-util:partial #'draw-graded-perlin-point!/7
-                         `(,multiplier ,grades))))
+(defun create-perlin (filename filetype width height multiplier grades)
+  (create filename filetype width height
+          (loise-util:partial
+            #'draw-graded-perlin-point!/7 `(,multiplier ,grades))))
 
-(defun create-simplex-image (filename filetype)
-  (create-perlin-image filename filetype 256 256))
+(defun create-simplex (filename filetype)
+  (create-simplex filename filetype 256 256))
 
-(defun create-simplex-image (filename filetype width height)
-  (create-perlin-image filename filetype width height 1.0))
+(defun create-simplex (filename filetype width height)
+  (create-simplex filename filetype width height 1.0))
 
-(defun create-simplex-image (filename filetype width height multiplier)
-  (create-image filename filetype
-                width height
-                (loise-util:partial #'draw-simplex-point!/6 multiplier)))
+(defun create-simplex (filename filetype width height multiplier)
+  (create filename filetype width height
+          (loise-util:partial
+            #'draw-simplex-point!/6 multiplier)))
 
-(defun create-simplex-image (filename filetype width height multiplier grades)
-  (create-image filename filetype
-                width height
-                (loise-util:partial #'draw-graded-simplex-point!/7
-                         `(,multiplier ,grades))))
+(defun create-simplex (filename filetype width height multiplier grades)
+  (create filename filetype width height
+          (loise-util:partial
+            #'draw-graded-simplex-point!/7 `(,multiplier ,grades))))

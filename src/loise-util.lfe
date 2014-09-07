@@ -33,6 +33,20 @@
       (++ `(#(perm-table ,(random-permutation-table))) options))
     (_ options)))
 
+(defun get-ascii-map (options)
+  (lists:zip
+    (get_value 'grades options)
+    (get_value 'ascii-map options)))
+
+(defun get-color-map (options)
+  (lists:zip
+    (get_value 'ascii-map options)
+    (get_value 'colors options)))
+
+(defun get-dimensions (options)
+  `(,(get_value 'width options)
+    ,(get_value 'height options)))
+
 (defun index (data position)
   "A list-based version of element-index."
   (lists:nth (+ 1 position) data))

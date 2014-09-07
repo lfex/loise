@@ -13,6 +13,18 @@
   (is-equal '#(1 2 0) (loise-util:get-seed '(1 2)))
   (is-equal '#(1 2 3) (loise-util:get-seed '(1 2 3))))
 
+(defun tiny-opts ()
+  `(#(width 2) #(height 2)))
+
+(deftest get-ascii-map
+  (is-equal
+    '(#(0 "A") #(51.0 "^") #(102.0 "n") #(153.0 "*") #(204.0 "~") #(255.0 "~"))
+    (loise-util:get-ascii-map (loise-ascii:default-options))))
+
+(deftest get-dimensions
+  (is-equal '(56 36) (loise-util:get-dimensions (loise-ascii:default-options)))
+  (is-equal '(2 2) (loise-util:get-dimensions (tiny-opts))))
+
 (deftest index
   (is-equal 42 (loise-util:index '(99 4 7 42 13) 3))
   (is-equal '(-1.0 -1.0 0.0) (get-grad 3)))

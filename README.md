@@ -58,13 +58,13 @@ Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-  > (loise-img:create-perlin "perlin-1.png" 'png 256 128 1)
+  > (loise-img:create-perlin "perlin-1.png" `(#(multiplier 1)))
   ok
-  > (loise-img:create-perlin "perlin-2.png" 'png 256 128 2)
+  > (loise-img:create-perlin "perlin-2.png" `(#(multiplier 2)))
   ok
-  > (loise-img:create-perlin "perlin-4.png" 'png 256 128 4)
+  > (loise-img:create-perlin "perlin-4.png" `(#(multiplier 4)))
   ok
-  > (loise-img:create-perlin "perlin-8.png" 'png 256 128 8)
+  > (loise-img:create-perlin "perlin-8.png" `(#(multiplier 8)))
   ok
 ```
 
@@ -99,13 +99,13 @@ Below are 4 simplex noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-  > (loise-img:create-simplex "simplex-1.png" 'png 256 128 1)
+  > (loise-img:create-simplex "simplex-1.png" `(#(multiplier 1)))
   ok
-  > (loise-img:create-simplex "simplex-2.png" 'png 256 128 2)
+  > (loise-img:create-simplex "simplex-2.png" `(#(multiplier 2)))
   ok
-  > (loise-img:create-simplex "simplex-4.png" 'png 256 128 4)
+  > (loise-img:create-simplex "simplex-4.png" `(#(multiplier 4)))
   ok
-  > (loise-img:create-simplex "simplex-8.png" 'png 256 128 8)
+  > (loise-img:create-simplex "simplex-8.png" `(#(multiplier 8)))
   ok
 ```
 
@@ -115,8 +115,9 @@ the shades of grey:
 ```cl
   > (set grades (loise-util:get-gradations 5))
   (0 63.75 127.5 191.25 255.0)
-  > (loise-img:create-simplex
-      "simplex-5-shades.png" 'png 256 128 8 grades)
+  > (set opts `(#(multiplier 8)
+                #(grades ,grades)))
+  > (loise-img:create-simplex "simplex-5-shades.png" opts)
   ok
 ```
 
@@ -124,6 +125,24 @@ Which will create the following:
 
 <img src="resources/images/simplex-5-shades.png" />
 
+You may also change the permutation table from the default, to one generated
+with a random seed:
+
+```cl
+> (set opts (++ `(#(random true))))
+> (loise-img:create-perlin
+    "perlin-rand-1.png" (++ `(#(seed (1))) opts))
+> (loise-img:create-simplex
+    "simplex-rand-1.png" (++ `(#(seed (1 2))) opts))
+> (loise-img:create-simplex
+    "simplex-rand-2.png" (++ `(#(seed (1 2 3))) opts))
+```
+
+You may either pass an integer or a list of 1, 2 or 3 integers as values
+for the ``seed`` option key.
+
+To see the full list of options available be sure to look at both
+``loise-const:base-options/0`` and ``loise-img:default-options``.
 
 ### ASCII
 
@@ -191,13 +210,10 @@ would like a different result each time, you will need to pass a new seed.
 For instance:
 
 ```cl
-> (loise-ascii:create-simplex (++ `(#(seed 1)) opts))
+> (loise-ascii:create-perlin (++ `(#(seed 1)) opts))
 > (loise-ascii:create-simplex (++ `(#(seed (1 2))) opts))
 > (loise-ascii:create-simplex (++ `(#(seed (1 2 3))) opts))
 ```
-
-You may either pass an integer or a list of 1, 2 or 3 integers as values
-for the ``seed`` option key.
 
 To see the full list of options available be sure to look at both
 ``loise-const:base-options/0`` and ``loise-ascii:default-options``.

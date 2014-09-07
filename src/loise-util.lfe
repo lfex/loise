@@ -35,17 +35,17 @@
 
 (defun get-ascii-map (options)
   (lists:zip
-    (get_value 'grades options)
-    (get_value 'ascii-map options)))
+    (proplists:get_value 'grades options)
+    (proplists:get_value 'ascii-map options)))
 
 (defun get-color-map (options)
   (lists:zip
-    (get_value 'ascii-map options)
-    (get_value 'colors options)))
+    (proplists:get_value 'ascii-map options)
+    (proplists:get_value 'colors options)))
 
 (defun get-dimensions (options)
-  `(,(get_value 'width options)
-    ,(get_value 'height options)))
+  `(,(proplists:get_value 'width options)
+    ,(proplists:get_value 'height options)))
 
 (defun index (data position)
   "A list-based version of element-index."

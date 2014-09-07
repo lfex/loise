@@ -11,15 +11,6 @@
   (++ `(#(width 2) #(height 2))
       (def-opts)))
 
-(deftest get-ascii-map
-  (is-equal
-    '(#(0 "A") #(51.0 "^") #(102.0 "n") #(153.0 "*") #(204.0 "~") #(255.0 "~"))
-    (loise-ascii:get-ascii-map (def-opts))))
-
-(deftest get-dimensions
-  (is-equal '(56 36) (loise-ascii:get-dimensions (def-opts)))
-  (is-equal '(2 2) (loise-ascii:get-dimensions (tiny-opts))))
-
 (deftest get-perlin-point
   (is-equal '#((0 0) "*") (loise-ascii:get-perlin-point 0 0 (tiny-opts)))
   (is-equal '#((0 1) "*") (loise-ascii:get-perlin-point 0 1 (tiny-opts)))

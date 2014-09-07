@@ -8,7 +8,7 @@
   (++ (lutil:get-version)
       `(#(loise ,(get-loise-version)))))
 
-(defun perm-gen ()
+(defun random-permutation-table ()
   (lists:map
     (lambda (_)
       (- (random:uniform 256) 1))
@@ -24,11 +24,13 @@
   ((`(,int-1 ,int-2 ,int-3))
     `#(,int-1 ,int-2 ,int-3)))
 
-(defun add-perm (options)
+(defun update-perm-table-options (options)
+  "If 'random' is enabled (has a 'true' value), then don't use the default
+  permutation table, but rather generate a new one."
   (case (proplists:get_value 'random options)
     ('true
       (random:seed (get-seed (proplists:get_value 'seed options)))
-      (++ `(#(perm ,(perm-gen))) options))
+      (++ `(#(perm-table ,(random-permutation-table))) options))
     (_ options)))
 
 (defun index (data position)

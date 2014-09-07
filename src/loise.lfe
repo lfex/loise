@@ -28,7 +28,7 @@
   ;;           (loise-util:index perm c))))) 12))
   ;;
   ;; Keeping it for now, though.
-  (let ((perm (get_value 'perm options))
+  (let ((perm (get_value 'perm-table options))
         (modulus (get_value 'grad-modulus options)))
     (rem (->> (loise-util:index perm c)
               (+ b)

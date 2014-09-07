@@ -1,4 +1,4 @@
-(defmodule loise-img
+(defmodule loise-egd
   (export all))
 
 (defun default-options ()

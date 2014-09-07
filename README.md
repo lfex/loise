@@ -25,9 +25,11 @@ more.)
 
 ## Background
 
-This is a port of the
+The loise project stated life as a port of the
 [Racket noise-generator](https://github.com/jpverkamp/noise) by
-[jpverkamp](https://github.com/jpverkamp) to LFE.
+[jpverkamp](https://github.com/jpverkamp) to LFE. However, it has undergone
+some seriosu refactoring since then, as well as the inclusion of many new
+features.
 
 
 ## Dependencies
@@ -58,13 +60,13 @@ Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-  > (loise-img:create-perlin "perlin-1.png" `(#(multiplier 1)))
+  > (loise-egd:create-perlin "perlin-1.png" `(#(multiplier 1)))
   ok
-  > (loise-img:create-perlin "perlin-2.png" `(#(multiplier 2)))
+  > (loise-egd:create-perlin "perlin-2.png" `(#(multiplier 2)))
   ok
-  > (loise-img:create-perlin "perlin-4.png" `(#(multiplier 4)))
+  > (loise-egd:create-perlin "perlin-4.png" `(#(multiplier 4)))
   ok
-  > (loise-img:create-perlin "perlin-8.png" `(#(multiplier 8)))
+  > (loise-egd:create-perlin "perlin-8.png" `(#(multiplier 8)))
   ok
 ```
 
@@ -74,7 +76,7 @@ the images a more "layered" or "topographical" look:
 ```cl
 > (set grades (loise-util:get-gradations 7))
 (0 42.5 85.0 127.5 170.0 212.5 255.0)
-> (loise-img:create-perlin
+> (loise-egd:create-perlin
     "perlin-7-shades.png" 'png 256 128 8 grades)
 ok
 ```
@@ -99,13 +101,13 @@ Below are 4 simplex noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-  > (loise-img:create-simplex "simplex-1.png" `(#(multiplier 1)))
+  > (loise-egd:create-simplex "simplex-1.png" `(#(multiplier 1)))
   ok
-  > (loise-img:create-simplex "simplex-2.png" `(#(multiplier 2)))
+  > (loise-egd:create-simplex "simplex-2.png" `(#(multiplier 2)))
   ok
-  > (loise-img:create-simplex "simplex-4.png" `(#(multiplier 4)))
+  > (loise-egd:create-simplex "simplex-4.png" `(#(multiplier 4)))
   ok
-  > (loise-img:create-simplex "simplex-8.png" `(#(multiplier 8)))
+  > (loise-egd:create-simplex "simplex-8.png" `(#(multiplier 8)))
   ok
 ```
 
@@ -117,7 +119,7 @@ the shades of grey:
   (0 63.75 127.5 191.25 255.0)
   > (set opts `(#(multiplier 8)
                 #(grades ,grades)))
-  > (loise-img:create-simplex "simplex-5-shades.png" opts)
+  > (loise-egd:create-simplex "simplex-5-shades.png" opts)
   ok
 ```
 
@@ -130,11 +132,11 @@ with a random seed:
 
 ```cl
 > (set opts (++ `(#(random true))))
-> (loise-img:create-perlin
+> (loise-egd:create-perlin
     "perlin-rand-1.png" (++ `(#(seed (1))) opts))
-> (loise-img:create-simplex
+> (loise-egd:create-simplex
     "simplex-rand-1.png" (++ `(#(seed (1 2))) opts))
-> (loise-img:create-simplex
+> (loise-egd:create-simplex
     "simplex-rand-2.png" (++ `(#(seed (1 2 3))) opts))
 ```
 
@@ -142,7 +144,7 @@ You may either pass an integer or a list of 1, 2 or 3 integers as values
 for the ``seed`` option key.
 
 To see the full list of options available be sure to look at both
-``loise-const:base-options/0`` and ``loise-img:default-options``.
+``loise-const:base-options/0`` and ``loise-egd:default-options``.
 
 ### ASCII
 

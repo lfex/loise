@@ -19,7 +19,7 @@
 * [License](#license-)
 
 
-## Introduction [&#x219F;](#table-of-contents)
+## Introduction [&#x219F;](#contents)
 
 This is a library, written in [LFE](http://lfe.io/), useful for generating
 Perlin and Simplex noise. Perlin noise is a computer-generated visual effect
@@ -37,7 +37,7 @@ function, especially in higher dimensions. (See the complete
 more.)
 
 
-## Background [&#x219F;](#table-of-contents)
+## Background [&#x219F;](#contents)
 
 The loise project stated life as a port of the
 [Racket noise-generator](https://github.com/jpverkamp/noise) by
@@ -46,20 +46,20 @@ some seriosu refactoring since then, as well as the inclusion of many new
 features.
 
 
-## Dependencies [&#x219F;](#table-of-contents)
+## Dependencies [&#x219F;](#contents)
 
 This project requires that you have Erlang installed (tested with R15B03, R16B03, 17.5, 18.0, and 18.3). It also assumes that you have [rebar3](https://github.com/erlang/rebar3)
 installed somwhere in your ``$PATH``.
 
 
-## Eye Candy [&#x219F;](#table-of-contents)
+## Eye Candy [&#x219F;](#contents)
 
 The data generated with the ``perlin`` and ``simplex`` functions can be used to
 create images. Erlang is not a good language for image generation, however this
 library does provide some convenience functions for generating images.
 
 
-### Perlin [&#x219F;](#table-of-contents)
+### Perlin [&#x219F;](#contents)
 
 Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
 
@@ -100,7 +100,7 @@ Which will create the following:
 <img src="priv/images/perlin-7-shades.png" />
 
 
-### Simplex [&#x219F;](#table-of-contents)
+### Simplex [&#x219F;](#contents)
 
 Below are 4 simplex noise images generated at 1x, 2x, 4x, and 8x, respectively.
 
@@ -161,7 +161,7 @@ To see the full list of options available be sure to look at both
 ``loise-const:base-options/0`` and ``loise-egd:default-options``.
 
 
-### ASCII [&#x219F;](#table-of-contents)
+### ASCII [&#x219F;](#contents)
 
 You can also generate ASCII "images" with loise. As an example of this, we can
 map the default values represented by this range:
@@ -236,7 +236,7 @@ To see the full list of options available be sure to look at both
 ``loise-const:base-options/0`` and ``loise-ascii:default-options``.
 
 
-## Usage [&#x219F;](#table-of-contents)
+## Usage [&#x219F;](#contents)
 
 The first place to start is ensuring that the code you obtained works as
 expected. To find out, run the unit tests:
@@ -247,7 +247,7 @@ expected. To find out, run the unit tests:
 ```
 
 
-### From the REPL [&#x219F;](#table-of-contents)
+### From the REPL [&#x219F;](#contents)
 
 Once everything is working, start up an LFE REPL:
 
@@ -287,7 +287,7 @@ Or, iterating over some values:
 ```
 
 
-### In a Module [&#x219F;](#table-of-contents)
+### In a Module [&#x219F;](#contents)
 
 ```cl
   (defmodule mymodule

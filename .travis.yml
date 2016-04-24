@@ -1,11 +1,14 @@
 language: erlang
-before_script: "make get-lfetool"
-script: "make check"
-notifications:
-  irc: "irc.freenode.org#cogitat"
-  recipients:
-    - duncan@cogitat.io
+install: true
+before_script:
+    - wget https://s3.amazonaws.com/rebar3/rebar3
+    - chmod +x rebar3
+env: PATH=".:$PATH"
+script: make check
 otp_release:
-  - 17.0
-  - R16B03
+  - 18.3
+  - 18.0
+  - 17.5
+  - 17.1
+  - R16B03-1
   - R15B03

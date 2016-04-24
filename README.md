@@ -90,8 +90,10 @@ the images a more "layered" or "topographical" look:
 ```cl
 > (set grades (loise-util:get-gradations 7))
 (0 42.5 85.0 127.5 170.0 212.5 255.0)
-> (loise-egd:create-perlin
-    "perlin-7-shades.png" 'png 256 128 8 grades)
+> (set opts `(#(multiplier 8)
+              #(grades ,grades)))
+(#(multiplier 8) #(grades (0 42.5 85.0 127.5 170.0 212.5 255.0)))
+> (loise-egd:create-perlin "simplex-7-shades.png" opts)
 ok
 ```
 

@@ -4,7 +4,7 @@
     (from proplists
       (get_value 2))))
 
-(include-lib "lutil/include/compose-macros.lfe")
+(include-lib "clj/include/compose.lfe")
 
 (defun mix (a b t options)
   (+ (* (- (get_value 'mix-shift options) t) a) (* t b)))

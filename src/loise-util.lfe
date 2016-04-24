@@ -1,12 +1,12 @@
 (defmodule loise-util
   (export all))
 
-(defun get-loise-version ()
-  (lutil:get-app-src-version "src/loise.app.src"))
+(defun get-version ()
+  (lr3-ver-util:get-app-version 'loise))
 
 (defun get-versions ()
-  (++ (lutil:get-version)
-      `(#(loise ,(get-loise-version)))))
+  (++ (lr3-ver-util:get-versions)
+      `(#(loise ,(get-version)))))
 
 (defun random-permutation-table ()
   (lists:map

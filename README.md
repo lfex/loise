@@ -13,7 +13,7 @@
   * [Perlin](#perlin-)
   * [Simplex](#simplex-)
   * [ASCII](#ascii-)
-* [Usage](#usge-)
+* [Usage](#usage-)
   * [From the REPL](#from-the-repl-)
   * [In a Module](#in-a-module-)
 

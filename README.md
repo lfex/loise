@@ -2,7 +2,7 @@
 
 **A Noise-Generator for LFE**
 
-<img src="resources/images/loise.jpg" />
+<img src="priv/images/loise.jpg" />
 
 
 ## Introduction
@@ -49,13 +49,13 @@ library does provide some convenience functions for generating images.
 
 Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
 
-<img src="resources/images/perlin-1.png" />
+<img src="priv/images/perlin-1.png" />
 
-<img src="resources/images/perlin-2.png" />
+<img src="priv/images/perlin-2.png" />
 
-<img src="resources/images/perlin-4.png" />
+<img src="priv/images/perlin-4.png" />
 
-<img src="resources/images/perlin-8.png" />
+<img src="priv/images/perlin-8.png" />
 
 These were generated with the following from the REPL:
 
@@ -83,20 +83,20 @@ ok
 
 Which will create the following:
 
-<img src="resources/images/perlin-7-shades.png" />
+<img src="priv/images/perlin-7-shades.png" />
 
 
 ### Simplex
 
 Below are 4 simplex noise images generated at 1x, 2x, 4x, and 8x, respectively.
 
-<img src="resources/images/simplex-1.png" />
+<img src="priv/images/simplex-1.png" />
 
-<img src="resources/images/simplex-2.png" />
+<img src="priv/images/simplex-2.png" />
 
-<img src="resources/images/simplex-4.png" />
+<img src="priv/images/simplex-4.png" />
 
-<img src="resources/images/simplex-8.png" />
+<img src="priv/images/simplex-8.png" />
 
 These were generated with the following from the REPL:
 
@@ -125,7 +125,7 @@ the shades of grey:
 
 Which will create the following:
 
-<img src="resources/images/simplex-5-shades.png" />
+<img src="priv/images/simplex-5-shades.png" />
 
 You may also change the permutation table from the default, to one generated
 with a random seed:
@@ -170,14 +170,14 @@ By making calls like this:
 ```cl
 > (loise-ascii:create-perlin)
 ```
-<img src="resources/images/perlin-ascii.png" />
+<img src="priv/images/perlin-ascii.png" />
 
 And this:
 
 ```cl
 > (loise-ascii:create-simplex)
 ```
-<img src="resources/images/simplex-ascii.png" />
+<img src="priv/images/simplex-ascii.png" />
 
 We can, of course, pass new options to the function. The following shows the
 addition of alpine forests and grasslands and greatly increasing the
@@ -196,7 +196,7 @@ map area in the terminal:
 
 > (loise-ascii:create-simplex opts)
 ```
-<a href="https://raw.githubusercontent.com/lfex/loise/master/resources/images/simplex-ascii-2.png"><img src="resources/images/simplex-ascii-2-small.png" /></a>
+<a href="https://raw.githubusercontent.com/lfex/loise/master/priv/images/simplex-ascii-2.png"><img src="priv/images/simplex-ascii-2-small.png" /></a>
 
 By default, loise uses a "permutation table" to generate patterns. You can view
 this table in the source ``loise-const`` module. If you would like to generate

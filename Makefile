@@ -1,1 +1,1 @@
-include resources/make/base.mk
+include priv/make/base.mk

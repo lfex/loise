@@ -5,7 +5,7 @@
       (get_value 2))))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; API
+;;; Options
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun default-options ()
@@ -21,11 +21,15 @@
       #(seed 42))
     (loise-const:base-options)))
 
-(defun create-perlin ()
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; API
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(defun perlin ()
   (let ((options (default-options)))
     (print (build-ascii #'get-perlin-point/3 options) options)))
 
-(defun create-perlin
+(defun perlin
   (((= (cons `#(,_ ,_) _) options)) ;; work harder, hello kitty!
    (print (build-ascii #'get-perlin-point/3 options) options))
   ((filename)
@@ -34,16 +38,16 @@
              (build-ascii #'get-perlin-point/3 options)
              options))))
 
-(defun create-perlin (filename options)
+(defun perlin (filename options)
   (write filename
          (build-ascii #'get-perlin-point/3 options)
          options))
 
-(defun create-simplex ()
+(defun simplex ()
   (let ((options (default-options)))
     (print (build-ascii #'get-simplex-point/3 options) options)))
 
-(defun create-simplex
+(defun simplex
   (((= (cons `#(,_ ,_) _) options))
    (print (build-ascii #'get-simplex-point/3 options) options))
   ((filename)
@@ -52,10 +56,21 @@
              (build-ascii #'get-simplex-point/3 options)
              options))))
 
-(defun create-simplex (filename options)
+(defun simplex (filename options)
   (write filename
          (build-ascii #'get-simplex-point/3 options)
          options))
+
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Aliases, for backwards compatibility
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(defun create-perlin () (perlin))
+(defun create-perlin (a) (perlin a))
+(defun create-perlin (a b) (perlin a b))
+(defun create-simplex () (simplex))
+(defun create-simplex (a) (simplex a))
+(defun create-simplex (a b) (simplex a b))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Supporting functions

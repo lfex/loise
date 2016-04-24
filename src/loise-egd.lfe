@@ -2,7 +2,7 @@
   (export all))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; API
+;;; Options
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun default-options ()
@@ -14,21 +14,50 @@
       #(seed 42))
     (loise-const:base-options)))
 
-(defun create-perlin (filename)
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; API
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(defun perlin (filename)
   (create-perlin filename (default-options)))
 
-(defun create-perlin (filename options)
+(defun perlin (filename options)
   (create filename #'draw-perlin-point!/4 options))
 
-(defun create-simplex (filename)
+(defun simplex (filename)
   (create-simplex filename (default-options)))
 
-(defun create-simplex (filename options)
+(defun simplex (filename options)
   (create filename #'draw-simplex-point!/4 options))
+
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Aliases, for backwards compatibility
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(defun create-perlin (a) (perlin a))
+(defun create-perlin (a b) (perlin a b))
+(defun create-simplex (a) (simplex a))
+(defun create-simplex (a b) (simplex a b))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(defun create (filename func options)
+  "A wrapper function for the 'build-image' and 'write' functions."
+  (write
+    (build-image func options)
+    filename))
+
+(defun write (image filename)
+  "Write the image data.
+
+  image is an egd image type
+  filename is a string value."
+  (egd:save
+    (egd:render image
+                (get-image-filetype filename))
+    filename))
 
 (defun get-point-color (value options)
   (let ((adjusted (lutil-math:color-scale value #(-1 1)))
@@ -82,22 +111,3 @@
                  (<- y (lists:seq 0 height)))
                 (funcall func image x y new-opts))
      image))
-
-(defun write (image filename)
-  "Write the image data.
-
-  image is an egd image type
-  filename is a string value."
-  (egd:save
-    (egd:render image
-                (get-image-filetype filename))
-    filename))
-
-(defun create (filename func options)
-  "A wrapper function for the 'build-image' and 'write' functions."
-  (write
-    (build-image func options)
-    filename))
-
-
-

@@ -7,11 +7,18 @@
 (include-lib "clj/include/compose.lfe")
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Options
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(defun default-options ()
+  (loise-const:base-options))
+
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun perlin (a)
-  (perlin a 0.0 0.0 (loise-const:base-options)))
+  (perlin a 0.0 0.0 (default-options)))
 
 (defun perlin (a options)
   (perlin a 0.0 0.0 options))
@@ -72,7 +79,7 @@
      (mix nxy0 nxy1 w options)))
 
 (defun simplex (a)
-  (simplex a 0.0 0.0 (loise-const:base-options)))
+  (simplex a 0.0 0.0 (default-options)))
 
 (defun simplex (a options)
   (simplex a 0.0 0.0 options))
@@ -189,7 +196,7 @@
                    x y z)))))
 
 (defun get-perlin-point (coords size multiplier)
-  (get-perlin-point coords size multiplier (loise-const:base-options)))
+  (get-perlin-point coords size multiplier (default-options)))
 
 (defun get-perlin-point
   ((`(,x) `(,width) multiplier options)
@@ -205,7 +212,7 @@
             options)))
 
 (defun get-simplex-point (coords size multiplier)
-  (get-simplex-point coords size multiplier (loise-const:base-options)))
+  (get-simplex-point coords size multiplier (default-options)))
 
 (defun get-simplex-point
   ((`(,x) `(,width) multiplier options)

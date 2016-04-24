@@ -74,13 +74,13 @@ Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-  > (loise-egd:create-perlin "perlin-1.png" `(#(multiplier 1)))
+  > (loise-egd:perlin "perlin-1.png" `(#(multiplier 1)))
   ok
-  > (loise-egd:create-perlin "perlin-2.png" `(#(multiplier 2)))
+  > (loise-egd:perlin "perlin-2.png" `(#(multiplier 2)))
   ok
-  > (loise-egd:create-perlin "perlin-4.png" `(#(multiplier 4)))
+  > (loise-egd:perlin "perlin-4.png" `(#(multiplier 4)))
   ok
-  > (loise-egd:create-perlin "perlin-8.png" `(#(multiplier 8)))
+  > (loise-egd:perlin "perlin-8.png" `(#(multiplier 8)))
   ok
 ```
 
@@ -93,7 +93,7 @@ the images a more "layered" or "topographical" look:
 > (set opts `(#(multiplier 8)
               #(grades ,grades)))
 (#(multiplier 8) #(grades (0 42.5 85.0 127.5 170.0 212.5 255.0)))
-> (loise-egd:create-perlin "simplex-7-shades.png" opts)
+> (loise-egd:perlin "simplex-7-shades.png" opts)
 ok
 ```
 
@@ -117,13 +117,13 @@ Below are 4 simplex noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-  > (loise-egd:create-simplex "simplex-1.png" `(#(multiplier 1)))
+  > (loise-egd:simplex "simplex-1.png" `(#(multiplier 1)))
   ok
-  > (loise-egd:create-simplex "simplex-2.png" `(#(multiplier 2)))
+  > (loise-egd:simplex "simplex-2.png" `(#(multiplier 2)))
   ok
-  > (loise-egd:create-simplex "simplex-4.png" `(#(multiplier 4)))
+  > (loise-egd:simplex "simplex-4.png" `(#(multiplier 4)))
   ok
-  > (loise-egd:create-simplex "simplex-8.png" `(#(multiplier 8)))
+  > (loise-egd:simplex "simplex-8.png" `(#(multiplier 8)))
   ok
 ```
 
@@ -135,7 +135,7 @@ the shades of grey:
   (0 63.75 127.5 191.25 255.0)
   > (set opts `(#(multiplier 8)
                 #(grades ,grades)))
-  > (loise-egd:create-simplex "simplex-5-shades.png" opts)
+  > (loise-egd:simplex "simplex-5-shades.png" opts)
   ok
 ```
 
@@ -148,11 +148,11 @@ with a random seed:
 
 ```cl
 > (set opts (++ `(#(random true))))
-> (loise-egd:create-perlin
+> (loise-egd:perlin
     "perlin-rand-1.png" (++ `(#(seed (1))) opts))
-> (loise-egd:create-simplex
+> (loise-egd:simplex
     "simplex-rand-1.png" (++ `(#(seed (1 2))) opts))
-> (loise-egd:create-simplex
+> (loise-egd:simplex
     "simplex-rand-2.png" (++ `(#(seed (1 2 3))) opts))
 ```
 
@@ -185,14 +185,14 @@ And by this set of ASCII characters:
 By making calls like this:
 
 ```cl
-> (loise-ascii:create-perlin)
+> (loise-ascii:perlin)
 ```
 <img src="priv/images/perlin-ascii.png" />
 
 And this:
 
 ```cl
-> (loise-ascii:create-simplex)
+> (loise-ascii:simplex)
 ```
 <img src="priv/images/simplex-ascii.png" />
 
@@ -211,7 +211,7 @@ map area in the terminal:
                 ,#'color:green/1 ,#'color:greenb/1 ,#'color:green/1
                 ,#'color:blue/1 ,#'color:blue/1 ,#'color:blue/1))))
 
-> (loise-ascii:create-simplex opts)
+> (loise-ascii:simplex opts)
 ```
 <a href="https://raw.githubusercontent.com/lfex/loise/master/priv/images/simplex-ascii-2.png"><img src="priv/images/simplex-ascii-2-small.png" /></a>
 
@@ -229,9 +229,9 @@ would like a different result each time, you will need to pass a new seed.
 For instance:
 
 ```cl
-> (loise-ascii:create-perlin (++ `(#(seed 1)) opts))
-> (loise-ascii:create-simplex (++ `(#(seed (1 2))) opts))
-> (loise-ascii:create-simplex (++ `(#(seed (1 2 3))) opts))
+> (loise-ascii:perlin (++ `(#(seed 1)) opts))
+> (loise-ascii:simplex (++ `(#(seed (1 2))) opts))
+> (loise-ascii:simplex (++ `(#(seed (1 2 3))) opts))
 ```
 
 To see the full list of options available be sure to look at both

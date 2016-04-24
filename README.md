@@ -1,6 +1,6 @@
 # Loise [![Build Status][travis-badge]][travis]
 
-**A Noise-Generator for LFE**
+*A Noise-Generator for LFE*
 
 [![Loise project logo][logo]][logo]
 

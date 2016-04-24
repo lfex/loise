@@ -4,6 +4,10 @@
     (from proplists
       (get_value 2))))
 
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; API
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 (defun default-options ()
   (++
     `(#(width 56)
@@ -16,6 +20,46 @@
       #(random false)
       #(seed 42))
     (loise-const:base-options)))
+
+(defun create-perlin ()
+  (let ((options (default-options)))
+    (print (build-ascii #'get-perlin-point/3 options) options)))
+
+(defun create-perlin
+  (((= (cons `#(,_ ,_) _) options)) ;; work harder, hello kitty!
+   (print (build-ascii #'get-perlin-point/3 options) options))
+  ((filename)
+    (let ((options (default-options)))
+      (write filename
+             (build-ascii #'get-perlin-point/3 options)
+             options))))
+
+(defun create-perlin (filename options)
+  (write filename
+         (build-ascii #'get-perlin-point/3 options)
+         options))
+
+(defun create-simplex ()
+  (let ((options (default-options)))
+    (print (build-ascii #'get-simplex-point/3 options) options)))
+
+(defun create-simplex
+  (((= (cons `#(,_ ,_) _) options))
+   (print (build-ascii #'get-simplex-point/3 options) options))
+  ((filename)
+    (let ((options (default-options)))
+      (write filename
+             (build-ascii #'get-simplex-point/3 options)
+             options))))
+
+(defun create-simplex (filename options)
+  (write filename
+         (build-ascii #'get-simplex-point/3 options)
+         options))
+
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Supporting functions
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun get-point (x y func options)
   (let* ((value (funcall func
@@ -66,38 +110,3 @@
 (defun write (filename data options)
   (file:write_file filename (render data options)))
 
-(defun create-perlin ()
-  (let ((options (default-options)))
-    (print (build-ascii #'get-perlin-point/3 options) options)))
-
-(defun create-perlin
-  (((= (cons `#(,_ ,_) _) options)) ;; work harder, hello kitty!
-   (print (build-ascii #'get-perlin-point/3 options) options))
-  ((filename)
-    (let ((options (default-options)))
-      (write filename
-             (build-ascii #'get-perlin-point/3 options)
-             options))))
-
-(defun create-perlin (filename options)
-  (write filename
-         (build-ascii #'get-perlin-point/3 options)
-         options))
-
-(defun create-simplex ()
-  (let ((options (default-options)))
-    (print (build-ascii #'get-simplex-point/3 options) options)))
-
-(defun create-simplex
-  (((= (cons `#(,_ ,_) _) options))
-   (print (build-ascii #'get-simplex-point/3 options) options))
-  ((filename)
-    (let ((options (default-options)))
-      (write filename
-             (build-ascii #'get-simplex-point/3 options)
-             options))))
-
-(defun create-simplex (filename options)
-  (write filename
-         (build-ascii #'get-simplex-point/3 options)
-         options))

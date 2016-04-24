@@ -1,6 +1,10 @@
 (defmodule loise-egd
   (export all))
 
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; API
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 (defun default-options ()
   (++
     `(#(width 256)
@@ -9,6 +13,22 @@
       #(random false)
       #(seed 42))
     (loise-const:base-options)))
+
+(defun create-perlin (filename)
+  (create-perlin filename (default-options)))
+
+(defun create-perlin (filename options)
+  (create filename #'draw-perlin-point!/4 options))
+
+(defun create-simplex (filename)
+  (create-simplex filename (default-options)))
+
+(defun create-simplex (filename options)
+  (create filename #'draw-simplex-point!/4 options))
+
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Supporting functions
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun get-point-color (value options)
   (let ((adjusted (lutil-math:color-scale value #(-1 1)))
@@ -79,15 +99,5 @@
     (build-image func options)
     filename))
 
-(defun create-perlin (filename)
-  (create-perlin filename (default-options)))
 
-(defun create-perlin (filename options)
-  (create filename #'draw-perlin-point!/4 options))
-
-(defun create-simplex (filename)
-  (create-simplex filename (default-options)))
-
-(defun create-simplex (filename options)
-  (create filename #'draw-simplex-point!/4 options))
 

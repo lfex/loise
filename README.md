@@ -4,7 +4,7 @@
 
 [![Loise project logo][logo]][logo]
 
-#### Table of Contents
+#### Contents
 
 * [Introduction](#introduction-)
 * [Background](#background-)
@@ -16,6 +16,7 @@
 * [Usage](#usage-)
   * [From the REPL](#from-the-repl-)
   * [In a Module](#in-a-module-)
+* [License](#license-)
 
 
 ## Introduction [&#x219F;](#table-of-contents)
@@ -302,6 +303,16 @@ Or, iterating over some values:
   (def get-simplex-pie ()
     (simplex 3.14 1.59 2.65))
 ```
+
+
+## License [&#x219F;](#contents)
+
+```
+Copyright © 2013-2016 Duncan McGreggor
+
+Distributed under the Apache License, Version 2.0.
+```
+
 
 <!-- Named page links below: /-->
 

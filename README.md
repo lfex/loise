@@ -47,7 +47,7 @@ features.
 
 ## Dependencies [&#x219F;](#table-of-contents)
 
-This project assumes that you have [rebar](https://github.com/rebar/rebar)
+This project requires that you have Erlang installed (tested with R15B03, R16B03, 17.5, 18.0, and 18.3). It also assumes that you have [rebar3](https://github.com/erlang/rebar3)
 installed somwhere in your ``$PATH``.
 
 

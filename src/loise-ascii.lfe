@@ -61,7 +61,7 @@
     "\n"))
 
 (defun print (data options)
-  (io:format "~s~n" (list (render data options))))
+  (io:format "~s~n" `(,(render data options))))
 
 (defun write (filename data options)
   (file:write_file filename (render data options)))

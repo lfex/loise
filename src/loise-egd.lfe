@@ -19,13 +19,13 @@
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun perlin (filename)
-  (create-perlin filename (default-options)))
+  (perlin filename (default-options)))
 
 (defun perlin (filename options)
   (create filename #'draw-perlin-point!/4 options))
 
 (defun simplex (filename)
-  (create-simplex filename (default-options)))
+  (simplex filename (default-options)))
 
 (defun simplex (filename options)
   (create filename #'draw-simplex-point!/4 options))
@@ -59,7 +59,7 @@
                 (get-image-filetype filename))
     filename))
 
-(defun get-point-color (value options)
+(defun get-graded-point (value options)
   (let ((adjusted (lutil-math:color-scale value #(-1 1)))
         (grades (proplists:get_value 'grades options)))
     (case grades
@@ -81,7 +81,7 @@
                   (loise-util:get-dimensions options)
                   (proplists:get_value 'multiplier options)
                   options))
-         (adjusted (get-point-color value options)))
+         (adjusted (get-graded-point value options)))
     (egd:line
       image
       `#(,x ,y) `#(,x ,y)
@@ -102,11 +102,11 @@
 
   Based on the Racket function defined here:
     http://docs.racket-lang.org/picturing-programs/#%28def._%28%28lib._picturing-programs/private/map-image..rkt%29._build-image%29%29"
-   (let* ((new-opts (++ (loise-util:update-perm-table-options options)
+  (let* ((new-opts (++ (loise-util:update-perm-table-options options)
                         (default-options)))
-          (width (proplists:get_value 'width new-opts))
-          (height (proplists:get_value 'height new-opts))
-          (image (egd:create width height)))
+         (width (proplists:get_value 'width new-opts))
+         (height (proplists:get_value 'height new-opts))
+         (image (egd:create width height)))
      (list-comp ((<- x (lists:seq 0 width))
                  (<- y (lists:seq 0 height)))
                 (funcall func image x y new-opts))

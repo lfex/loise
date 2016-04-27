@@ -76,6 +76,12 @@
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+(defun print (data options)
+  (io:format "~s~n" `(,(render data options))))
+
+(defun write (filename data options)
+  (file:write_file filename (render data options)))
+
 (defun get-point (x y func options)
   (let* ((value (funcall func
                   `(,x ,y)
@@ -118,10 +124,3 @@
     (list-comp ((<- y (lists:seq 0 (get_value 'height options))))
                (render-row y data options))
     "\n"))
-
-(defun print (data options)
-  (io:format "~s~n" `(,(render data options))))
-
-(defun write (filename data options)
-  (file:write_file filename (render data options)))
-

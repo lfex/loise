@@ -5,7 +5,7 @@
   {description, "A noise-generator for LFE"},
 
   %% The version of the application
-  {vsn, "1.0.0"},
+  {vsn, "1.1.0-rc1"},
 
   %% All modules used by the application.
   {modules,
@@ -33,9 +33,19 @@
   %% configuration parameters similar to those in the config file specified
   %% on the command line. can be fetched with gas:get_env
   %{env, []},
-  {env, []}
+  {env, []},
 
   %% The Module and Args used to start this application.
-  %{mod, {lfeunit_app, []}}
+  %{mod, {lfeunit_app, []}},
+
+  %% Package metadata:
+  {pkg_name, loise},
+  {maintainers, ["Duncan McGreggor"]},
+  {licenses, ["Apache-2"]},
+  {links,
+   [{"GitHub", "https://github.com/lfex/loise"},
+    {"Gitlab", "https://gitlab.com/lfex/loise"},
+    {"Hex", "https://hex.pm/packages/loise"}
+   ]}
  ]
 }.

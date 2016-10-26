@@ -1,8 +1,11 @@
-# Loise [![Build Status][travis-badge]][travis]
+# Loise
+
+[![Build Status][travis badge]][travis] [![LFE Versions][lfe badge]][lfe] [![Erlang Versions][erlang badge]][versions] [![Tags][github tags badge]][github tags] [![Downloads][hex downloads]][hex package]
+
+[![Loise project logo][logo]][logo]
 
 *A Noise-Generator for LFE*
 
-[![Loise project logo][logo]][logo]
 
 #### Contents
 
@@ -318,6 +321,19 @@ Distributed under the Apache License, Version 2.0.
 
 <!-- Named page links below: /-->
 
+[org]: https://github.com/lfex
+[github]: https://github.com/lfex/loise
+[gitlab]: https://gitlab.com/lfex/loise
 [travis]: https://travis-ci.org/lfex/loise
 [travis-badge]: https://travis-ci.org/lfex/loise.png?branch=master
 [logo]: priv/images/loise.jpg
+[lfe]: https://github.com/rvirding/lfe
+[lfe badge]: https://img.shields.io/badge/lfe-1.2.0-blue.svg
+[erlang badge]: https://img.shields.io/badge/erlang-R15%20to%2019.1-blue.svg
+[versions]: https://github.com/lfex/loise/blob/master/.travis.yml
+[github tags]: https://github.com/lfex/loise/tags
+[github tags badge]: https://img.shields.io/github/tag/lfex/loise.svg
+[github downloads]: https://img.shields.io/github/downloads/lfex/loise/total.svg
+[hex badge]: https://img.shields.io/hexpm/v/loise.svg?maxAge=2592000
+[hex package]: https://hex.pm/packages/loise
+[hex downloads]: https://img.shields.io/hexpm/dt/loise.svg

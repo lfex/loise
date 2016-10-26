@@ -4,8 +4,6 @@
     (from proplists
       (get_value 2))))
 
-(include-lib "clj/include/compose.lfe")
-
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Options
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -162,11 +160,11 @@
 (defun get-gradient-index (a b c options)
   (let ((perm (get_value 'perm-table options))
         (modulus (get_value 'grad-modulus options)))
-    (rem (->> (loise-util:index perm c)
-              (+ b)
-              (loise-util:index perm)
-              (+ a)
-              (loise-util:index perm))
+    (rem (clj:->> (loise-util:index perm c)
+                  (+ b)
+                  (loise-util:index perm)
+                  (+ a)
+                  (loise-util:index perm))
          modulus)))
 
 (defun get-noise-contribution (g x y z options)

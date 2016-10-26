@@ -5,12 +5,12 @@
 (include-lib "ltest/include/ltest-macros.lfe")
 
 (deftest get-point-color-without-grades
-  (is-equal 128 (loise-egd:get-point-color 0 '())))
+  (is-equal 128 (loise-egd:get-graded-point 0 '())))
 
 (deftest get-point-color-with-grades
   (is-equal
     170.0
-    (loise-egd:get-point-color
+    (loise-egd:get-graded-point
       0.5
       `(#(grades ,(loise-util:get-gradations 4))))))
 

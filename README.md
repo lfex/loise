@@ -325,7 +325,7 @@ Distributed under the Apache License, Version 2.0.
 [github]: https://github.com/lfex/loise
 [gitlab]: https://gitlab.com/lfex/loise
 [travis]: https://travis-ci.org/lfex/loise
-[travis-badge]: https://img.shields.io/travis/lfex/loise.svg
+[travis badge]: https://img.shields.io/travis/lfex/loise.svg
 [logo]: priv/images/loise.jpg
 [lfe]: https://github.com/rvirding/lfe
 [lfe badge]: https://img.shields.io/badge/lfe-1.2.0-blue.svg

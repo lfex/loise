@@ -1,7 +1,10 @@
 _build
+_checkouts
+rebar3.*dump
 *.sublime-project
 *.sublime-workspace
 *.beam
 bin/*
 ebin/*
 tmp/*
+

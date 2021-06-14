@@ -1,10 +1,13 @@
 # Loise
 
-[![Build Status][travis badge]][travis] [![LFE Versions][lfe badge]][lfe] [![Erlang Versions][erlang badge]][versions] [![Tags][github tags badge]][github tags] [![Downloads][hex downloads]][hex package]
-
-[![Loise project logo][logo]][logo]
+[![Build Status][gh-actions-badge]][gh-actions]
+[![LFE Versions][lfe badge]][lfe]
+[![Erlang Versions][erlang badge]][versions]
+[![Tags][github tags badge]][github tags]
 
 *A Noise-Generator for LFE*
+
+[![Loise project logo][logo]][logo]
 
 
 #### Contents
@@ -324,13 +327,13 @@ Distributed under the Apache License, Version 2.0.
 [org]: https://github.com/lfex
 [github]: https://github.com/lfex/loise
 [gitlab]: https://gitlab.com/lfex/loise
-[travis]: https://travis-ci.org/lfex/loise
-[travis badge]: https://img.shields.io/travis/lfex/loise.svg
+[gh-actions-badge]: https://github.com/lfex/loise/workflows/ci%2Fcd/badge.svg
+[gh-actions]: https://github.com/lfex/loise/actions
 [logo]: priv/images/loise.jpg
 [lfe]: https://github.com/rvirding/lfe
-[lfe badge]: https://img.shields.io/badge/lfe-1.2.0-blue.svg
-[erlang badge]: https://img.shields.io/badge/erlang-R15%20to%2019.1-blue.svg
-[versions]: https://github.com/lfex/loise/blob/master/.travis.yml
+[lfe badge]: https://img.shields.io/badge/lfe-2.0-blue.svg
+[erlang badge]: https://img.shields.io/badge/erlang-19%20to%2024-blue.svg
+[versions]: https://github.com/lfex/loise/blob/master/.github/workflows/cicd.yml
 [github tags]: https://github.com/lfex/loise/tags
 [github tags badge]: https://img.shields.io/github/tag/lfex/loise.svg
 [github downloads]: https://img.shields.io/github/downloads/lfex/loise/total.svg

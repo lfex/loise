@@ -27,38 +27,38 @@
 
 (defun perlin ()
   (let ((options (default-options)))
-    (print (build-ascii #'get-perlin-point/3 options) options)))
+    (print (build-ascii #'perlin-point/3 options) options)))
 
 (defun perlin
   (((= (cons `#(,_ ,_) _) options)) ;; work harder, hello kitty!
-   (print (build-ascii #'get-perlin-point/3 options) options))
+   (print (build-ascii #'perlin-point/3 options) options))
   ((filename)
     (let ((options (default-options)))
       (write filename
-             (build-ascii #'get-perlin-point/3 options)
+             (build-ascii #'perlin-point/3 options)
              options))))
 
 (defun perlin (filename options)
   (write filename
-         (build-ascii #'get-perlin-point/3 options)
+         (build-ascii #'perlin-point/3 options)
          options))
 
 (defun simplex ()
   (let ((options (default-options)))
-    (print (build-ascii #'get-simplex-point/3 options) options)))
+    (print (build-ascii #'simplex-point/3 options) options)))
 
 (defun simplex
   (((= (cons `#(,_ ,_) _) options))
-   (print (build-ascii #'get-simplex-point/3 options) options))
+   (print (build-ascii #'simplex-point/3 options) options))
   ((filename)
     (let ((options (default-options)))
       (write filename
-             (build-ascii #'get-simplex-point/3 options)
+             (build-ascii #'simplex-point/3 options)
              options))))
 
 (defun simplex (filename options)
   (write filename
-         (build-ascii #'get-simplex-point/3 options)
+         (build-ascii #'simplex-point/3 options)
          options))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -82,7 +82,7 @@
 (defun write (filename data options)
   (file:write_file filename (render data options)))
 
-(defun get-point (x y func options)
+(defun point (x y func options)
   (let* ((value (funcall func
                   `(,x ,y)
                   (loise-util:get-dimensions options)
@@ -93,11 +93,11 @@
          (ascii-map (loise-util:get-ascii-map options)))
     `#((,x ,y) ,(get_value graded ascii-map))))
 
-(defun get-perlin-point (x y options)
-  (get-point x y #'loise:get-perlin-point/4 options))
+(defun perlin-point (x y options)
+  (point x y #'loise-perlin:point/4 options))
 
-(defun get-simplex-point (x y options)
-  (get-point x y #'loise:get-simplex-point/4 options))
+(defun simplex-point (x y options)
+  (point x y #'loise-simplex:point/4 options))
 
 (defun build-ascii (func options)
   "Builds an ASCII map of the specified size and shape by calling the specified

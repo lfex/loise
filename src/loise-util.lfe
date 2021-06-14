@@ -8,6 +8,10 @@
   (++ (lr3-ver-util:get-versions)
       `(#(loise ,(get-version)))))
 
+(defun int-list->str (data)
+  (lists:flatten
+    (lists:map #'integer_to_list/1 data)))
+
 (defun random-permutation-table ()
   (lists:map
     (lambda (_)
@@ -76,3 +80,36 @@
     (lambda (args)
       (apply f
         (cons arg args)))))
+
+(defun mix (a b t options)
+  (+ (* (- (proplists:get_value 'mix-shift options) t) a) (* t b)))
+
+(defun fade (t options)
+  (* t t t
+    (+ (proplists:get_value 'fade-shift-2 options)
+       (* t (- (* t (proplists:get_value 'fade-factor options))
+               (proplists:get_value 'fade-shift-1 options))))))
+
+(defun get-gradient-index (a b c options)
+  (let ((perm (proplists:get_value 'perm-table options))
+        (modulus (proplists:get_value 'grad-modulus options)))
+    (rem (clj:->> (loise-util:index perm c)
+                  (+ b)
+                  (loise-util:index perm)
+                  (+ a)
+                  (loise-util:index perm))
+         modulus)))
+
+(defun get-noise-contribution (g x y z options)
+  (loise-util:dot
+    (loise-util:index (proplists:get_value 'grad-matrix options) g)
+    x y z))
+
+(defun corner-contribution (g x y z options)
+  (let* ((t (- 0.5 (* x x) (* y y) (* z z)))
+         (t^2 (* t t)))
+    (if (< t 0)
+      0.0
+      (* t^2 t^2 (loise-util:dot
+                   (loise-util:index (proplists:get_value 'grad-matrix options) g)
+                   x y z)))))

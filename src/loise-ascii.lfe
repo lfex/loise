@@ -4,100 +4,92 @@
     (from proplists
       (get_value 2))))
 
+(include-lib "include/options.lfe")
+
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Options
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun default-options ()
-  (++
-    `(#(width 56)
-      #(height 36)
-      #(multiplier 4.0)
-      #(grades ,(loise-util:get-gradations 6))
-      #(ascii-map ("A" "^" "n" "*" "~" "~"))
-      #(colors (,#'color:whiteb/1 ,#'color:yellow/1 ,#'color:green/1
-                ,#'color:greenb/1 ,#'color:blue/1 ,#'color:blue/1))
-      #(random false)
-      #(seed 42))
-    (loise-const:base-options)))
+(defun options ()
+  (options '()))
+
+(defun options (overrides)
+  (let* ((opts (default-ascii-options overrides))
+         (grades-count (proplists:get_value 'grades-count opts)))
+    (++ `(#(grades ,(loise-util:make-gradations grades-count)))
+        opts)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun perlin ()
-  (let ((options (default-options)))
-    (print (build-ascii #'perlin-point/3 options) options)))
+  (let ((opts (options)))
+    (print (build-ascii #'perlin-point/3 opts) opts)))
 
 (defun perlin
-  (((= (cons `#(,_ ,_) _) options)) ;; work harder, hello kitty!
-   (print (build-ascii #'perlin-point/3 options) options))
+  (((= (cons `#(,_ ,_) _) opts))
+   (print (build-ascii #'perlin-point/3 opts) opts))
   ((filename)
-    (let ((options (default-options)))
+    (let ((opts (options)))
       (write filename
-             (build-ascii #'perlin-point/3 options)
-             options))))
+             (build-ascii #'perlin-point/3 opts)
+             opts))))
 
-(defun perlin (filename options)
+(defun perlin (filename opts)
   (write filename
-         (build-ascii #'perlin-point/3 options)
-         options))
+         (build-ascii #'perlin-point/3 opts)
+         opts))
 
 (defun simplex ()
-  (let ((options (default-options)))
-    (print (build-ascii #'simplex-point/3 options) options)))
+  (let ((opts (options)))
+    (print (build-ascii #'simplex-point/3 opts) opts)))
 
 (defun simplex
-  (((= (cons `#(,_ ,_) _) options))
-   (print (build-ascii #'simplex-point/3 options) options))
+  (((= (cons `#(,_ ,_) _) opts))
+   (print (build-ascii #'simplex-point/3 opts) opts))
   ((filename)
-    (let ((options (default-options)))
+    (let ((opts (options)))
       (write filename
-             (build-ascii #'simplex-point/3 options)
-             options))))
+             (build-ascii #'simplex-point/3 opts)
+             opts))))
 
-(defun simplex (filename options)
+(defun simplex (filename opts)
   (write filename
-         (build-ascii #'simplex-point/3 options)
-         options))
+         (build-ascii #'simplex-point/3 opts)
+         opts))
 
-;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; Aliases, for backwards compatibility
-;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+(defun point (x y func opts)
+  (let* ((value (funcall func
+                  `(,x ,y)
+                  (loise-util:get-dimensions opts)
+                  (get_value 'multiplier opts)
+                  opts))
+         (adjusted (lutil-math:color-scale value #(-1 1)))
+         (graded (lutil-math:get-closest adjusted (get_value 'grades opts)))
+         (ascii-map (ascii-map opts)))
+    `#((,x ,y) ,(get_value graded ascii-map))))
 
-(defun create-perlin () (perlin))
-(defun create-perlin (a) (perlin a))
-(defun create-perlin (a b) (perlin a b))
-(defun create-simplex () (simplex))
-(defun create-simplex (a) (simplex a))
-(defun create-simplex (a b) (simplex a b))
+(defun perlin-point (x y opts)
+  (point x y #'loise-perlin:point/4 opts))
+
+(defun simplex-point (x y opts)
+  (point x y #'loise-simplex:point/4 opts))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(defun ascii-map (options)
+  (lists:zip
+    (proplists:get_value 'grades options)
+    (proplists:get_value 'ascii-map options)))
 
 (defun print (data options)
   (io:format "~s~n" `(,(render data options))))
 
 (defun write (filename data options)
   (file:write_file filename (render data options)))
-
-(defun point (x y func options)
-  (let* ((value (funcall func
-                  `(,x ,y)
-                  (loise-util:get-dimensions options)
-                  (get_value 'multiplier options)
-                  options))
-         (adjusted (lutil-math:color-scale value #(-1 1)))
-         (graded (lutil-math:get-closest adjusted (get_value 'grades options)))
-         (ascii-map (loise-util:get-ascii-map options)))
-    `#((,x ,y) ,(get_value graded ascii-map))))
-
-(defun perlin-point (x y options)
-  (point x y #'loise-perlin:point/4 options))
-
-(defun simplex-point (x y options)
-  (point x y #'loise-simplex:point/4 options))
 
 (defun build-ascii (func options)
   "Builds an ASCII map of the specified size and shape by calling the specified

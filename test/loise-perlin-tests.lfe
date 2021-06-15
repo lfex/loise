@@ -3,12 +3,10 @@
   (export all))
 
 (include-lib "ltest/include/ltest-macros.lfe")
-
-(defun opts ()
-  (loise-const:base-options))
+(include-lib "include/options.lfe")
 
 (deftest perlin
-  (is-equal -0.3772216257243449 (loise-perlin:3d 3.14 1.59 2.65 (opts)))
+  (is-equal -0.3772216257243449 (loise-perlin:3d 3.14 1.59 2.65 (default-options)))
   (let ((expected (list 0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11))
         (input (lists:map (lambda (x) (/ x 10)) (lists:seq 0 9))))
     (lists:zipwith

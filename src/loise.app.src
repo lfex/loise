@@ -10,7 +10,12 @@
   %% All modules used by the application.
   {modules,
    [
-    loise, 'loise-ascii', 'loise-const', 'loise-egd', 'loise-util'
+    loise,
+    'loise-ascii',
+    'loise-egd',
+    'loise-perlin', 
+    'loise-simplex', 
+    'loise-util'
    ]},
 
   %% All of the registered names the application uses. This can be ignored.

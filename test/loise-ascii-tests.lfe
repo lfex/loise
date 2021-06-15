@@ -3,13 +3,17 @@
   (export all))
 
 (include-lib "ltest/include/ltest-macros.lfe")
-
-(defun def-opts ()
-  (loise-ascii:default-options))
+(include-lib "include/options.lfe")
 
 (defun tiny-opts ()
-  (++ `(#(width 2) #(height 2))
-      (def-opts)))
+  (++ `(#(width 2)
+        #(height 2))
+      (default-ascii-options)))
+
+(deftest ascii-map
+  (is-equal
+    '(#(0 "A") #(51.0 "^") #(102.0 "n") #(153.0 "*") #(204.0 "~") #(255.0 "~"))
+    (loise-ascii:ascii-map (loise-ascii:options))))
 
 (deftest get-perlin-point
   (is-equal '#((0 0) "*") (loise-ascii:perlin-point 0 0 (tiny-opts)))

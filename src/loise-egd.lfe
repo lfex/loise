@@ -1,43 +1,45 @@
 (defmodule loise-egd
   (export all))
 
-;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; Options
-;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-(defun default-options ()
-  (++
-    `(#(width 256)
-      #(height 128)
-      #(multiplier 4.0)
-      #(random false)
-      #(seed 42))
-    (loise-const:base-options)))
+(include-lib "include/options.lfe")
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun perlin (filename)
-  (perlin filename (default-options)))
+  (perlin filename (default-egd-options)))
 
 (defun perlin (filename options)
   (create filename #'draw-perlin-point!/4 options))
 
 (defun simplex (filename)
-  (simplex filename (default-options)))
+  (simplex filename (default-egd-options)))
 
 (defun simplex (filename options)
   (create filename #'draw-simplex-point!/4 options))
 
-;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; Aliases, for backwards compatibility
-;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+(defun draw-point! (image x y func options)
+  "egd doesn't have a function for drawing just a point.
 
-(defun create-perlin (a) (perlin a))
-(defun create-perlin (a b) (perlin a b))
-(defun create-simplex (a) (simplex a))
-(defun create-simplex (a b) (simplex a b))
+  This has got to be an incredibly inefficient function; please don't treat
+  like anything other than what this is: A toy."
+  (let* ((value (funcall func
+                  `(,x ,y)
+                  (loise-util:get-dimensions options)
+                  (proplists:get_value 'multiplier options)
+                  options))
+         (adjusted (get-graded-point value options)))
+    (egd:line
+      image
+      `#(,x ,y) `#(,x ,y)
+      (egd:color `#(,adjusted ,adjusted ,adjusted)))))
+
+(defun draw-perlin-point! (image x y options)
+  (draw-point! image x y #'loise:get-perlin-point/4 options))
+
+(defun draw-simplex-point! (image x y options)
+  (draw-point! image x y #'loise:get-simplex-point/4 options))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Supporting functions
@@ -70,28 +72,6 @@
 
 (defun get-image-filetype (filename)
   (list_to_atom (cdr (filename:extension filename))))
-
-(defun draw-point! (image x y func options)
-  "egd doesn't have a function for drawing just a point.
-
-  This has got to be an incredibly inefficient function; please don't treat
-  like anything othat that what this is: A toy."
-  (let* ((value (funcall func
-                  `(,x ,y)
-                  (loise-util:get-dimensions options)
-                  (proplists:get_value 'multiplier options)
-                  options))
-         (adjusted (get-graded-point value options)))
-    (egd:line
-      image
-      `#(,x ,y) `#(,x ,y)
-      (egd:color `#(,adjusted ,adjusted ,adjusted)))))
-
-(defun draw-perlin-point! (image x y options)
-  (draw-point! image x y #'loise:get-perlin-point/4 options))
-
-(defun draw-simplex-point! (image x y options)
-  (draw-point! image x y #'loise:get-simplex-point/4 options))
 
 (defun build-image (func options)
   "Builds an image of the specified size and shape by calling the specified

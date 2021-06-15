@@ -7,6 +7,8 @@
    (point 3) (point 4)
    (which 3)))
 
+(include-lib "include/options.lfe")
+
 (defun 1d (a)
   (3d a 0.0 0.0 (default-options)))
 
@@ -24,11 +26,11 @@
   in higher dimensions."
   (let*
     (; skew the input space to determine which simplex cell we're in
-     (s (* (+ a b c) (loise-const:skew-factor)))
+     (s (* (+ a b c) (skew-factor options)))
      (i (lutil-math:fast-floor (+ a s)))
      (j (lutil-math:fast-floor (+ b s)))
      (k (lutil-math:fast-floor (+ c s)))
-     (t (* (+ i j k) (loise-const:unskew-factor)))
+     (t (* (+ i j k) (unskew-factor options)))
      ; unskew the cell origin back to (x,y,z) space
      (X0 (- i t))
      (Y0 (- j t))
@@ -45,17 +47,17 @@
      ; (x,y,z), where c = 1/6.
      ;
      ; Offsets for second corner in (x,y,z) coords
-     (x1 (+ (- x0 i1) (loise-const:unskew-factor)))
-     (y1 (+ (- y0 j1) (loise-const:unskew-factor)))
-     (z1 (+ (- z0 k1) (loise-const:unskew-factor)))
+     (x1 (+ (- x0 i1) (unskew-factor options)))
+     (y1 (+ (- y0 j1) (unskew-factor options)))
+     (z1 (+ (- z0 k1) (unskew-factor options)))
      ; Offsets for third corner in (x,y,z) coords
-     (x2 (+ (- x0 i2) (* 2.0 (loise-const:unskew-factor))))
-     (y2 (+ (- y0 j2) (* 2.0 (loise-const:unskew-factor))))
-     (z2 (+ (- z0 k2) (* 2.0 (loise-const:unskew-factor))))
+     (x2 (+ (- x0 i2) (* 2.0 (unskew-factor options))))
+     (y2 (+ (- y0 j2) (* 2.0 (unskew-factor options))))
+     (z2 (+ (- z0 k2) (* 2.0 (unskew-factor options))))
      ; Offsets for last corner in (x,y,z) coords
-     (x3 (+ (- x0 1.0) (* 3.0 (loise-const:unskew-factor))))
-     (y3 (+ (- y0 1.0) (* 3.0 (loise-const:unskew-factor))))
-     (z3 (+ (- z0 1.0) (* 3.0 (loise-const:unskew-factor))))
+     (x3 (+ (- x0 1.0) (* 3.0 (unskew-factor options))))
+     (y3 (+ (- y0 1.0) (* 3.0 (unskew-factor options))))
+     (z3 (+ (- z0 1.0) (* 3.0 (unskew-factor options))))
      ; Work out the hashed gradient indices of the four simplex corners
      (ii (band i 255))
      (jj (band j 255))
@@ -106,7 +108,8 @@
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-;; XXX replace with stuff from new .hrl
-(defun default-options ()
-  (loise-const:base-options))
+(defun skew-factor (opts)
+  (proplists:get_value 'skew-factor opts) (default-skew-factor))
 
+(defun unskew-factor (opts)
+  (proplists:get_value 'unskew-factor opts) (default-unskew-factor))

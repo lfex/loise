@@ -12,7 +12,7 @@
     170.0
     (loise-egd:get-graded-point
       0.5
-      `(#(grades ,(loise-util:get-gradations 4))))))
+      `(#(grades ,(loise-util:make-gradations 4))))))
 
 (deftest get-image-filetype
   (is-equal 'png (loise-egd:get-image-filetype "myfile.png"))

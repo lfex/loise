@@ -5,6 +5,8 @@
    (3d 4)
    (point 3) (point 4)))
 
+(include-lib "include/options.lfe")
+
 (defun 1d (a)
   (3d a 0.0 0.0 (default-options)))
 
@@ -81,11 +83,3 @@
        (* multiplier (/ y height))
        (* multiplier (/ z depth))
        options)))
-
-;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; Supporting functions
-;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-;; XXX replace with stuff from new .hrl
-(defun default-options ()
-  (loise-const:base-options))

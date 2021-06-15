@@ -163,11 +163,10 @@ with a random seed:
 ```
 
 You may either pass an integer or a list of 1, 2 or 3 integers as values
-for the ``seed`` option key.
+for the `seed` option key.
 
-To see the full list of options available be sure to look at both
-``loise-const:base-options/0`` and ``loise-egd:default-options``.
-
+To see the full list of options available be sure to look at the defaults
+and options in `include/options.lfe`.
 
 ### ASCII [&#x219F;](#contents)
 
@@ -222,8 +221,8 @@ map area in the terminal:
 <a href="https://raw.githubusercontent.com/lfex/loise/master/priv/images/simplex-ascii-2.png"><img src="priv/images/simplex-ascii-2-small.png" /></a>
 
 By default, loise uses a "permutation table" to generate patterns. You can view
-this table in the source ``loise-const`` module. If you would like to generate
-random results, you will need to enable the ``random`` option:
+this table in `include/options.lfe`. If you would like to generate
+random results, you will need to enable the `random` option:
 
 ```cl
 > (set opts (++ `(#(random true)) opts))
@@ -240,8 +239,8 @@ For instance:
 > (loise-ascii:simplex (++ `(#(seed (1 2 3))) opts))
 ```
 
-To see the full list of options available be sure to look at both
-``loise-const:base-options/0`` and ``loise-ascii:default-options``.
+To see the full list of options available be sure read
+`include/options.lfe`.
 
 
 ## Usage [&#x219F;](#contents)

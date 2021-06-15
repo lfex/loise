@@ -1,21 +1,45 @@
 (defmodule loise-util
   (export all))
 
-(defun get-version ()
-  (lr3-ver-util:get-app-version 'loise))
+(defun version ()
+  (version 'loise))
 
-(defun get-versions ()
-  (++ (lr3-ver-util:get-versions)
-      `(#(loise ,(get-version)))))
+(defun version (app-name)
+  (application:load app-name)
+  (case (application:get_key app-name 'vsn)
+    (`#(ok ,vsn) vsn)
+    (default default)))
+
+(defun version-arch ()
+  `#(architecture ,(erlang:system_info 'system_architecture)))
+
+(defun version+name (app-name)
+  `#(,app-name ,(version app-name)))
+
+(defun versions-rebar ()
+  `(,(version+name 'rebar)
+    ,(version+name 'rebar3_lfe)))
+
+(defun versions-langs ()
+  `(,(version+name 'lfe)
+    #(erlang ,(erlang:system_info 'otp_release))
+    #(emulator ,(erlang:system_info 'version))
+    #(driver ,(erlang:system_info 'driver_version))))
+
+(defun versions (bkend)
+  (lists:append `((,(version+name 'loise))
+                  ,(versions-langs)
+                  ,(versions-rebar)
+                  (,(version-arch)))))
 
 (defun int-list->str (data)
   (lists:flatten
     (lists:map #'integer_to_list/1 data)))
 
-(defun random-permutation-table ()
+(defun random-permutation-table (state)
   (lists:map
     (lambda (_)
-      (- (random:uniform 256) 1))
+      (- (rand:uniform_s state 256) 1))
     (lists:seq 1 512)))
 
 (defun get-seed
@@ -28,19 +52,14 @@
   ((`(,int-1 ,int-2 ,int-3))
     `#(,int-1 ,int-2 ,int-3)))
 
-(defun update-perm-table-options (options)
+(defun update-perm-table-options (opts)
   "If 'random' is enabled (has a 'true' value), then don't use the default
   permutation table, but rather generate a new one."
-  (case (proplists:get_value 'random options)
+  (case (proplists:get_value 'random opts)
     ('true
-      (random:seed (get-seed (proplists:get_value 'seed options)))
-      (++ `(#(perm-table ,(random-permutation-table))) options))
-    (_ options)))
-
-(defun get-ascii-map (options)
-  (lists:zip
-    (proplists:get_value 'grades options)
-    (proplists:get_value 'ascii-map options)))
+     (let ((state (rand:seed 'exsss (get-seed (proplists:get_value 'seed opts)))))
+      (++ `(#(perm-table ,(random-permutation-table state))) opts)))
+    (_ opts)))
 
 (defun get-color-map (options)
   (lists:zip
@@ -60,14 +79,17 @@
       (* (index grad 1) y)
       (* (index grad 2) z)))
 
-(defun get-gradations (count)
+(defun make-gradations
   "The number 'count' passed in this function represents the total number of
   gradations we expect to get back. The 'lutil-math:get-gradations' function
   expects a different parameter: 'divisions'. In other words, 'Tell me how many
   divisions you want in the given range.' These two parameters differ by one.
 
   Loise uses the same color range that Erlang's egd does: 0 to 255."
-  (lutil-math:get-gradations '(0 255) (- count 1)))
+  ((count) (when (< count 2))
+   #(error "there must be two or more gradations"))
+  ((count)
+   (lutil-math:get-gradations '(0 255) (- count 1))))
 
 (defun partial
   "Something akin to a partial that will suit our purposes ;-)

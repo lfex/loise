@@ -39,7 +39,9 @@ jobs:
 #      run: ./rebar3 xref
 #    - name: Dialyzer
 #      run: ./rebar3 dialyzer
-    - name: Run Tests
-      run: ./rebar3 as test lfe ltest -tall
+    - name: Run Unit Tests
+      run: ./rebar3 as test lfe ltest -tunit
+    - name: Run System Tests
+      run: ./rebar3 as test lfe ltest -tsystem
     - name: Test Coverage
       run: ./rebar3 as test do proper -c, cover -v --min_coverage=0

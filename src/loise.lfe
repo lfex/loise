@@ -44,3 +44,23 @@
 
 (defun simplex-point(coords size mult)
   (loise-simplex:point coords size mult))
+
+;; ASCII API
+
+;; TODO
+
+;; Image API
+
+;; TODO
+
+;; Common operations
+
+(defun gradations (count) (loise-util:make-gradations count))
+
+(defun round (float precision) (lutil-math:round float precision))
+
+;; Project metadata
+
+(defun version () (loise-util:version))
+
+(defun versions () (loise-util:versions))

@@ -36,13 +36,7 @@
   (lists:flatten
     (lists:map #'integer_to_list/1 data)))
 
-(defun random-permutation-table (state)
-  (lists:map
-    (lambda (_)
-      (- (rand:uniform_s state 256) 1))
-    (lists:seq 1 512)))
-
-(defun get-seed
+(defun seed-tuple
   ((int) (when (is_integer int))
     `#(,int 0 0))
   ((`(,int))
@@ -52,12 +46,21 @@
   ((`(,int-1 ,int-2 ,int-3))
     `#(,int-1 ,int-2 ,int-3)))
 
+(defun random-permutation-table (state)
+  (element 1
+           (lists:foldl
+            (match-lambda ((_ `#(,acc ,st1))
+                           (let ((`#(,num ,st2) (rand:uniform_s 256 st1)))
+                             `#(,(cons num acc) ,st2))))
+            `#(() ,state)
+            (lists:seq 1 512))))
+
 (defun update-perm-table-options (opts)
   "If 'random' is enabled (has a 'true' value), then don't use the default
   permutation table, but rather generate a new one."
   (case (proplists:get_value 'random opts)
     ('true
-     (let ((state (rand:seed 'exsss (get-seed (proplists:get_value 'seed opts)))))
+     (let ((state (rand:seed_s 'exsss (seed-tuple (proplists:get_value 'seed opts)))))
       (++ `(#(perm-table ,(random-permutation-table state))) opts)))
     (_ opts)))
 

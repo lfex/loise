@@ -94,7 +94,7 @@ You can also limit the number of gradations for the shades of grey, giving
 the images a more "layered" or "topographical" look:
 
 ```cl
-> (set grades (loise-util:get-gradations 7))
+> (set grades (loise:gradations 7))
 (0 42.5 85.0 127.5 170.0 212.5 255.0)
 > (set opts `(#(multiplier 8)
               #(grades ,grades)))
@@ -137,7 +137,7 @@ Just as with perlin, simplex allows you to limit the number of gradations for
 the shades of grey:
 
 ```cl
-  > (set grades (loise-util:get-gradations 5))
+  > (set grades (loise:gradations 5))
   (0 63.75 127.5 191.25 255.0)
   > (set opts `(#(multiplier 8)
                 #(grades ,grades)))
@@ -174,7 +174,7 @@ You can also generate ASCII "images" with loise. As an example of this, we can
 map the default values represented by this range:
 
 ```cl
-  > (loise-util:get-gradations 6)
+  > (loise:gradations 6)
   (0 51.0 102.0 153.0 204.0 255.0)
 ```
 
@@ -220,16 +220,16 @@ map area in the terminal:
 ```
 <a href="https://raw.githubusercontent.com/lfex/loise/master/priv/images/simplex-ascii-2.png"><img src="priv/images/simplex-ascii-2-small.png" /></a>
 
-By default, loise uses a "permutation table" to generate patterns. You can view
-this table in `include/options.lfe`. If you would like to generate
-random results, you will need to enable the `random` option:
+By default, loise uses a pre-generated "permutation table" to generate patterns.
+You can view this table in `include/options.lfe`. If you would like to
+generate your own for more random results, you will need to enable the `random`
+option and then generate a new table:
 
 ```cl
 > (set opts (++ `(#(random true)) opts))
 ```
 
-If you do not
-provide a seed, the same "random" result will be given for every call. If you
+If you do not provide your own seed, the provided default will be used. If you
 would like a different result each time, you will need to pass a new seed.
 For instance:
 
@@ -241,7 +241,6 @@ For instance:
 
 To see the full list of options available be sure read
 `include/options.lfe`.
-
 
 ## Usage [&#x219F;](#contents)
 
@@ -298,17 +297,13 @@ Or, iterating over some values:
 
 ```cl
   (defmodule mymodule
-    (export all)
-    (import
-      (from loise
-        (perlin 3)
-        (simplex 3))))
+    (export all))
 
   (def get-perlin-pie ()
-    (perlin 3.14 1.59 2.65))
+    (loise:perlin 3.14 1.59 2.65))
 
   (def get-simplex-pie ()
-    (simplex 3.14 1.59 2.65))
+    (loise:simplex 3.14 1.59 2.65))
 ```
 
 

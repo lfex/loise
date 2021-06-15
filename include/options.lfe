@@ -113,3 +113,8 @@
         #(colors ,(default-ascii-colors)))
       (default-output-options)
       (default-options)))
+
+;; This function is for display purposes when used in the REPL
+;; and needs to be the last function in the include file.
+(defun |-- loaded include: loise/options --| ()
+  'ok)

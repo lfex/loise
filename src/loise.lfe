@@ -55,6 +55,8 @@
 
 ;; Common operations
 
+(defun dim (opts) (loise-util:get-dimensions opts))
+
 (defun gradations (count) (loise-util:make-gradations count))
 
 (defun round (float precision) (lutil-math:round float precision))

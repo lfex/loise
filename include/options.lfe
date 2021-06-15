@@ -59,6 +59,8 @@
 (defun default-output-type () 'undefined)
 (defun default-output-format () 'undefined)
 (defun default-multiplier () 4.0)
+(defun default-grades-count () 6)
+(defun default-grades () '())
 (defun default-random? () 'false)
 (defun default-seed () 42)
 
@@ -67,6 +69,8 @@
     #(output-type ,(default-output-type))
     #(output-format ,(default-output-format))
     #(multiplier ,(default-multiplier))
+    #(grades-count ,(default-grades-count))
+    #(grades ,(default-grades))
     #(random ,(default-random?))
     #(seed ,(default-seed))))
 

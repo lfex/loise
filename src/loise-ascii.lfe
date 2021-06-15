@@ -1,8 +1,5 @@
 (defmodule loise-ascii
-  (export all)
-  (import
-    (from proplists
-      (get_value 2))))
+  (export all))
 
 (include-lib "include/options.lfe")
 
@@ -63,12 +60,14 @@
   (let* ((value (funcall func
                   `(,x ,y)
                   (loise-util:get-dimensions opts)
-                  (get_value 'multiplier opts)
+                  (proplists:get_value 'multiplier opts)
                   opts))
          (adjusted (lutil-math:color-scale value #(-1 1)))
-         (graded (lutil-math:get-closest adjusted (get_value 'grades opts)))
-         (ascii-map (ascii-map opts)))
-    `#((,x ,y) ,(get_value graded ascii-map))))
+         (graded (lutil-math:get-closest
+                  adjusted
+                  (proplists:get_value 'grades opts)))
+         (legend (color-map opts)))
+    `#((,x ,y) ,(proplists:get_value graded legend))))
 
 (defun perlin-point (x y opts)
   (point x y #'loise-perlin:point/4 opts))
@@ -80,10 +79,10 @@
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun ascii-map (options)
+(defun color-map (opts)
   (lists:zip
-    (proplists:get_value 'grades options)
-    (proplists:get_value 'ascii-map options)))
+    (proplists:get_value 'grades opts)
+    (proplists:get_value 'ascii-map opts)))
 
 (defun print (data options)
   (io:format "~s~n" `(,(render data options))))
@@ -99,20 +98,20 @@
   coordinate as well as an egd color value."
   (let ((new-opts (++ (loise-util:update-perm-table-options options)
                       (default-options))))
-    (list-comp ((<- x (lists:seq 0 (get_value 'width options)))
-                (<- y (lists:seq 0 (get_value 'height options))))
+    (list-comp ((<- x (lists:seq 0 (proplists:get_value 'width options)))
+                (<- y (lists:seq 0 (proplists:get_value 'height options))))
                (funcall func x y new-opts))))
 
 (defun render-row (y data options)
   (let ((color-map (loise-util:get-color-map options)))
     (string:join
-      (list-comp ((<- x (lists:seq 0 (get_value 'width options))))
-                  (let ((ascii (get_value `(,x ,y) data)))
-                    (funcall (get_value ascii color-map) ascii)))
+      (list-comp ((<- x (lists:seq 0 (proplists:get_value 'width options))))
+                  (let ((ascii (proplists:get_value `(,x ,y) data)))
+                    (funcall (proplists:get_value ascii color-map) ascii)))
       " ")))
 
 (defun render (data options)
   (string:join
-    (list-comp ((<- y (lists:seq 0 (get_value 'height options))))
+    (list-comp ((<- y (lists:seq 0 (proplists:get_value 'height options))))
                (render-row y data options))
     "\n"))

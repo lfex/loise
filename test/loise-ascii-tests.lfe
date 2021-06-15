@@ -8,14 +8,30 @@
 (defun tiny-opts ()
   (++ `(#(width 2)
         #(height 2))
-      (default-ascii-options)))
+      (loise-ascii:options)))
 
-(deftest ascii-map
+(deftest grades
+  (let ((opts (loise-ascii:options)))
+    (is-equal 6 (proplists:get_value 'grades-count opts))
+    (is-equal '(0 51.0 102.0 153.0 204.0 255.0)
+              (proplists:get_value 'grades opts))
+    (is-equal '("A" "^" "n" "*" "~" "~")
+              (proplists:get_value 'ascii-map opts))
+    (is-equal '(#(0 "A")
+                #(51.0 "^")
+                #(102.0 "n")
+                #(153.0 "*")
+                #(204.0 "~")
+                #(255.0 "~"))
+              (loise-ascii:color-map opts))))
+
+(deftest color-map
   (is-equal
     '(#(0 "A") #(51.0 "^") #(102.0 "n") #(153.0 "*") #(204.0 "~") #(255.0 "~"))
-    (loise-ascii:ascii-map (loise-ascii:options))))
+    (loise-ascii:color-map (loise-ascii:options))))
 
 (deftest get-perlin-point
+  (is-equal 4.0 (proplists:get_value 'multiplier (tiny-opts)))
   (is-equal '#((0 0) "*") (loise-ascii:perlin-point 0 0 (tiny-opts)))
   (is-equal '#((0 1) "*") (loise-ascii:perlin-point 0 1 (tiny-opts)))
   (is-equal '#((1 0) "*") (loise-ascii:perlin-point 1 0 (tiny-opts))))

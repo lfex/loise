@@ -64,14 +64,14 @@
       (++ `(#(perm-table ,(random-permutation-table state))) opts)))
     (_ opts)))
 
-(defun get-color-map (options)
+(defun get-color-map (opts)
   (lists:zip
-    (proplists:get_value 'ascii-map options)
-    (proplists:get_value 'colors options)))
+    (proplists:get_value 'ascii-map opts)
+    (proplists:get_value 'colors opts)))
 
-(defun get-dimensions (options)
-  `(,(proplists:get_value 'width options)
-    ,(proplists:get_value 'height options)))
+(defun get-dimensions (opts)
+  `(,(proplists:get_value 'width opts)
+    ,(proplists:get_value 'height opts)))
 
 (defun index (data position)
   "A list-based version of element-index."

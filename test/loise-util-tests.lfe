@@ -18,21 +18,6 @@
   (is-equal #(0 0 42) (loise-util:seed-tuple '(0 0 42)))
   (is-equal #(42 42 42) (loise-util:seed-tuple '(42 42 42))))
 
-(deftest get-dimensions
-  (is-equal '(256 128) (loise-util:get-dimensions (default-egd-options)))
-  (is-equal '(56 36) (loise-util:get-dimensions (default-ascii-options)))
-  (is-equal '(2 2) (loise-util:get-dimensions (tiny-opts))))
-
-(deftest update-perm-table-options
-  (let* ((opts (default-ascii-options))
-         (new-opts (loise-util:update-perm-table-options opts))) 
-    (is-equal (default-permutation-table)
-              (proplists:get_value 'perm-table opts))
-    (is-equal '(151 160 137 91 90 15 131 13 201 95)
-              (lists:sublist
-               (proplists:get_value 'perm-table new-opts)
-               10))))
-
 (deftest index
   (is-equal 42 (loise-util:index '(99 4 7 42 13) 3))
   (is-equal '(-1.0 -1.0 0.0) (get-grad 3)))

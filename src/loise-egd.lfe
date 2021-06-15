@@ -26,8 +26,8 @@
   like anything other than what this is: A toy."
   (let* ((value (funcall func
                   `(,x ,y)
-                  (loise-util:get-dimensions options)
-                  (proplists:get_value 'multiplier options)
+                  (loise-opts:dimensions options)
+                  (loise-opts:multiplier options)
                   options))
          (adjusted (get-graded-point value options)))
     (egd:line
@@ -63,7 +63,7 @@
 
 (defun get-graded-point (value options)
   (let ((adjusted (lutil-math:color-scale value #(-1 1)))
-        (grades (proplists:get_value 'grades options)))
+        (grades (loise-opts:grades options)))
     (case grades
       ('undefined
         adjusted)
@@ -82,10 +82,10 @@
 
   Based on the Racket function defined here:
     http://docs.racket-lang.org/picturing-programs/#%28def._%28%28lib._picturing-programs/private/map-image..rkt%29._build-image%29%29"
-  (let* ((new-opts (++ (loise-util:update-perm-table-options options)
+  (let* ((new-opts (++ (loise-opts:update-perm-table options)
                         (default-options)))
-         (width (proplists:get_value 'width new-opts))
-         (height (proplists:get_value 'height new-opts))
+         (width (loise-opts:width new-opts))
+         (height (loise-opts:height new-opts))
          (image (egd:create width height)))
      (list-comp ((<- x (lists:seq 0 width))
                  (<- y (lists:seq 0 height)))

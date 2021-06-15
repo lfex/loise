@@ -12,7 +12,7 @@
 
 (defun options (overrides)
   (let* ((opts (default-ascii-options overrides))
-         (grades-count (proplists:get_value 'grades-count opts)))
+         (grades-count (loise-opts:grades-count opts)))
     (++ `(#(grades ,(loise-util:make-gradations grades-count)))
         opts)))
 
@@ -59,14 +59,14 @@
 (defun point (x y func opts)
   (let* ((value (funcall func
                   `(,x ,y)
-                  (loise-util:get-dimensions opts)
-                  (proplists:get_value 'multiplier opts)
+                  (loise-opts:dimensions opts)
+                  (loise-opts:multiplier opts)
                   opts))
          (adjusted (lutil-math:color-scale value #(-1 1)))
          (graded (lutil-math:get-closest
                   adjusted
-                  (proplists:get_value 'grades opts)))
-         (legend (color-map opts)))
+                  (loise-opts:grades opts)))
+         (legend (loise-opts:color-map opts)))
     `#((,x ,y) ,(proplists:get_value graded legend))))
 
 (defun perlin-point (x y opts)
@@ -79,39 +79,39 @@
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun color-map (opts)
-  (lists:zip
-    (proplists:get_value 'grades opts)
-    (proplists:get_value 'ascii-map opts)))
+(defun get-color (colors key)
+  (proplists:get_value key colors))
 
-(defun print (data options)
-  (io:format "~s~n" `(,(render data options))))
+(defun print (data opts)
+  (io:format "~s~n" `(,(render data opts))))
 
-(defun write (filename data options)
-  (file:write_file filename (render data options)))
+(defun write (filename data opts)
+  (file:write_file filename (render data opts)))
 
-(defun build-ascii (func options)
+(defun build-ascii (func opts)
   "Builds an ASCII map of the specified size and shape by calling the specified
   function on the coordinates of each point.
 
   The function takes an x and y coordinate as agument and returns an x y
   coordinate as well as an egd color value."
-  (let ((new-opts (++ (loise-util:update-perm-table-options options)
-                      (default-options))))
-    (list-comp ((<- x (lists:seq 0 (proplists:get_value 'width options)))
-                (<- y (lists:seq 0 (proplists:get_value 'height options))))
-               (funcall func x y new-opts))))
+  (let ((new-opts (loise-opts:update-perm-table opts)))
+    (list-comp ((<- x (lists:seq 0 (loise-opts:width opts)))
+                (<- y (lists:seq 0 (loise-opts:height opts))))
+      (funcall func x y new-opts))))
 
-(defun render-row (y data options)
-  (let ((color-map (loise-util:get-color-map options)))
+(defun render-row (y data opts)
+  (let ((colors (loise-opts:color-map opts))
+        (separator " "))
     (string:join
-      (list-comp ((<- x (lists:seq 0 (proplists:get_value 'width options))))
-                  (let ((ascii (proplists:get_value `(,x ,y) data)))
-                    (funcall (proplists:get_value ascii color-map) ascii)))
-      " ")))
+     (list-comp ((<- x (lists:seq 0 (loise-opts:width opts))))
+       (let* ((char (proplists:get_value `(,x ,y) data))
+              (color (get-color colors char)))
+         (loise-util:colorize color char)))
+     separator)))
 
-(defun render (data options)
-  (string:join
-    (list-comp ((<- y (lists:seq 0 (proplists:get_value 'height options))))
-               (render-row y data options))
-    "\n"))
+(defun render (data opts)
+  (let ((separator "\n"))
+    (string:join
+     (list-comp ((<- y (lists:seq 0 (loise-opts:height opts))))
+       (render-row y data opts))
+     separator)))

@@ -55,24 +55,6 @@
             `#(() ,state)
             (lists:seq 1 512))))
 
-(defun update-perm-table-options (opts)
-  "If 'random' is enabled (has a 'true' value), then don't use the default
-  permutation table, but rather generate a new one."
-  (case (proplists:get_value 'random opts)
-    ('true
-     (let ((state (rand:seed_s 'exsss (seed-tuple (proplists:get_value 'seed opts)))))
-      (++ `(#(perm-table ,(random-permutation-table state))) opts)))
-    (_ opts)))
-
-(defun get-color-map (opts)
-  (lists:zip
-    (proplists:get_value 'ascii-map opts)
-    (proplists:get_value 'colors opts)))
-
-(defun get-dimensions (opts)
-  `(,(proplists:get_value 'width opts)
-    ,(proplists:get_value 'height opts)))
-
 (defun index (data position)
   "A list-based version of element-index."
   (lists:nth (+ 1 position) data))
@@ -106,18 +88,18 @@
       (apply f
         (cons arg args)))))
 
-(defun mix (a b t options)
-  (+ (* (- (proplists:get_value 'mix-shift options) t) a) (* t b)))
+(defun mix (a b t opts)
+  (+ (* (- (loise-opts:mix-shift opts) t) a) (* t b)))
 
-(defun fade (t options)
+(defun fade (t opts)
   (* t t t
-    (+ (proplists:get_value 'fade-shift-2 options)
-       (* t (- (* t (proplists:get_value 'fade-factor options))
-               (proplists:get_value 'fade-shift-1 options))))))
+    (+ (loise-opts:fade-shift-2 opts)
+       (* t (- (* t (loise-opts:fade-factor opts))
+               (loise-opts:fade-shift-1 opts))))))
 
-(defun get-gradient-index (a b c options)
-  (let ((perm (proplists:get_value 'perm-table options))
-        (modulus (proplists:get_value 'grad-modulus options)))
+(defun get-gradient-index (a b c opts)
+  (let ((perm (loise-opts:perm-table opts))
+        (modulus (loise-opts:grad-modulus opts)))
     (rem (clj:->> (loise-util:index perm c)
                   (+ b)
                   (loise-util:index perm)
@@ -126,8 +108,8 @@
          modulus)))
 
 (defun get-noise-contribution (g x y z options)
-  (loise-util:dot
-    (loise-util:index (proplists:get_value 'grad-matrix options) g)
+  (dot
+    (loise-util:index (loise-opts:grad-matrix options) g)
     x y z))
 
 (defun corner-contribution (g x y z options)
@@ -135,6 +117,9 @@
          (t^2 (* t t)))
     (if (< t 0)
       0.0
-      (* t^2 t^2 (loise-util:dot
-                   (loise-util:index (proplists:get_value 'grad-matrix options) g)
+      (* t^2 t^2 (dot
+                   (index (loise-opts:grad-matrix options) g)
                    x y z)))))
+
+(defun colorize (name text)
+  (call 'color name text))

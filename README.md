@@ -322,7 +322,7 @@ Or, iterating over some values:
 ## License [&#x219F;](#contents)
 
 ```
-Copyright © 2013-2016 Duncan McGreggor
+Copyright © 2013-2021 Duncan McGreggor
 
 Distributed under the Apache License, Version 2.0.
 ```

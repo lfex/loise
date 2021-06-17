@@ -4,7 +4,7 @@
 (include-lib "include/options.lfe")
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; Options
+;;; Options and Defaults
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun options ()
@@ -14,104 +14,90 @@
   (let* ((opts (default-ascii-options overrides))
          (grades-count (loise-opts:grades-count opts)))
     (++ `(#(grades ,(loise-util:make-gradations grades-count)))
-        opts)))
+        (loise-opts:update-perm-table opts))))
+
+(defun cell-separator () " ")
+(defun row-separator () "\n")
+(defun value-range () #(-1 1))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun perlin ()
-  (let ((opts (options)))
-    (print (build-ascii #'perlin-point/3 opts) opts)))
+(defun perlin-grid ()
+  (perlin-grid (options)))
 
-(defun perlin
-  (((= (cons `#(,_ ,_) _) opts))
-   (print (build-ascii #'perlin-point/3 opts) opts))
-  ((filename)
-    (let ((opts (options)))
-      (write filename
-             (build-ascii #'perlin-point/3 opts)
-             opts))))
+(defun perlin-grid (opts)
+  (perlin-grid (loise:size opts) opts))
 
-(defun perlin (filename opts)
-  (write filename
-         (build-ascii #'perlin-point/3 opts)
-         opts))
+(defun perlin-grid (end-point opts)
+  (perlin-grid #(0 0) end-point opts))
 
-(defun simplex ()
-  (let ((opts (options)))
-    (print (build-ascii #'simplex-point/3 opts) opts)))
+(defun perlin-grid (start-point end-point opts)
+  (make-grid #'loise-perlin:point/4 start-point end-point opts))
 
-(defun simplex
-  (((= (cons `#(,_ ,_) _) opts))
-   (print (build-ascii #'simplex-point/3 opts) opts))
-  ((filename)
-    (let ((opts (options)))
-      (write filename
-             (build-ascii #'simplex-point/3 opts)
-             opts))))
+(defun simplex-grid ()
+  (simplex-grid (options)))
 
-(defun simplex (filename opts)
-  (write filename
-         (build-ascii #'simplex-point/3 opts)
-         opts))
+(defun simplex-grid (opts)
+  (simplex-grid (loise:size opts) opts))
 
-(defun point (x y func opts)
-  (let* ((value (funcall func
-                  `(,x ,y)
-                  (loise-opts:dimensions opts)
-                  (loise-opts:multiplier opts)
-                  opts))
-         (adjusted (lutil-math:color-scale value #(-1 1)))
-         (graded (lutil-math:get-closest
-                  adjusted
-                  (loise-opts:grades opts)))
-         (legend (loise-opts:color-map opts)))
-    `#((,x ,y) ,(proplists:get_value graded legend))))
+(defun simplex-grid (end-point opts)
+  (simplex-grid #(0 0) end-point opts))
 
-(defun perlin-point (x y opts)
-  (point x y #'loise-perlin:point/4 opts))
+(defun simplex-grid (start-point end-point opts)
+  (make-grid #'loise-simplex:point/4 start-point end-point opts))
 
-(defun simplex-point (x y opts)
-  (point x y #'loise-simplex:point/4 opts))
+(defun grid (grid-type)
+  (grid grid-type (options)))
+
+(defun grid (grid-type opts)
+  (case grid-type
+    ('perlin (perlin-grid opts))
+    ('simplex (simplex-grid opts))))
+
+(defun write (filename data)
+  (file:write_file filename data))
+
+(defun write-grid (filename grid-type opts)
+  (write filename (grid grid-type opts)))
+
+(defun format-grid (grid-type)
+  (format-grid grid-type (options)))
+
+(defun format-grid (grid-type opts)
+  (io:format "~s~n" (list (grid grid-type opts))))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun get-color (colors key)
-  (proplists:get_value key colors))
+(defun point-data (point-func point max mult grades legend opts)
+  (let* ((value (apply point-func (list point max mult opts)))
+         (scaled (lutil-math:color-scale value (value-range)))
+         (graded (lutil-math:get-closest scaled grades)))
+    (proplists:get_value graded legend)))
 
-(defun print (data opts)
-  (io:format "~s~n" `(,(render data opts))))
+(defun make-grid
+  ((point-func (= `#(,start-x ,start-y) start) (= `#(,end-x ,end-y) end) opts)
+   (lists:join
+    (row-separator)
+    (list-comp ((<- y (lists:seq start-y end-y)))
+      (make-row point-func y start end opts)))))
 
-(defun write (filename data opts)
-  (file:write_file filename (render data opts)))
-
-(defun build-ascii (func opts)
-  "Builds an ASCII map of the specified size and shape by calling the specified
-  function on the coordinates of each point.
-
-  The function takes an x and y coordinate as agument and returns an x y
-  coordinate as well as an egd color value."
-  (let ((new-opts (loise-opts:update-perm-table opts)))
-    (list-comp ((<- x (lists:seq 0 (loise-opts:width opts)))
-                (<- y (lists:seq 0 (loise-opts:height opts))))
-      (funcall func x y new-opts))))
-
-(defun render-row (y data opts)
-  (let ((colors (loise-opts:color-map opts))
-        (separator " "))
-    (string:join
-     (list-comp ((<- x (lists:seq 0 (loise-opts:width opts))))
-       (let* ((char (proplists:get_value `(,x ,y) data))
-              (color (get-color colors char)))
-         (loise-util:colorize color char)))
-     separator)))
-
-(defun render (data opts)
-  (let ((separator "\n"))
-    (string:join
-     (list-comp ((<- y (lists:seq 0 (loise-opts:height opts))))
-       (render-row y data opts))
-     separator)))
+(defun make-row
+  ((point-func y `#(,start-x ,_) `#(,end-x ,end-y) opts)
+   (let ((legend (loise-opts:color-map opts))
+         (mult (loise-opts:multiplier opts))
+         (grades (loise-opts:grades opts)))
+     (lists:join
+      (cell-separator)
+      (list-comp ((<- x (lists:seq start-x end-x)))
+        (let ((`#(,char ,color) (point-data point-func
+                                            `(,x ,y)
+                                            `(,end-x ,end-y)
+                                            mult
+                                            grades
+                                            legend
+                                            opts)))
+          (loise-util:colorize color char opts)))))))

@@ -1,3 +1,4 @@
+(defun default-noise () 'simplex)
 (defun default-skew-factor () (/ 1.0 3.0))
 (defun default-unskew-factor () (/ 1.0 6.0))
 (defun default-mix-shift () 1.0)
@@ -43,7 +44,10 @@
     (++ perm perm)))
 
 (defun default-options ()
-  `(#(perm-table ,(default-permutation-table))
+  `(#(noise ,(default-noise))
+    #(random ,(default-random?))
+    #(seed ,(default-seed))
+    #(perm-table ,(default-permutation-table))
     #(simplex-scale ,(default-simplex-scale-factor))
     #(mix-shift ,(default-mix-shift))
     #(skew-factor ,(default-skew-factor))
@@ -70,9 +74,7 @@
     #(output-format ,(default-output-format))
     #(multiplier ,(default-multiplier))
     #(grades-count ,(default-grades-count))
-    #(grades ,(default-grades))
-    #(random ,(default-random?))
-    #(seed ,(default-seed))))
+    #(grades ,(default-grades))))
 
 ;; egd defaults + options
 (defun default-egd-width () 256)
@@ -135,6 +137,7 @@
         #(width ,(default-ascii-width))
         #(height ,(default-ascii-height))
         #(ascii-map ,(default-ascii-map))
+        #(color false)
         #(colors ,(default-ascii-colors)))
       (default-output-options)
       (default-options)))

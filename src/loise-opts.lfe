@@ -3,6 +3,9 @@
 
 (include-lib "include/options.lfe")
 
+(defun noise (opts)
+  (proplists:get_value 'noise opts))
+
 (defun width (opts)
   (proplists:get_value 'width opts))
 
@@ -12,7 +15,7 @@
 (defun dimensions (opts)
   `(,(width opts) ,(height opts)))
 
-(defun get-size (opts)
+(defun size (opts)
   (list_to_tuple (dimensions opts)))
 
 (defun grades (opts)
@@ -34,7 +37,9 @@
   (proplists:get_value 'ascii-map opts))
 
 (defun color-map (opts)
-  (lists:zip (ascii-map opts) (colors opts)))
+  (lists:zip (grades opts)
+             (lists:zip (ascii-map opts)
+                        (colors opts))))
 
 (defun fade-factor (opts)
   (proplists:get_value 'fade-factor opts))
@@ -51,8 +56,11 @@
 (defun seed (opts)
   (proplists:get_value 'seed opts))
 
-(defun random (opts)
+(defun random? (opts)
   (proplists:get_value 'random opts))
+
+(defun color? (opts)
+  (proplists:get_value 'color opts))
 
 (defun grad-modulus (opts)
   (proplists:get_value 'grad-modulus opts))
@@ -75,7 +83,7 @@
 (defun update-perm-table (opts)
   "If 'random' is enabled (has a 'true' value), then don't use the default
   permutation table, but rather generate a new one."
-  (case (random opts)
+  (case (random? opts)
     ('true
      (let ((state (rand:seed_s 'exsss (loise-util:seed-tuple (seed opts)))))
       (++ `(#(perm-table ,(loise-util:random-permutation-table state))) opts)))

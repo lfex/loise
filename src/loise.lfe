@@ -5,7 +5,11 @@
    (simplex 1) (simplex 2) (simplex 3) (simplex 4)
    (simplex-point 2) (simplex-point 3))
   (export
+   (ascii 0) (ascii 1)
+   (format-ascii 0) (format-ascii 1))
+  (export
    (dim 1)
+   (size 1)
    (gradations 1)
    (round 2))
   (export
@@ -53,8 +57,18 @@
   (loise-simplex:point coords size mult))
 
 ;; ASCII API
+(defun ascii ()
+  (ascii (loise-ascii:options)))
 
-;; TODO
+(defun ascii (opts)
+  (let ((opts (loise-ascii:options opts)))
+    (loise-ascii:grid (loise-opts:noise opts) opts)))
+
+(defun format-ascii ()
+  (io:format "~s~n" `(,(ascii))))
+
+(defun format-ascii (opts)
+  (io:format "~s~n" `(,(ascii opts))))
 
 ;; Image API
 
@@ -63,6 +77,8 @@
 ;; Common operations
 
 (defun dim (opts) (loise-opts:dimensions opts))
+
+(defun size (opts) (loise-opts:size opts))
 
 (defun gradations (count) (loise-util:make-gradations count))
 

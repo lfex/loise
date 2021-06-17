@@ -7,8 +7,18 @@
 
 (defun tiny-opts ()
   (++ `(#(width 2)
-        #(height 2)
+        #(height 2))
       (loise-ascii:options)))
+
+(defun tiny-grid-perlin ()
+  (++ "* * *" "\n"
+      "* * *" "\n"
+      "* * *"))
+
+(defun tiny-grid-simplex ()
+  (++ "* * n" "\n"
+      "~ A *" "\n"
+      "* * ~"))
 
 (deftest grades
   (let ((opts (loise-ascii:options)))
@@ -17,51 +27,118 @@
               (loise-opts:grades opts))
     (is-equal '("A" "^" "n" "*" "~" "~")
               (loise-opts:ascii-map opts))
-    (is-equal '(#(0 "A")
-                #(51.0 "^")
-                #(102.0 "n")
-                #(153.0 "*")
-                #(204.0 "~")
-                #(255.0 "~"))
+    (is-equal '(#(0 #("A" whiteb))
+                #(51.0 #("^" yellow))
+                #(102.0 #("n" green))
+                #(153.0 #("*" greenb))
+                #(204.0 #("~" blue))
+                #(255.0 #("~" blue)))
               (loise-opts:color-map opts))))
 
 (deftest color-map
   (is-equal
-    '(#(0 "A") #(51.0 "^") #(102.0 "n") #(153.0 "*") #(204.0 "~") #(255.0 "~"))
+   '(#(0 #("A" whiteb))
+     #(51.0 #("^" yellow))
+     #(102.0 #("n" green))
+     #(153.0 #("*" greenb))
+     #(204.0 #("~" blue))
+     #(255.0 #("~" blue)))
     (loise-opts:color-map (loise-ascii:options))))
 
-(deftest get-perlin-point
-  (is-equal 4.0 (loise-opts:multiplier (tiny-opts)))
-  (is-equal '#((0 0) "*") (loise-ascii:perlin-point 0 0 (tiny-opts)))
-  (is-equal '#((0 1) "*") (loise-ascii:perlin-point 0 1 (tiny-opts)))
-  (is-equal '#((1 0) "*") (loise-ascii:perlin-point 1 0 (tiny-opts))))
+(deftest point-data-perlin
+  (let* ((opts (loise-ascii:options))
+         (dim (loise-opts:dimensions opts))
+         (mult (loise-opts:multiplier opts))
+         (grades (loise-opts:grades opts))
+         (legend (loise-opts:color-map opts))
+         (test-func (lambda (x) (loise-ascii:point-data
+                                 #'loise-perlin:point/4
+                                 x
+                                 dim
+                                 mult
+                                 grades
+                                 legend
+                                 opts))))
+    (is-equal #("*" greenb) (funcall test-func (0 0)))
+    (is-equal #("~" blue) (funcall test-func (5 3)))
+    (is-equal #("n" green) (funcall test-func (10 10)))
+    (is-equal #("n" green) (funcall test-func (10 10)))
+    (is-equal #("^" yellow) (funcall test-func (8 16)))))
 
-(deftest get-simplex-point
-  (is-equal '#((0 0) "*") (loise-ascii:simplex-point 0 0 (tiny-opts)))
-  (is-equal '#((0 1) "~") (loise-ascii:simplex-point 0 1 (tiny-opts)))
-  (is-equal '#((1 1) "A") (loise-ascii:simplex-point 1 1 (tiny-opts)))
-  (is-equal '#((2 0) "n") (loise-ascii:simplex-point 2 0 (tiny-opts))))
+(deftest point-data-simplex
+  (let* ((opts (loise-ascii:options))
+         (dim (loise-opts:dimensions opts))
+         (mult (loise-opts:multiplier opts))
+         (grades (loise-opts:grades opts))
+         (legend (loise-opts:color-map opts))
+         (test-func (lambda (x) (loise-ascii:point-data
+                                 #'loise-simplex:point/4
+                                 x
+                                 dim
+                                 mult
+                                 grades
+                                 legend
+                                 opts))))
+    (is-equal #("*" greenb) (funcall test-func (0 0)))
+    (is-equal #("~" blue) (funcall test-func (3 3)))
+    (is-equal #("n" green) (funcall test-func (42 15)))
+    (is-equal #("^" yellow) (funcall test-func (15 0)))
+    (is-equal #("A" whiteb) (funcall test-func (14 10)))))
 
-(deftest build-ascii
-  (is-equal
-    '(#((0 0) "*")
-      #((0 1) "*")
-      #((0 2) "*")
-      #((1 0) "*")
-      #((1 1) "*")
-      #((1 2) "*")
-      #((2 0) "*")
-      #((2 1) "*")
-      #((2 2) "*"))
-    (loise-ascii:build-ascii #'loise-ascii:perlin-point/3 (tiny-opts)))
-  (is-equal
-    '(#((0 0) "*")
-      #((0 1) "~")
-      #((0 2) "*")
-      #((1 0) "*")
-      #((1 1) "A")
-      #((1 2) "*")
-      #((2 0) "n")
-      #((2 1) "*")
-      #((2 2) "~"))
-    (loise-ascii:build-ascii #'loise-ascii:simplex-point/3 (tiny-opts))))
+(deftest make-row-perlin
+  (let* ((opts (loise-ascii:options))
+         (size (loise-opts:size opts))
+         (test-func (lambda (row-index)
+                      (lists:flatten
+                       (string:replace
+                        (loise-ascii:make-row #'loise-perlin:point/4
+                                              row-index
+                                              #(0 0)
+                                              size
+                                              opts)
+                        " " "" 'all)))))
+    (is-equal "*****~~~~~*****nnnn^^^^^nnnn*****************************"
+              (funcall test-func 0))
+    (is-equal "*nnnn^^^^^nnnn***************nnnnnnnnnnnnn********nnnnnn*"
+              (funcall test-func 18))
+    (is-equal "*nnnnnnnnnnnnn*******************************************"
+              (funcall test-func 36))))
+
+(deftest make-row-simplex
+  (let* ((opts (loise-ascii:options))
+         (size (loise-opts:size opts))
+         (test-func (lambda (row-index)
+                      (lists:flatten
+                       (string:replace
+                        (loise-ascii:make-row #'loise-simplex:point/4
+                                              row-index
+                                              #(0 0)
+                                              size
+                                              opts)
+                        " " "" 'all)))))
+    (is-equal "**~~~~~***nn^^^^^nn**nnnnnnn**~~~~~~*************~~~~~~*n"
+              (funcall test-func 0))
+    (is-equal "~~~**nnn^^^^^n**~~~~~***nn^^A^^^^^nnnnnnn*nn^^^^^n*~~~~**"
+              (funcall test-func 18))
+    (is-equal "*********nn**~~~~~~~~~~~~~~**n^^^^^nnn**~~~~~*nnnnn***~~~"
+              (funcall test-func 36))))
+
+(deftest make-grid-perlin
+  (let* ((opts (tiny-opts))
+         (size (loise-opts:size opts)))
+    (is-equal (tiny-grid-perlin)
+              (lists:flatten
+               (loise-ascii:make-grid #'loise-perlin:point/4
+                                      #(0 0)
+                                      size
+                                      opts)))))
+
+(deftest make-grid-simplex
+  (let* ((opts (tiny-opts))
+         (size (loise-opts:size opts)))
+    (is-equal (tiny-grid-simplex)
+              (lists:flatten
+               (loise-ascii:make-grid #'loise-simplex:point/4
+                                      #(0 0)
+                                      size
+                                      opts)))))

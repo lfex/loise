@@ -107,19 +107,21 @@
                   (loise-util:index perm))
          modulus)))
 
-(defun get-noise-contribution (g x y z options)
+(defun get-noise-contribution (g x y z opts)
   (dot
-    (loise-util:index (loise-opts:grad-matrix options) g)
+    (loise-util:index (loise-opts:grad-matrix opts) g)
     x y z))
 
-(defun corner-contribution (g x y z options)
+(defun corner-contribution (g x y z opts)
   (let* ((t (- 0.5 (* x x) (* y y) (* z z)))
          (t^2 (* t t)))
     (if (< t 0)
       0.0
       (* t^2 t^2 (dot
-                   (index (loise-opts:grad-matrix options) g)
+                   (index (loise-opts:grad-matrix opts) g)
                    x y z)))))
 
-(defun colorize (name text)
-  (call 'color name text))
+(defun colorize (name text opts)
+  (if (loise-opts:color? opts)
+    (call 'color name text)
+    text))

@@ -190,33 +190,45 @@ And by this set of ASCII characters:
 By making calls like this:
 
 ```cl
-> (loise-ascii:perlin)
+> (loise:format-ascii `(#(noise perlin) #(color true)))
 ```
 <img src="priv/images/perlin-ascii.png" />
 
 And this:
 
 ```cl
-> (loise-ascii:simplex)
+> (loise:format-ascii `(#(noise simplex) #(color true)))
 ```
 <img src="priv/images/simplex-ascii.png" />
 
-We can, of course, pass new options to the function. The following shows the
+The default noise type is `simplex` and colors are not used in the
+ASCII noise output by default:
+
+``` cl
+lfe> (loise:format-ascii)
+```
+
+<img src="priv/images/simplex-ascii-no-color.png" />
+
+
+We can pass new options to the function. The following shows the
 addition of alpine forests and grasslands and greatly increasing the
 map area in the terminal:
 
 ```cl
 > (set opts
-    `(#(width 100)
-      #(height 42)
-      #(multiplier 3.0)
-      #(grades ,(loise-util:get-gradations 9))
+    `(#(color true)
+      #(width 282)
+      #(height 94)
+      #(multiplier 2.5)
+      #(grades-count 9)
+      #(grades ,(loise:gradations 9))
       #(ascii-map ("A" "^" "!" "n" "*" "-" "~" "~" "~"))
-      #(colors (,#'color:whiteb/1 ,#'color:yellow/1 ,#'color:green/1
-                ,#'color:green/1 ,#'color:greenb/1 ,#'color:green/1
-                ,#'color:blue/1 ,#'color:blue/1 ,#'color:blue/1))))
+      #(colors (whiteb yellow green
+                green greenb green
+                blue blue blue))))
 
-> (loise-ascii:simplex opts)
+(loise:format-ascii opts)
 ```
 <a href="https://raw.githubusercontent.com/lfex/loise/master/priv/images/simplex-ascii-2.png"><img src="priv/images/simplex-ascii-2-small.png" /></a>
 
@@ -234,9 +246,9 @@ would like a different result each time, you will need to pass a new seed.
 For instance:
 
 ```cl
-> (loise-ascii:perlin (++ `(#(seed 1)) opts))
-> (loise-ascii:simplex (++ `(#(seed (1 2))) opts))
-> (loise-ascii:simplex (++ `(#(seed (1 2 3))) opts))
+> (loise:ascii `(#(noise perlin) #(seed 1) #(random true)))
+> (loise:ascii `(#(noise perlin) #(seed 4 2) #(random true)))
+> (loise:ascii `(#(noise perlin) #(seed 7 8 9) #(random true)))
 ```
 
 To see the full list of options available be sure read

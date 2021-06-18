@@ -4,51 +4,67 @@
 (include-lib "include/options.lfe")
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Options and Defaults
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(defun options ()
+  (options '()))
+
+(defun options (overrides)
+  (let* ((opts (default-egd-options overrides)))
+    (loise-opts:update-perm-table opts)))
+
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun perlin (filename)
   (perlin filename (default-egd-options)))
 
-(defun perlin (filename options)
-  (create filename #'draw-perlin-point!/4 options))
+(defun perlin (filename opts)
+  (create filename #'draw-perlin-point!/4 opts))
 
 (defun simplex (filename)
   (simplex filename (default-egd-options)))
 
-(defun simplex (filename options)
-  (create filename #'draw-simplex-point!/4 options))
+(defun simplex (filename opts)
+  (create filename #'draw-simplex-point!/4 opts))
 
-(defun draw-point! (image x y func options)
+(defun draw-point! (image x y func opts)
   "egd doesn't have a function for drawing just a point.
 
   This has got to be an incredibly inefficient function; please don't treat
   like anything other than what this is: A toy."
   (let* ((value (funcall func
                   `(,x ,y)
-                  (loise-opts:dimensions options)
-                  (loise-opts:multiplier options)
+                  (loise-opts:dimensions opts)
+                  (loise-opts:multiplier opts)
                   options))
-         (adjusted (get-graded-point value options)))
+         (adjusted (get-graded-point value opts)))
     (egd:line
       image
       `#(,x ,y) `#(,x ,y)
       (egd:color `#(,adjusted ,adjusted ,adjusted)))))
 
-(defun draw-perlin-point! (image x y options)
-  (draw-point! image x y #'loise:get-perlin-point/4 options))
+(defun draw-perlin-point! (image x y opts)
+  (draw-point! image x y #'loise:get-perlin-point/4 opts))
 
-(defun draw-simplex-point! (image x y options)
-  (draw-point! image x y #'loise:get-simplex-point/4 options))
+(defun draw-simplex-point! (image x y opts)
+  (draw-point! image x y #'loise:get-simplex-point/4 opts))
 
+(defun write-image (filename opts)
+  (case (loise-opts:noise opts)
+    ('perlin (perlin filename opts))
+    ('simplex (simplex filename opts))))
+  
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun create (filename func options)
+(defun create (filename func opts)
   "A wrapper function for the 'build-image' and 'write' functions."
   (write
-    (build-image func options)
+    (build-image func opts)
     filename))
 
 (defun write (image filename)
@@ -61,9 +77,9 @@
                 (get-image-filetype filename))
     filename))
 
-(defun get-graded-point (value options)
+(defun get-graded-point (value opts)
   (let ((adjusted (lutil-math:color-scale value #(-1 1)))
-        (grades (loise-opts:grades options)))
+        (grades (loise-opts:grades opts)))
     (case grades
       ('undefined
         adjusted)
@@ -73,7 +89,7 @@
 (defun get-image-filetype (filename)
   (list_to_atom (cdr (filename:extension filename))))
 
-(defun build-image (func options)
+(defun build-image (func opts)
   "Builds an image of the specified size and shape by calling the specified
   function on the coordinates of each pixel.
 
@@ -82,7 +98,7 @@
 
   Based on the Racket function defined here:
     http://docs.racket-lang.org/picturing-programs/#%28def._%28%28lib._picturing-programs/private/map-image..rkt%29._build-image%29%29"
-  (let* ((new-opts (++ (loise-opts:update-perm-table options)
+  (let* ((new-opts (++ (loise-opts:update-perm-table opts)
                         (default-options)))
          (width (loise-opts:width new-opts))
          (height (loise-opts:height new-opts))

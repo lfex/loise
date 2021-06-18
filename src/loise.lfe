@@ -8,6 +8,8 @@
    (ascii 0) (ascii 1)
    (format-ascii 0) (format-ascii 1))
   (export
+   (image 1) (image 2) (image 3))
+  (export
    (dim 1)
    (size 1)
    (gradations 1)
@@ -72,7 +74,14 @@
 
 ;; Image API
 
-;; TODO
+(defun image (filename)
+  (image filename (loise-png:options)))
+
+(defun image (filename opts)
+  (case (loise-opts:output-format opts)
+    ('png (let ((opts (loise-png:options opts)))
+            (loise-png:write-image filename (loise-opts:noise opts) opts)))
+    (_ #(error (io_lib:format "unsupported image type '%p'" type)))))
 
 ;; Common operations
 

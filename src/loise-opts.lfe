@@ -41,6 +41,9 @@
              (lists:zip (ascii-map opts)
                         (colors opts))))
 
+(defun output-format (opts)
+  (proplists:get_value 'output-format opts))
+
 (defun fade-factor (opts)
   (proplists:get_value 'fade-factor opts))
 

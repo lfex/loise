@@ -4,55 +4,56 @@
 (include-lib "include/options.lfe")
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Options and Defaults
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(defun options ()
+  (options '()))
+
+(defun options (overrides)
+  (let* ((opts (default-png-options overrides))
+         (grades-count (loise-opts:grades-count opts)))
+    (++ `(#(grades ,(loise-util:make-gradations grades-count)))
+        (loise-opts:update-perm-table opts))))
+
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun perlin (filename)
-  (perlin filename (default-png-options)))
+(defun perlin-image (png opts)
+  (perlin-image png (loise:size opts) opts))
 
-(defun perlin (filename opts)
-  (write filename #'loise-perlin:point/4 opts))
+(defun perlin-image (png end-point opts)
+  (perlin-image #(0 0) end-point opts))
 
-(defun simplex (filename)
-  (simplex filename (default-png-options)))
+(defun perlin-image (png start-point end-point opts)
+  (make-image png #'loise-perlin:point/4 start-point end-point opts))
 
-(defun simplex (filename opts)
-  (write filename #'loise-simplex:point/4 opts))
+(defun simplex-image (png opts)
+  (simplex-image png (loise:size opts) opts))
 
-(defun point (x y dim multiplier func opts)
-  (let* ((value (funcall func
-                         `(,x ,y)
-                         dim
-                         multiplier
-                         opts))
-         (adjusted (get-graded-point value opts)))
-    ;; XXX create point entry as expected for png lib
-    ;;(egd:line
-    ;; image
-    ;; `#(,x ,y) `#(,x ,y)
-    ;; (egd:color `#(,adjusted ,adjusted ,adjusted)))))
-    'tbd))
+(defun simplex-image (png end-point opts)
+  (simplex-image png #(0 0) end-point opts))
 
-(defun row (y func opts)
-  (let ((dim (loise-opts:dim opts))
-        (mult (loise-opts:multiplier opts)))
-    `#(row ,(list-comp ((<- x (lists:seq 0 (loise-opts:width opts))))
-              (point x y dim mult func opts)))))
+(defun simplex-image (png start-point end-point opts)
+  (make-image png #'loise-simplex:point/4 start-point end-point opts))
 
-(defun rows (func opts)
-  (list-comp ((<- y (lists:seq 0 (loise-opts:height opts))))
-    (row y func opts)))
+(defun image (png noise-type)
+  (image png noise-type (options)))
 
-(defun write (filename point-func opts)
-  "Write a generated image to a given file.
+(defun image (png noise-type opts)
+  (case noise-type
+    ('perlin (perlin-image png opts))
+    ('simplex (simplex-image png opts))))
 
-  filename is a string value."
-  (let ((img-data (rows point-func opts)))
-    ;; XXX create config
-    ;; XXX create png object
-    ;; XXX append rows
-    ;; XXX close files/objects
-    'tbd))
+(defun write-image (filename noise-type opts)
+  (let ((data (image noise-type opts))
+        (`#(ok ,file) (file:open filename '(write)))
+        (png (png:create `#m(size ,(loise:size opts)
+                             mode #(grayscale 8)
+                             file ,file))))
+    (png:close png)
+    (file:close file)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Supporting functions
@@ -61,28 +62,46 @@
 (defun generate-config (opts)
   'tbd)
 
-(defun get-graded-point (value options)
-  (let ((adjusted (lutil-math:color-scale value #(-1 1)))
-        (grades (loise-opts:grades options)))
-    (case grades
-      ('undefined
-        adjusted)
-      (_
-        (lutil-math:get-closest adjusted grades)))))
+(defun point-data (point-func point max mult grades legend opts)
+  (let* ((value (apply point-func (list point max mult opts)))
+         (scaled (lutil-math:color-scale value (value-range)))
+         (graded (lutil-math:get-closest scaled grades)))
+    (proplists:get_value graded legend)))
 
-;;(defun build-image (func opts)
-;;  "Builds an image of the specified size and shape by calling the specified
-;;  function on the coordinates of each pixel.
-;;
-;;  The function takes an x and y coordinate as agument and returns an x y
-;;  coordinate as well as an egd color value.
-;;
-;;  Based on the Racket function defined here:
-;;    http://docs.racket-lang.org/picturing-programs/#%28def._%28%28lib._picturing-programs/private/map-image..rkt%29._build-image%29%29"
-;;  (let* ((width (proplists:get_value 'width opts))
-;;         (height (proplists:get_value 'height opts))
-;;         (image (egd:create width height)))
-;;    (list-comp ((<- x (lists:seq 0 width))
-;;                (<- y (lists:seq 0 height)))
-;;      (funcall func image x y opts))
-;;    image))
+(defun make-image
+  ((png point-func (= `#(,start-x ,start-y) start) (= `#(,end-x ,end-y) end) opts)
+   (let ((legend (lose-opts:color-map opts))
+         (mult (loise-opts:multiplier opts))
+         (grades (loise-opts:grades opts)))
+     (list-comp ((<- y (lists:seq start-y end-y)))
+       (let ((`#(,char ,color) (point-data point-func
+                                           `(,x ,y)
+                                           `(,end-x ,end-y)
+                                           mult
+                                           grades
+                                           legend
+                                           opts)))
+         (loise-util:colorize color char opts))))))
+
+;;; Example from https://github.com/yuce/png/blob/master/examples/grayscale_8.escript,
+;;; converted to LFE, for use in the REPL:
+;;; 
+;;; (set width 800)
+;;; (set height 400)
+;;; 
+;;; (set width 100)
+;;; (set height 100)
+;;; 
+;;; (random:seed)
+;;; 
+;;; (set `#(ok ,file) (file:open "grayscale_8.png" '(write)))
+;;; (set png (png:create `#m(size #(,width ,height) mode #(grayscale 8) file ,file)))
+;;; 
+;;; (catch 
+;;;   (list-comp ((<- y (lists:seq 1 height)))
+;;;     (let ((row (list-comp ((<- x (lists:seq 1 width)))
+;;;                  (random:uniform (+ 1 (trunc (* 255 (/ (+ (/ x width) (/ y height)) 2))))))))
+;;;       (png:append png `#(row ,(list_to_binary row))))))
+;;; 
+;;; (png:close png)
+;;; (file:close file)

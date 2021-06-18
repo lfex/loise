@@ -39,7 +39,7 @@
                   `(,x ,y)
                   (loise-opts:dimensions opts)
                   (loise-opts:multiplier opts)
-                  options))
+                  opts))
          (adjusted (get-graded-point value opts)))
     (egd:line
       image

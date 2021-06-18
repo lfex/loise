@@ -74,7 +74,8 @@
     #(output-type ,(default-output-type))
     #(output-format ,(default-output-format))
     #(grades-count ,(default-grades-count))
-    #(grades ,(default-grades))))
+    #(grades ,(default-grades))
+    #(graded? false)))
 
 ;; egd defaults + options
 (defun default-egd-width () 256)
@@ -138,7 +139,8 @@
         #(height ,(default-ascii-height))
         #(ascii-map ,(default-ascii-map))
         #(color false)
-        #(colors ,(default-ascii-colors)))
+        #(colors ,(default-ascii-colors))
+        #(graded? true))
       (default-output-options)
       (default-options)))
 

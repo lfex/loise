@@ -3,9 +3,12 @@
    (1d 1) (1d 2)
    (2d 3)
    (3d 4)
-   (point 3) (point 4)))
+   (point 3) (point 4)
+   (value-range 0)))
 
 (include-lib "include/options.lfe")
+
+(defun value-range () #(-1 1))
 
 (defun 1d (a)
   (3d a 0.0 0.0 (default-options)))

@@ -24,6 +24,9 @@
 (defun grades-count (opts)
   (proplists:get_value 'grades-count opts))
 
+(defun graded? (opts)
+  (proplists:get_value 'graded? opts))
+
 (defun multiplier (opts)
   (proplists:get_value 'multiplier opts))
 
@@ -91,3 +94,8 @@
      (let ((state (rand:seed_s 'exsss (loise-util:seed-tuple (seed opts)))))
       (++ `(#(perm-table ,(loise-util:random-permutation-table state))) opts)))
     (_ opts)))
+
+(defun value-range (opts)
+  (case (loise-opts:noise opts)
+    ('perlin (loise-perlin:value-range))
+    ('simplex (loise-perlin:value-range))))

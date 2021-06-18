@@ -8,7 +8,7 @@
    (ascii 0) (ascii 1)
    (format-ascii 0) (format-ascii 1))
   (export
-   (image 1) (image 2) (image 3))
+   (image 1) (image 2))
   (export
    (dim 1)
    (size 1)

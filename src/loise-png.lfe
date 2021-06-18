@@ -47,11 +47,11 @@
     ('simplex (simplex-image png opts))))
 
 (defun write-image (filename noise-type opts)
-  (let ((data (image noise-type opts))
-        (`#(ok ,file) (file:open filename '(write)))
-        (png (png:create `#m(size ,(loise:size opts)
-                             mode #(grayscale 8)
-                             file ,file))))
+  (let* ((`#(ok ,file) (file:open filename '(write)))
+         (png (png:create `#m(size ,(loise:size opts)
+                                   mode #(grayscale 8)
+                                   file ,file)))
+         (data (image png noise-type opts)))
     (png:close png)
     (file:close file)))
 
@@ -62,26 +62,27 @@
 (defun generate-config (opts)
   'tbd)
 
-(defun point-data (point-func point max mult grades legend opts)
+(defun point-data (point-func point max mult grades opts)
   (let* ((value (apply point-func (list point max mult opts)))
-         (scaled (lutil-math:color-scale value (value-range)))
-         (graded (lutil-math:get-closest scaled grades)))
-    (proplists:get_value graded legend)))
+         (_ (io:format "value: ~p~n" (list value)))
+         (scaled (lutil-math:color-scale value (loise-opts:value-range opts))))
+    (if (loise-opts:graded? opts)
+      (lutil-math:get-closest scaled grades)
+      scaled)))
 
 (defun make-image
   ((png point-func (= `#(,start-x ,start-y) start) (= `#(,end-x ,end-y) end) opts)
-   (let ((legend (lose-opts:color-map opts))
-         (mult (loise-opts:multiplier opts))
+   (let ((mult (loise-opts:multiplier opts))
          (grades (loise-opts:grades opts)))
      (list-comp ((<- y (lists:seq start-y end-y)))
-       (let ((`#(,char ,color) (point-data point-func
-                                           `(,x ,y)
-                                           `(,end-x ,end-y)
-                                           mult
-                                           grades
-                                           legend
-                                           opts)))
-         (loise-util:colorize color char opts))))))
+       (let ((row (list-comp ((<- x (lists:seq start-x end-x)))
+                    (point-data point-func
+                                `(,x ,y)
+                                `(,end-x ,end-y)
+                                mult
+                                grades
+                                opts))))
+         (png:append png `#(row ,(list_to_binary row))))))))
 
 ;;; Example from https://github.com/yuce/png/blob/master/examples/grayscale_8.escript,
 ;;; converted to LFE, for use in the REPL:

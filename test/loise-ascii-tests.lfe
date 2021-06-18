@@ -5,6 +5,7 @@
 (include-lib "ltest/include/ltest-macros.lfe")
 (include-lib "include/options.lfe")
 
+;; XXX fix this up to use override args to options
 (defun tiny-opts ()
   (++ `(#(width 2)
         #(height 2))

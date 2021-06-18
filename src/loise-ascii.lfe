@@ -18,7 +18,6 @@
 
 (defun cell-separator () " ")
 (defun row-separator () "\n")
-(defun value-range () #(-1 1))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
@@ -74,7 +73,7 @@
 
 (defun point-data (point-func point max mult grades legend opts)
   (let* ((value (apply point-func (list point max mult opts)))
-         (scaled (lutil-math:color-scale value (value-range)))
+         (scaled (lutil-math:color-scale value (loise-opts:value-range opts)))
          (graded (lutil-math:get-closest scaled grades)))
     (proplists:get_value graded legend)))
 

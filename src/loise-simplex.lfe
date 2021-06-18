@@ -5,9 +5,12 @@
    (2d 3)
    (3d 4)
    (point 3) (point 4)
+   (value-range 0)
    (which 3)))
 
 (include-lib "include/options.lfe")
+
+(defun value-range () #(-1 1))
 
 (defun 1d (a)
   (3d a 0.0 0.0 (default-options)))

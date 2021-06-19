@@ -63,7 +63,7 @@
   (proplists:get_value 'seed opts))
 
 (defun random? (opts)
-  (proplists:get_value 'random opts))
+  (proplists:get_value 'random? opts))
 
 (defun color? (opts)
   (proplists:get_value 'color opts))

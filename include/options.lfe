@@ -46,7 +46,7 @@
 
 (defun default-options ()
   `(#(noise ,(default-noise))
-    #(random ,(default-random?))
+    #(random? ,(default-random?))
     #(seed ,(default-seed))
     #(multiplier ,(default-multiplier))
     #(perm-table ,(default-permutation-table))
@@ -66,6 +66,7 @@
 (defun default-output-format () 'undefined)
 (defun default-grades-count () 6)
 (defun default-grades () '())
+(defun default-graded? () 'false)
 (defun default-random? () 'false)
 (defun default-seed () 42)
 
@@ -75,7 +76,7 @@
     #(output-format ,(default-output-format))
     #(grades-count ,(default-grades-count))
     #(grades ,(default-grades))
-    #(graded? false)))
+    #(graded? ,(default-graded?))))
 
 ;; egd defaults + options
 (defun default-egd-width () 256)

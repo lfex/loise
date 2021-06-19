@@ -79,12 +79,13 @@
          (grades (loise-opts:grades opts)))
      (list-comp ((<- y (lists:seq start-y end-y)))
        (let ((row (list-comp ((<- x (lists:seq start-x end-x)))
-                    (point-data point-func
-                                `(,x ,y)
-                                `(,end-x ,end-y)
-                                mult
-                                grades
-                                opts))))
+                    (round
+                     (point-data point-func
+                                 `(,x ,y)
+                                 `(,end-x ,end-y)
+                                 mult
+                                 grades
+                                 opts)))))
          (png:append png `#(row ,(list_to_binary row))))))))
 
 ;;; Example from https://github.com/yuce/png/blob/master/examples/grayscale_8.escript,

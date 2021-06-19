@@ -129,28 +129,30 @@ These were generated with the following from the REPL:
 ```cl
 lfe> (set opts `(#(noise simplex) 
                  #(output-format png)))
-lfe> (loise:image "simplex-4.png" (++ opts #(multiplier 1)))
+lfe> (loise:image "simplex-1.png" (++ #(multiplier 1) opts))
 ok
-lfe> (loise:image "simplex-4.png" (++ opts #(multiplier 1)))
+lfe> (loise:image "simplex-2.png" (++ #(multiplier 2) opts))
 ok
-lfe> (loise:image "simplex-4.png" (++ opts #(multiplier 1)))
+lfe> (loise:image "simplex-4.png" (++ #(multiplier 4) opts))
 ok
-lfe> (loise:image "simplex-4.png" (++ opts #(multiplier 1)))
+lfe> (loise:image "simplex-8.png" (++ #(multiplier 8) opts))
 ok
-lfe> (loise:image "simplex-4.png" (++ opts #(multiplier 1)))
+lfe> (loise:image "simplex-16.png" (++ #(multiplier 16) opts))
 ok
 ```
+
+(set opts `(#(noise simplex) #(grades-count 5) #(output-format png) #(graded? true) #(multiplier 4)))
+(loise:image "simplex-4-graded.png" opts)
 
 Just as with perlin, simplex allows you to limit the number of gradations for
 the shades of grey:
 
 ```cl
-  > (set grades (loise:gradations 5))
-  (0 63.75 127.5 191.25 255.0)
-  > (set opts `(#(multiplier 8)
-                #(grades ,grades)))
-  > (loise-egd:simplex "simplex-5-shades.png" opts)
-  ok
+lfe> (set opts (++ `(#(graded? true)
+                     #(grades-count 5)
+                     #(multiplier 4))))
+lfe> (loise:image "simplex-4-graded.png" opts)
+ok
 ```
 
 Which will create the following:
@@ -161,13 +163,14 @@ You may also change the permutation table from the default, to one generated
 with a random seed:
 
 ```cl
-> (set opts (++ `(#(random true))))
-> (loise-egd:perlin
-    "perlin-rand-1.png" (++ `(#(seed (1))) opts))
-> (loise-egd:simplex
-    "simplex-rand-1.png" (++ `(#(seed (1 2))) opts))
-> (loise-egd:simplex
-    "simplex-rand-2.png" (++ `(#(seed (1 2 3))) opts))
+lfe> (set opts (++ `(#(random? true)
+                     #(graded? false)) opts))
+lfe> (loise:image "simplex-rand-1.png" (++ '(#(seed 4)) opts))
+ok
+lfe> (loise:image "simplex-rand-2.png" (++ '(#(seed (4 2))) opts))
+ok
+lfe> (loise:image "simplex-rand-3.png" (++ '(#(seed (4 2 42))) opts))
+ok
 ```
 
 You may either pass an integer or a list of 1, 2 or 3 integers as values

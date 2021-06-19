@@ -127,15 +127,17 @@ Below are 5 simplex noise images generated at 1x, 2x, 4x, 8x, and 16x respective
 These were generated with the following from the REPL:
 
 ```cl
-lfe> (loise:image "simplex-4.png" `(#(noise simplex) #(multiplier 1) #(output-format png)))
+lfe> (set opts `(#(noise simplex) 
+                 #(output-format png)))
+lfe> (loise:image "simplex-4.png" (++ opts #(multiplier 1)))
 ok
-lfe> (loise:image "simplex-4.png" `(#(noise simplex) #(multiplier 2) #(output-format png)))
+lfe> (loise:image "simplex-4.png" (++ opts #(multiplier 1)))
 ok
-lfe> (loise:image "simplex-4.png" `(#(noise simplex) #(multiplier 4) #(output-format png)))
+lfe> (loise:image "simplex-4.png" (++ opts #(multiplier 1)))
 ok
-lfe> (loise:image "simplex-4.png" `(#(noise simplex) #(multiplier 8) #(output-format png)))
+lfe> (loise:image "simplex-4.png" (++ opts #(multiplier 1)))
 ok
-lfe> (loise:image "simplex-4.png" `(#(noise simplex) #(multiplier 16) #(output-format png)))
+lfe> (loise:image "simplex-4.png" (++ opts #(multiplier 1)))
 ok
 ```
 

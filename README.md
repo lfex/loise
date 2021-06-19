@@ -77,6 +77,8 @@ Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
 
 <img src="priv/images/perlin-8.png" />
 
+<img src="priv/images/perlin-16.png" />
+
 These were generated with the following from the REPL:
 
 ```cl
@@ -110,7 +112,7 @@ Which will create the following:
 
 ### Simplex [&#x219F;](#contents)
 
-Below are 4 simplex noise images generated at 1x, 2x, 4x, and 8x, respectively.
+Below are 5 simplex noise images generated at 1x, 2x, 4x, 8x, and 16x respectively.
 
 <img src="priv/images/simplex-1.png" />
 
@@ -120,17 +122,21 @@ Below are 4 simplex noise images generated at 1x, 2x, 4x, and 8x, respectively.
 
 <img src="priv/images/simplex-8.png" />
 
+<img src="priv/images/simplex-16.png" />
+
 These were generated with the following from the REPL:
 
 ```cl
-  > (loise-egd:simplex "simplex-1.png" `(#(multiplier 1)))
-  ok
-  > (loise-egd:simplex "simplex-2.png" `(#(multiplier 2)))
-  ok
-  > (loise-egd:simplex "simplex-4.png" `(#(multiplier 4)))
-  ok
-  > (loise-egd:simplex "simplex-8.png" `(#(multiplier 8)))
-  ok
+lfe> (loise:image "simplex-4.png" `(#(noise simplex) #(multiplier 1) #(output-format png)))
+ok
+lfe> (loise:image "simplex-4.png" `(#(noise simplex) #(multiplier 2) #(output-format png)))
+ok
+lfe> (loise:image "simplex-4.png" `(#(noise simplex) #(multiplier 4) #(output-format png)))
+ok
+lfe> (loise:image "simplex-4.png" `(#(noise simplex) #(multiplier 8) #(output-format png)))
+ok
+lfe> (loise:image "simplex-4.png" `(#(noise simplex) #(multiplier 16) #(output-format png)))
+ok
 ```
 
 Just as with perlin, simplex allows you to limit the number of gradations for

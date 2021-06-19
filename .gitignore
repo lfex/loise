@@ -18,3 +18,5 @@ _build/*
 auto-save-list
 tramp
 .\#*
+/test/*.png
+scratch.lfe

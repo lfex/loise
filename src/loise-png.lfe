@@ -12,8 +12,10 @@
 
 (defun options (overrides)
   (let* ((opts (default-png-options overrides))
-         (grades-count (loise-opts:grades-count opts)))
-    (++ `(#(grades ,(loise-util:make-gradations grades-count)))
+         (grades-count (loise-opts:grades-count opts))
+         (grades (loise-util:make-gradations grades-count)))
+    ;; `(#(grades ,(lists:map (lambda (x) (+ 1 x)) grades)))
+    (++ `(#(grades ,grades))
         (loise-opts:update-perm-table opts))))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -24,7 +26,7 @@
   (perlin-image png (loise:size opts) opts))
 
 (defun perlin-image (png end-point opts)
-  (perlin-image #(0 0) end-point opts))
+  (perlin-image #(1 1) end-point opts))
 
 (defun perlin-image (png start-point end-point opts)
   (make-image png #'loise-perlin:point/4 start-point end-point opts))
@@ -33,7 +35,7 @@
   (simplex-image png (loise:size opts) opts))
 
 (defun simplex-image (png end-point opts)
-  (simplex-image png #(0 0) end-point opts))
+  (simplex-image png #(1 1) end-point opts))
 
 (defun simplex-image (png start-point end-point opts)
   (make-image png #'loise-simplex:point/4 start-point end-point opts))
@@ -63,8 +65,9 @@
   'tbd)
 
 (defun point-data (point-func point max mult grades opts)
+  ;;(io:format "Point: ~p~nMax: ~p~nMultiplier: ~p~nGrades: ~p~n" (list point max mult grades))
+  ;;(io:format "Args: ~p~n" (list (list point max mult opts)))
   (let* ((value (apply point-func (list point max mult opts)))
-         (_ (io:format "value: ~p~n" (list value)))
          (scaled (lutil-math:color-scale value (loise-opts:value-range opts))))
     (if (loise-opts:graded? opts)
       (lutil-math:get-closest scaled grades)

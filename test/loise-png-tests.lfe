@@ -44,10 +44,37 @@
                          (test-values-1)))))
 
 (defmodule loise-png-system-tests
-  (behaviour ltest-unit)
+  (behaviour ltest-system)
   (export all))
 
 (include-lib "ltest/include/ltest-macros.lfe")
 
-(deftest placeholder
-  (is 'true))
+(defun outfile-tmpl () "test/~p-~p.png")
+
+(defun write-images (noise-type multipliers)
+  (lists:map (lambda (x)
+               (loise-png:write-image
+                (io_lib:format (outfile-tmpl) (list noise-type x))
+                noise-type
+                (loise-png:options `(#(noise ,noise-type) #(multiplier ,x)))))
+             multipliers))
+
+(defun get-image-sizes (noise-type multipliers)
+  (lists:map (lambda (x)
+               (filelib:file_size (io_lib:format (outfile-tmpl) (list noise-type x))))
+             multipliers))
+
+(deftestskip generate-perlin()
+  (let ((multipliers '(1 2 4 8 16))
+        (noise-type 'perlin))
+    (write-images noise-type multipliers)
+    (is-equal '(8833 14218 19670 23208 22549)
+              (get-image-sizes noise-type multipliers))))
+
+(deftest generate-simplex()
+  (let ((multipliers '(1 2 4 8 16))
+        (noise-type 'simplex))
+    (write-images noise-type multipliers)
+    (is-equal '(8833 14218 19670 23208 22549)
+              (get-image-sizes noise-type multipliers))))
+

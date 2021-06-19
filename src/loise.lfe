@@ -78,10 +78,12 @@
   (image filename (loise-png:options)))
 
 (defun image (filename opts)
-  (case (loise-opts:output-format opts)
+  (case (get-file-type filename opts)
     ('png (let ((opts (loise-png:options opts)))
             (loise-png:write-image filename (loise-opts:noise opts) opts)))
-    (_ #(error (io_lib:format "unsupported image type '%p'" type)))))
+    ('egd (let ((opts (loise-egd:options opts)))
+            (loise-egd:write-image filename opts)))
+    (type `#(error ,(io_lib:format "unsupported image type '%p'" (list type))))))
 
 ;; Common operations
 
@@ -98,3 +100,12 @@
 (defun version () (loise-util:version))
 
 (defun versions () (loise-util:versions))
+
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Supporting functions
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+(defun get-file-type (filename opts)
+  ;; XXX add type-extractor (read file extension, fall back to opts
+  (loise-opts:output-format opts))

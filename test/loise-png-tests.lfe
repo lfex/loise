@@ -64,11 +64,11 @@
                (filelib:file_size (io_lib:format (outfile-tmpl) (list noise-type x))))
              multipliers))
 
-(deftestskip generate-perlin()
+(deftest generate-perlin()
   (let ((multipliers '(1 2 4 8 16))
         (noise-type 'perlin))
     (write-images noise-type multipliers)
-    (is-equal '(8833 14218 19670 23208 22549)
+    (is-equal '(5010 8109 11214 14894 18256)
               (get-image-sizes noise-type multipliers))))
 
 (deftest generate-simplex()

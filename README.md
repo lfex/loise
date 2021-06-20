@@ -109,9 +109,18 @@ the images a more "layered" or "topographical" look:
 ok
 ```
 
+```cl
+lfe> (set opts (++ `(#(graded? true)
+                     #(grades-count 8)
+                     #(multiplier 4))
+                     opts))
+lfe> (loise:image "perlin-8-shades.png" opts)
+ok
+```
+
 Which will create the following:
 
-<img src="priv/images/perlin-7-shades.png" />
+<img src="priv/images/perlin-8-shades.png" />
 
 
 ### Simplex [&#x219F;](#contents)
@@ -155,7 +164,7 @@ the shades of grey:
 lfe> (set opts (++ `(#(graded? true)
                      #(grades-count 5)
                      #(multiplier 4))))
-lfe> (loise:image "simplex-4-graded.png" opts)
+lfe> (loise:image "simplex-5-shades.png" opts)
 ok
 ```
 

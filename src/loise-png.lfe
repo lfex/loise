@@ -26,7 +26,7 @@
   (perlin-image png (loise:size opts) opts))
 
 (defun perlin-image (png end-point opts)
-  (perlin-image #(1 1) end-point opts))
+  (perlin-image png #(1 1) end-point opts))
 
 (defun perlin-image (png start-point end-point opts)
   (make-image png #'loise-perlin:point/4 start-point end-point opts))

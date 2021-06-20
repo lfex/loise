@@ -15,23 +15,23 @@
 (defun 1d (a)
   (3d a 0.0 0.0 (default-options)))
 
-(defun 1d (a options)
-  (3d a 0.0 0.0 options))
+(defun 1d (a opts)
+  (3d a 0.0 0.0 opts))
 
-(defun 2d (a b options)
-  (3d a b 0.0 options))
+(defun 2d (a b opts)
+  (3d a b 0.0 opts))
 
-(defun 3d (a b c options)
+(defun 3d (a b c opts)
   "Simplex noise is a method for constructing an n-dimensional noise function
   comparable to Perlin noise ('classic' noise) but with a lower computational
   overhead, especially in larger dimensions. Ken Perlin designed the algorithm
   in 2001 to address the limitations of his classic noise function, especially
   in higher dimensions."
   (let*
-      (;; opts for re-used
-       (unskew-factor (loise-opts:unskew-factor options))
+      (;; opts for re-use
+       (unskew-factor (loise-opts:unskew-factor opts))
        ;; skew the input space to determine which simplex cell we're in
-       (s (* (+ a b c) (loise-opts:skew-factor options)))
+       (s (* (+ a b c) (loise-opts:skew-factor opts)))
        (i (lutil-math:fast-floor (+ a s)))
        (j (lutil-math:fast-floor (+ b s)))
        (k (lutil-math:fast-floor (+ c s)))
@@ -67,20 +67,20 @@
        (ii (band i 255))
        (jj (band j 255))
        (kk (band k 255))
-       (gi0 (loise-util:get-gradient-index ii jj kk options))
-       (gi1 (loise-util:get-gradient-index (+ ii i1) (+ jj j1) (+ kk k1) options))
-       (gi2 (loise-util:get-gradient-index (+ ii i2) (+ jj j2) (+ kk k2) options))
-       (gi3 (loise-util:get-gradient-index (+ ii 1) (+ jj 1) (+ kk 1) options))
+       (gi0 (loise-util:get-gradient-index ii jj kk opts))
+       (gi1 (loise-util:get-gradient-index (+ ii i1) (+ jj j1) (+ kk k1) opts))
+       (gi2 (loise-util:get-gradient-index (+ ii i2) (+ jj j2) (+ kk k2) opts))
+       (gi3 (loise-util:get-gradient-index (+ ii 1) (+ jj 1) (+ kk 1) opts))
        ;; Calculate the contribution from the four corners
-       (n0 (loise-util:corner-contribution gi0 x0 y0 z0 options))
-       (n1 (loise-util:corner-contribution gi1 x1 y1 z1 options))
-       (n2 (loise-util:corner-contribution gi2 x2 y2 z2 options))
-       (n3 (loise-util:corner-contribution gi3 x3 y3 z3 options)))
+       (n0 (loise-util:corner-contribution gi0 x0 y0 z0 opts))
+       (n1 (loise-util:corner-contribution gi1 x1 y1 z1 opts))
+       (n2 (loise-util:corner-contribution gi2 x2 y2 z2 opts))
+       (n3 (loise-util:corner-contribution gi3 x3 y3 z3 opts)))
     ;; Add contributions from each corner to get the final noise value.
     ;; The result is scaled to stay just inside [-1,1]
     ;; NOTE: This scaling factor seems to work better than the given one
     ;;       I'm not sure why
-    (* (loise-opts:simplex-scale options) (+ n0 n1 n2 n3))))
+    (* (loise-opts:simplex-scale opts) (+ n0 n1 n2 n3))))
 
 (defun which (a b c)
   "For the 3D case, the simplex shape is a slightly irregular tetrahedron.
@@ -97,14 +97,14 @@
   (point coords dims multiplier (default-options)))
 
 (defun point
-  ((`(,x) `(,width) multiplier options)
-   (1d (* multiplier (/ x width)) options))
-  ((`(,x ,y) `(,width ,height) multiplier options)
+  ((`(,x) `(,width) multiplier opts)
+   (1d (* multiplier (/ x width)) opts))
+  ((`(,x ,y) `(,width ,height) multiplier opts)
    (2d (* multiplier (/ x width))
        (* multiplier (/ y height))
-       options))
-  ((`(,x ,y ,z) `(,width ,height ,depth) multiplier options)
+       opts))
+  ((`(,x ,y ,z) `(,width ,height ,depth) multiplier opts)
    (3d (* multiplier (/ x width))
        (* multiplier (/ y height))
        (* multiplier (/ z depth))
-       options)))
+       opts)))

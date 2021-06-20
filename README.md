@@ -67,7 +67,7 @@ library does provide some convenience functions for generating images.
 
 ### Perlin [&#x219F;](#contents)
 
-Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
+Below are 5 perlin noise images generated at 1x, 2x, 4x, 8x, and 16x respectively.
 
 <img src="priv/images/perlin-1.png" />
 
@@ -82,14 +82,18 @@ Below are 4 perlin noise images generated at 1x, 2x, 4x, and 8x, respectively.
 These were generated with the following from the REPL:
 
 ```cl
-  > (loise-egd:perlin "perlin-1.png" `(#(multiplier 1)))
-  ok
-  > (loise-egd:perlin "perlin-2.png" `(#(multiplier 2)))
-  ok
-  > (loise-egd:perlin "perlin-4.png" `(#(multiplier 4)))
-  ok
-  > (loise-egd:perlin "perlin-8.png" `(#(multiplier 8)))
-  ok
+lfe> (set opts `(#(noise perlin) 
+                 #(output-format png)))
+lfe> (loise:image "perlin-1.png" (cons #(multiplier 1) opts))
+ok
+lfe> (loise:image "perlin-2.png" (cons #(multiplier 2) opts))
+ok
+lfe> (loise:image "perlin-4.png" (cons #(multiplier 4) opts))
+ok
+lfe> (loise:image "perlin-8.png" (cons #(multiplier 8) opts))
+ok
+lfe> (loise:image "perlin-16.png" (cons #(multiplier 16) opts))
+ok
 ```
 
 You can also limit the number of gradations for the shades of grey, giving
@@ -129,15 +133,15 @@ These were generated with the following from the REPL:
 ```cl
 lfe> (set opts `(#(noise simplex) 
                  #(output-format png)))
-lfe> (loise:image "simplex-1.png" (++ #(multiplier 1) opts))
+lfe> (loise:image "simplex-1.png" (cons #(multiplier 1) opts))
 ok
-lfe> (loise:image "simplex-2.png" (++ #(multiplier 2) opts))
+lfe> (loise:image "simplex-2.png" (cons #(multiplier 2) opts))
 ok
-lfe> (loise:image "simplex-4.png" (++ #(multiplier 4) opts))
+lfe> (loise:image "simplex-4.png" (cons #(multiplier 4) opts))
 ok
-lfe> (loise:image "simplex-8.png" (++ #(multiplier 8) opts))
+lfe> (loise:image "simplex-8.png" (cons #(multiplier 8) opts))
 ok
-lfe> (loise:image "simplex-16.png" (++ #(multiplier 16) opts))
+lfe> (loise:image "simplex-16.png" (cons #(multiplier 16) opts))
 ok
 ```
 

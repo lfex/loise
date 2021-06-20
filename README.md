@@ -122,6 +122,19 @@ Which will create the following:
 
 <img src="priv/images/perlin-8-shades.png" />
 
+You may also change the permutation table from the default, to one generated
+with a random seed:
+
+```cl
+lfe> (set opts (++ `(#(random? true)
+                     #(graded? false)) opts))
+lfe> (loise:image "perlin-rand-1.png" (++ '(#(seed 4)) opts))
+ok
+lfe> (loise:image "perlin-rand-2.png" (++ '(#(seed (4 2))) opts))
+ok
+lfe> (loise:image "perlin-rand-3.png" (++ '(#(seed (4 2 42))) opts))
+ok
+```
 
 ### Simplex [&#x219F;](#contents)
 

@@ -1,6 +1,7 @@
 (defmodule loise-perlin
   (export
-   (1d 1) (1d 2)
+   (options 0)
+   (1d 2)
    (2d 3)
    (3d 4)
    (point 3) (point 4)
@@ -10,8 +11,8 @@
 
 (defun value-range () #(-1 1))
 
-(defun 1d (a)
-  (3d a 0.0 0.0 (default-options)))
+(defun options ()
+  (cons #(noise perlin) (default-options)))
 
 (defun 1d (a opts)
   (3d a 0.0 0.0 opts))

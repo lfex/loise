@@ -211,8 +211,8 @@ You can also generate ASCII "images" with loise. As an example of this, we can
 map the default values represented by this range:
 
 ```cl
-  > (loise:gradations 6)
-  (0 51.0 102.0 153.0 204.0 255.0)
+lfe> (loise:gradations 6)
+(0 51.0 102.0 153.0 204.0 255.0)
 ```
 
 And by this set of ASCII characters:
@@ -227,14 +227,14 @@ And by this set of ASCII characters:
 By making calls like this:
 
 ```cl
-> (loise:format-ascii `(#(noise perlin) #(color true)))
+lfe> (loise:format-ascii `(#(noise perlin) #(color true)))
 ```
 <img src="priv/images/perlin-ascii.png" />
 
 And this:
 
 ```cl
-> (loise:format-ascii `(#(noise simplex) #(color true)))
+lfe> (loise:format-ascii `(#(noise simplex) #(color true)))
 ```
 <img src="priv/images/simplex-ascii.png" />
 
@@ -253,19 +253,19 @@ addition of alpine forests and grasslands and greatly increasing the
 map area in the terminal:
 
 ```cl
-> (set opts
-    `(#(color true)
-      #(width 282)
-      #(height 94)
-      #(multiplier 2.5)
-      #(grades-count 9)
-      #(grades ,(loise:gradations 9))
-      #(ascii-map ("A" "^" "!" "n" "*" "-" "~" "~" "~"))
-      #(colors (whiteb yellow green
-                green greenb green
-                blue blue blue))))
+lfe> (set opts
+       `(#(color true)
+         #(width 282)
+         #(height 94)
+         #(multiplier 2.5)
+         #(grades-count 9)
+         #(grades ,(loise:gradations 9))
+         #(ascii-map ("A" "^" "!" "n" "*" "-" "~" "~" "~"))
+         #(colors (whiteb yellow green
+                   green greenb green
+                   blue blue blue))))
 
-(loise:format-ascii opts)
+lfe> (loise:format-ascii opts)
 ```
 <a href="https://raw.githubusercontent.com/lfex/loise/master/priv/images/simplex-ascii-2.png"><img src="priv/images/simplex-ascii-2-small.png" /></a>
 
@@ -283,9 +283,9 @@ would like a different result each time, you will need to pass a new seed.
 For instance:
 
 ```cl
-> (loise:ascii `(#(noise perlin) #(seed 1) #(random true)))
-> (loise:ascii `(#(noise perlin) #(seed 4 2) #(random true)))
-> (loise:ascii `(#(noise perlin) #(seed 7 8 9) #(random true)))
+lfe> (loise:ascii `(#(noise perlin) #(seed 1) #(random true)))
+lfe> (loise:ascii `(#(noise perlin) #(seed 4 2) #(random true)))
+lfe> (loise:ascii `(#(noise perlin) #(seed 7 8 9) #(random true)))
 ```
 
 To see the full list of options available be sure read
@@ -297,62 +297,65 @@ The first place to start is ensuring that the code you obtained works as
 expected. To find out, run the unit tests:
 
 ```bash
-  $ cd loise
-  $ make check
+$ cd loise
+$ make check
 ```
-
 
 ### From the REPL [&#x219F;](#contents)
 
 Once everything is working, start up an LFE REPL:
 
 ```bash
-  $ make repl
+$ make repl
 ```
 
 You can now use loise by itself, if you so desire. Here is some example usage:
 
 ```cl
-  > (loise:perlin 3.14 1.59 2.65)
-  -0.3772216257243449
-  > (loise:simplex 0.1)
-  0.4410072765
-  > (loise:simplex 0.1 0.2)
-  0.9410934374999996
-  > (loise:simplex 0.1 0.2 0.9)
-  -0.07602014100000003
+lfe> (loise:perlin 3.14 1.59 2.65)
+-0.3772216257243449
+lfe> (loise:simplex 0.1)
+0.4410072765
+lfe> (loise:simplex 0.1 0.2)
+0.9410934374999996
+lfe> (loise:simplex 0.1 0.2 0.9)
+-0.07602014100000003
 ```
 
-Or, iterating over some values:
+Or, iterating over some values in one dimension:
 
 ```cl
-  > (set input
-      (lists:map
-        (lambda (x)
-          (/ x 10))
-        (lists:seq 0 9))))
-  (0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9)
-  > (lists:map
-      (lambda (x)
-        (loise:round
-          (loise:perlin x)
+lfe> (set input (list-comp ((<- x (lists:seq 0 9))) (/ x 10)))
+(0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9)
+lfe> (list-comp ((<- x input))
+       (loise:round
+        (loise:perlin x)
         2))
-      input)
-  (0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11)
+(0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11)
 ```
 
+
+``` cl
+lfe> (list-comp ((<- x input))
+       (list-comp ((<- y input))
+         (loise:round
+          (loise:perlin x y)
+          2)))
+```
 
 ### In a Module [&#x219F;](#contents)
 
 ```cl
-  (defmodule mymodule
-    (export all))
+(defmodule mymodule
+  (export
+   (get-perlin-pie 0)
+   (get-simplex-pie 0)))
 
-  (def get-perlin-pie ()
-    (loise:perlin 3.14 1.59 2.65))
+(def get-perlin-pie ()
+  (loise:perlin 3.14 1.59 2.65))
 
-  (def get-simplex-pie ()
-    (loise:simplex 3.14 1.59 2.65))
+(def get-simplex-pie ()
+  (loise:simplex 3.14 1.59 2.65))
 ```
 
 

@@ -23,15 +23,21 @@
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun perlin (x)
-  (loise-perlin:1d x))
+  (loise-perlin:1d x (loise-perlin:options)))
 
-(defun perlin (x opts)
-  (loise-perlin:1d x opts))
+(defun perlin
+  ((x y) (when (orelse (is_float y) (is_integer y)))
+   (loise-perlin:2d x y (loise-perlin:options)))
+  ((x opts)
+   (loise-perlin:1d x opts)))
 
-(defun perlin (x y opts)
-  (loise-perlin:2d x y opts))
+(defun perlin
+  ((x y z) (when (orelse (is_float z) (is_integer z)))
+   (loise-perlin:3d x y z (loise-perlin:options)))
+  ((x y opts)
+   (loise-perlin:2d x y opts)))
 
-(defun perlin (x y z opts)
+(defun perlin(x y z opts)
   (loise-perlin:3d x y z opts))
 
 (defun perlin-point(coords opts)
@@ -41,13 +47,19 @@
   (loise-perlin:point coords size mult))
 
 (defun simplex (x)
-  (loise-simplex:1d x))
+  (loise-simplex:1d x (loise-simplex:options)))
 
-(defun simplex (x opts)
-  (loise-simplex:1d x opts))
+(defun simplex
+  ((x y) (when (orelse (is_float y) (is_integer y)))
+   (loise-simplex:2d x y (loise-simplex:options)))
+  ((x opts)
+   (loise-simplex:1d x opts)))
 
-(defun simplex (x y opts)
-  (loise-simplex:2d x y opts))
+(defun simplex
+  ((x y z) (when (orelse (is_float z) (is_integer z)))
+   (loise-simplex:3d x y z (loise-simplex:options)))
+  ((x y opts)
+   (loise-simplex:2d x y opts)))
 
 (defun simplex (x y z opts)
   (loise-simplex:3d x y z opts))

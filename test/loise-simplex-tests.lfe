@@ -14,12 +14,27 @@
   (is-equal "001011" (loise-util:int-list->str (loise-simplex:which 1 2 3))))
 
 (deftest simplex
-  (is-equal 0.44 (lutil-math:round (loise-simplex:1d 0.1) 2))
-  (is-equal 0.44 (lutil-math:round (loise-simplex:1d 0.1 (default-options)) 2))
-  (is-equal 0.81 (lutil-math:round (loise-simplex:2d 0.1 0.1 (default-options)) 2))
-  (is-equal -0.39 (lutil-math:round (loise-simplex:2d 0.9 0.9 (default-options)) 2))
-  (is-equal 0.94 (lutil-math:round (loise-simplex:2d 0.1 0.2 (default-options)) 2))
-  (is-equal -0.08 (lutil-math:round (loise-simplex:3d 0.1 0.2 0.9 (default-options)) 2)))
+  (let ((opts (loise-simplex:options)))
+    (is-equal 0.44 (lutil-math:round (loise-simplex:1d 0.1 opts) 2))
+    (is-equal 0.81 (lutil-math:round (loise-simplex:2d 0.1 0.1 opts) 2))
+    (is-equal -0.39 (lutil-math:round (loise-simplex:2d 0.9 0.9 opts) 2))
+    (is-equal 0.94 (lutil-math:round (loise-simplex:2d 0.1 0.2 opts) 2))
+    (is-equal -0.08 (lutil-math:round (loise-simplex:3d 0.1 0.2 0.9 opts) 2))))
+
+(deftest simplex-via-api
+  (let ((opts (loise-simplex:options)))
+    (is-equal 0.44 (lutil-math:round (loise:simplex 0.1 opts) 2))
+    (is-equal 0.81 (lutil-math:round (loise:simplex 0.1 0.1 opts) 2))
+    (is-equal -0.39 (lutil-math:round (loise:simplex 0.9 0.9 opts) 2))
+    (is-equal 0.94 (lutil-math:round (loise:simplex 0.1 0.2 opts) 2))
+    (is-equal -0.08 (lutil-math:round (loise:simplex 0.1 0.2 0.9 opts) 2))))
+
+(deftest simplex-via-api-without-opts
+  (is-equal 0.44 (lutil-math:round (loise:simplex 0.1) 2))
+  (is-equal 0.81 (lutil-math:round (loise:simplex 0.1 0.1) 2))
+  (is-equal -0.39 (lutil-math:round (loise:simplex 0.9 0.9) 2))
+  (is-equal 0.94 (lutil-math:round (loise:simplex 0.1 0.2) 2))
+  (is-equal -0.08 (lutil-math:round (loise:simplex 0.1 0.2 0.9) 2)))
 
 (deftest point-without-opts
   (let ((precision 2))

@@ -6,14 +6,35 @@
 (include-lib "include/options.lfe")
 
 (deftest perlin
-  (is-equal -0.3772216257243449 (loise-perlin:3d 3.14 1.59 2.65 (default-options)))
-  (let ((expected (list 0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11))
-        (input (lists:map (lambda (x) (/ x 10)) (lists:seq 0 9))))
-    (lists:zipwith
-     (lambda (a b)
-       (is-equal a (lutil-math:round (loise:perlin b) 2)))
-     expected
-     input)))
+  (let ((opts (loise-perlin:options)))
+    (is-equal 0.11 (lutil-math:round (loise-perlin:1d 0.1 opts) 2))
+    (is-equal 0.2 (lutil-math:round (loise-perlin:2d 0.1 0.1 opts) 2))
+    (is-equal 0.01 (lutil-math:round (loise-perlin:2d 0.9 0.9 opts) 2))
+    (is-equal 0.25 (lutil-math:round (loise-perlin:2d 0.1 0.2 opts) 2))
+    (is-equal -0.14 (lutil-math:round (loise-perlin:3d 0.1 0.2 0.9 opts) 2))))
+
+
+(deftest perlin-via-api
+  (let ((opts (loise-perlin:options)))
+    (let ((expected (list 0.0 0.11 0.23 0.37 0.46 0.5 0.46 0.37 0.23 0.11))
+          (input (lists:map (lambda (x) (/ x 10)) (lists:seq 0 9))))
+      (lists:zipwith
+       (lambda (a b)
+         (is-equal a (lutil-math:round (loise:perlin b opts) 2)))
+       expected
+       input))
+    (is-equal 0.11 (lutil-math:round (loise:perlin 0.1 opts) 2))
+    (is-equal 0.2 (lutil-math:round (loise:perlin 0.1 0.1 opts) 2))
+    (is-equal 0.01 (lutil-math:round (loise:perlin 0.9 0.9 opts) 2))
+    (is-equal 0.25 (lutil-math:round (loise:perlin 0.1 0.2 opts) 2))
+    (is-equal -0.14 (lutil-math:round (loise:perlin 0.1 0.2 0.9 opts) 2))))
+
+(deftest perlin-via-api-without-opts
+  (is-equal 0.11 (lutil-math:round (loise:perlin 0.1) 2))
+  (is-equal 0.2 (lutil-math:round (loise:perlin 0.1 0.1) 2))
+  (is-equal 0.01 (lutil-math:round (loise:perlin 0.9 0.9) 2))
+  (is-equal 0.25 (lutil-math:round (loise:perlin 0.1 0.2) 2))
+  (is-equal -0.14 (lutil-math:round (loise:perlin 0.1 0.2 0.9) 2)))
 
 (deftest point-without-opts
   (is-equal 0.0

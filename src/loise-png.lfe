@@ -14,9 +14,8 @@
   (let* ((opts (default-png-options overrides))
          (grades-count (loise-opts:grades-count opts))
          (grades (loise-util:make-gradations grades-count)))
-    ;; `(#(grades ,(lists:map (lambda (x) (+ 1 x)) grades)))
-    (++ `(#(grades ,grades))
-        (loise-opts:update-perm-table opts))))
+    (cons `#(grades ,grades)
+          (loise-opts:update-perm-table opts))))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
@@ -29,7 +28,7 @@
   (perlin-image png #(1 1) end-point opts))
 
 (defun perlin-image (png start-point end-point opts)
-  (make-image png #'loise-perlin:point/4 start-point end-point opts))
+  (image png #'loise-perlin:point/4 start-point end-point opts))
 
 (defun simplex-image (png opts)
   (simplex-image png (loise:size opts) opts))
@@ -38,7 +37,7 @@
   (simplex-image png #(1 1) end-point opts))
 
 (defun simplex-image (png start-point end-point opts)
-  (make-image png #'loise-simplex:point/4 start-point end-point opts))
+  (image png #'loise-simplex:point/4 start-point end-point opts))
 
 (defun image (png noise-type)
   (image png noise-type (options)))
@@ -61,32 +60,37 @@
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun generate-config (opts)
-  'tbd)
-
-(defun point-data (point-func point max mult grades opts)
-  ;;(io:format "Point: ~p~nMax: ~p~nMultiplier: ~p~nGrades: ~p~n" (list point max mult grades))
-  ;;(io:format "Args: ~p~n" (list (list point max mult opts)))
-  (let* ((value (apply point-func (list point max mult opts)))
-         (scaled (lutil-math:color-scale value (loise-opts:value-range opts))))
-    (if (loise-opts:graded? opts)
-      (lutil-math:get-closest scaled grades)
-      scaled)))
-
-(defun make-image
+(defun image
   ((png point-func (= `#(,start-x ,start-y) start) (= `#(,end-x ,end-y) end) opts)
-   (let ((mult (loise-opts:multiplier opts))
-         (grades (loise-opts:grades opts)))
+   (let ((scale-func (loise-opts:scale-func opts))
+         (mult (loise-opts:multiplier opts))
+         (graded? (loise-opts:graded? opts))
+         (grades (loise-opts:grades opts))
+         (value-range (loise-opts:value-range opts)))
      (list-comp ((<- y (lists:seq start-y end-y)))
-       (let ((row (list-comp ((<- x (lists:seq start-x end-x)))
-                    (round
-                     (point-data point-func
-                                 `(,x ,y)
-                                 `(,end-x ,end-y)
-                                 mult
-                                 grades
-                                 opts)))))
-         (png:append png `#(row ,(list_to_binary row))))))))
+       (png:append png `#(row ,(list_to_binary (row point-func
+                                                    scale-func
+                                                    y
+                                                    start
+                                                    end
+                                                    mult
+                                                    graded?
+                                                    grades
+                                                    value-range
+                                                    opts))))))))
+
+(defun row
+  ((point-func scale-func y `#(,start-x ,_) `#(,end-x ,end-y) mult graded? grades value-range opts)
+   (list-comp ((<- x (lists:seq start-x end-x)))
+     (loise-data:cell point-func
+                      scale-func
+                      `(,x ,y)
+                      `(,end-x ,end-y)
+                      mult
+                      graded?
+                      grades
+                      value-range
+                      opts))))
 
 ;;; Example from https://github.com/yuce/png/blob/master/examples/grayscale_8.escript,
 ;;; converted to LFE, for use in the REPL:

@@ -44,20 +44,26 @@
      #(153.0 #("*" greenb))
      #(204.0 #("~" blue))
      #(255.0 #("~" blue)))
-    (loise-opts:color-map (loise-ascii:options))))
+   (loise-opts:color-map (loise-ascii:options))))
 
-(deftest point-data-perlin
+(deftest point-perlin
   (let* ((opts (loise-ascii:options))
+         (scale-func (loise-opts:scale-func opts))
          (dim (loise-opts:dimensions opts))
          (mult (loise-opts:multiplier opts))
+         (graded? (loise-opts:graded? opts))
          (grades (loise-opts:grades opts))
+         (value-range (loise-opts:value-range opts))
          (legend (loise-opts:color-map opts))
-         (test-func (lambda (x) (loise-ascii:point-data
+         (test-func (lambda (x) (loise-ascii:point
                                  #'loise-perlin:point/4
+                                 scale-func
                                  x
                                  dim
                                  mult
+                                 graded?
                                  grades
+                                 value-range
                                  legend
                                  opts))))
     (is-equal #("*" greenb) (funcall test-func (0 0)))
@@ -66,18 +72,24 @@
     (is-equal #("n" green) (funcall test-func (10 10)))
     (is-equal #("^" yellow) (funcall test-func (8 16)))))
 
-(deftest point-data-simplex
+(deftest point-simplex
   (let* ((opts (loise-ascii:options))
          (dim (loise-opts:dimensions opts))
+         (scale-func (loise-opts:scale-func opts))
          (mult (loise-opts:multiplier opts))
+         (graded? (loise-opts:graded? opts))
          (grades (loise-opts:grades opts))
+         (value-range (loise-opts:value-range opts))
          (legend (loise-opts:color-map opts))
-         (test-func (lambda (x) (loise-ascii:point-data
+         (test-func (lambda (x) (loise-ascii:point
                                  #'loise-simplex:point/4
+                                 scale-func
                                  x
                                  dim
                                  mult
+                                 graded?
                                  grades
+                                 value-range
                                  legend
                                  opts))))
     (is-equal #("*" greenb) (funcall test-func (0 0)))
@@ -86,17 +98,29 @@
     (is-equal #("^" yellow) (funcall test-func (15 0)))
     (is-equal #("A" whiteb) (funcall test-func (14 10)))))
 
-(deftest make-row-perlin
+(deftest row-perlin
   (let* ((opts (loise-ascii:options))
+         (scale-func (loise-opts:scale-func opts))
+         (mult (loise-opts:multiplier opts))
+         (graded? (loise-opts:graded? opts))
+         (grades (loise-opts:grades opts))
+         (value-range (loise-opts:value-range opts))
+         (legend (loise-opts:color-map opts))
          (size (loise-opts:size opts))
          (test-func (lambda (row-index)
                       (lists:flatten
                        (string:replace
-                        (loise-ascii:make-row #'loise-perlin:point/4
-                                              row-index
-                                              #(0 0)
-                                              size
-                                              opts)
+                        (loise-ascii:row #'loise-perlin:point/4
+                                         scale-func
+                                         row-index
+                                         #(0 0)
+                                         size
+                                         mult
+                                         graded?
+                                         grades
+                                         value-range
+                                         legend
+                                         opts)
                         " " "" 'all)))))
     (is-equal "*****~~~~~*****nnnn^^^^^nnnn*****************************"
               (funcall test-func 0))
@@ -105,17 +129,29 @@
     (is-equal "*nnnnnnnnnnnnn*******************************************"
               (funcall test-func 36))))
 
-(deftest make-row-simplex
+(deftest row-simplex
   (let* ((opts (loise-ascii:options))
+         (scale-func (loise-opts:scale-func opts))
+         (mult (loise-opts:multiplier opts))
+         (graded? (loise-opts:graded? opts))
+         (grades (loise-opts:grades opts))
+         (value-range (loise-opts:value-range opts))
+         (legend (loise-opts:color-map opts))
          (size (loise-opts:size opts))
          (test-func (lambda (row-index)
                       (lists:flatten
                        (string:replace
-                        (loise-ascii:make-row #'loise-simplex:point/4
-                                              row-index
-                                              #(0 0)
-                                              size
-                                              opts)
+                        (loise-ascii:row #'loise-simplex:point/4
+                                         scale-func
+                                         row-index
+                                         #(0 0)
+                                         size
+                                         mult
+                                         graded?
+                                         grades
+                                         value-range
+                                         legend
+                                         opts)
                         " " "" 'all)))))
     (is-equal "**~~~~~***nn^^^^^nn**nnnnnnn**~~~~~~*************~~~~~~*n"
               (funcall test-func 0))
@@ -124,22 +160,22 @@
     (is-equal "*********nn**~~~~~~~~~~~~~~**n^^^^^nnn**~~~~~*nnnnn***~~~"
               (funcall test-func 36))))
 
-(deftest make-grid-perlin
+(deftest grid-perlin
   (let* ((opts (tiny-opts))
          (size (loise-opts:size opts)))
     (is-equal (tiny-grid-perlin)
               (lists:flatten
-               (loise-ascii:make-grid #'loise-perlin:point/4
-                                      #(0 0)
-                                      size
-                                      opts)))))
+               (loise-ascii:grid #'loise-perlin:point/4
+                                 #(0 0)
+                                 size
+                                 opts)))))
 
-(deftest make-grid-simplex
+(deftest grid-simplex
   (let* ((opts (tiny-opts))
          (size (loise-opts:size opts)))
     (is-equal (tiny-grid-simplex)
               (lists:flatten
-               (loise-ascii:make-grid #'loise-simplex:point/4
-                                      #(0 0)
-                                      size
-                                      opts)))))
+               (loise-ascii:grid #'loise-simplex:point/4
+                                 #(0 0)
+                                 size
+                                 opts)))))

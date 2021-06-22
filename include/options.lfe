@@ -60,6 +60,9 @@
     #(grad-modulus ,(default-grad-modulus))
     #(grad-matrix ,(default-gradient-matrix))))
 
+(defun default-options (overrides)
+  (++ overrides (default-options)))
+
 ;; General output defaults + options
 (defun default-output-backend () 'undefined)
 (defun default-output-type () 'undefined)

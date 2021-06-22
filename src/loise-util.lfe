@@ -125,3 +125,6 @@
   (if (loise-opts:color? opts)
     (call 'color name text)
     text))
+
+(defun identity (x)
+  x)

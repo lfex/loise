@@ -18,6 +18,9 @@
 (defun size (opts)
   (list_to_tuple (dimensions opts)))
 
+(defun scale-func (opts)
+  (proplists:get_value 'scale-func opts #'lutil-math:color-scale/2))
+
 (defun grades (opts)
   (proplists:get_value 'grades opts))
 
@@ -96,6 +99,7 @@
     (_ opts)))
 
 (defun value-range (opts)
+  ;; Update as we support more types of noise ...
   (case (loise-opts:noise opts)
     ('perlin (loise-perlin:value-range))
-    ('simplex (loise-perlin:value-range))))
+    ('simplex (loise-simplex:value-range))))

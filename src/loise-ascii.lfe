@@ -33,7 +33,7 @@
   (perlin-grid #(0 0) end-point opts))
 
 (defun perlin-grid (start-point end-point opts)
-  (make-grid #'loise-perlin:point/4 start-point end-point opts))
+  (grid #'loise-perlin:point/4 start-point end-point opts))
 
 (defun simplex-grid ()
   (simplex-grid (options)))
@@ -45,7 +45,7 @@
   (simplex-grid #(0 0) end-point opts))
 
 (defun simplex-grid (start-point end-point opts)
-  (make-grid #'loise-simplex:point/4 start-point end-point opts))
+  (grid #'loise-simplex:point/4 start-point end-point opts))
 
 (defun grid (grid-type)
   (grid grid-type (options)))
@@ -71,32 +71,45 @@
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun point-data (point-func point max mult grades legend opts)
-  (let* ((value (apply point-func (list point max mult opts)))
-         (scaled (lutil-math:color-scale value (loise-opts:value-range opts)))
-         (graded (lutil-math:get-closest scaled grades)))
-    (proplists:get_value graded legend)))
-
-(defun make-grid
+(defun grid
   ((point-func (= `#(,start-x ,start-y) start) (= `#(,end-x ,end-y) end) opts)
-   (lists:join
-    (row-separator)
-    (list-comp ((<- y (lists:seq start-y end-y)))
-      (make-row point-func y start end opts)))))
-
-(defun make-row
-  ((point-func y `#(,start-x ,_) `#(,end-x ,end-y) opts)
-   (let ((legend (loise-opts:color-map opts))
+   (let ((scale-func (loise-opts:scale-func opts))
          (mult (loise-opts:multiplier opts))
-         (grades (loise-opts:grades opts)))
+         (graded? (loise-opts:graded? opts))
+         (grades (loise-opts:grades opts))
+         (value-range (loise-opts:value-range opts))
+         (legend (loise-opts:color-map opts)))
+     (lists:join
+      (row-separator)
+      (list-comp ((<- y (lists:seq start-y end-y)))
+        (row point-func scale-func y start end mult graded? grades value-range legend opts))))))
+
+(defun row
+  ((point-func scale-func y `#(,start-x ,_) `#(,end-x ,end-y) mult graded? grades value-range legend opts)
      (lists:join
       (cell-separator)
       (list-comp ((<- x (lists:seq start-x end-x)))
-        (let ((`#(,char ,color) (point-data point-func
-                                            `(,x ,y)
-                                            `(,end-x ,end-y)
-                                            mult
-                                            grades
-                                            legend
-                                            opts)))
-          (loise-util:colorize color char opts)))))))
+        (let ((`#(,char ,color) (point point-func
+                                       scale-func
+                                       ;; XXX why change from tuple to list here?
+                                       `(,x ,y)
+                                       `(,end-x ,end-y)
+                                       mult
+                                       graded?
+                                       grades
+                                       value-range
+                                       legend
+                                       opts)))
+          (loise-util:colorize color char opts))))))
+
+(defun point (point-func scale-func point max mult graded? grades value-range legend opts)
+  (let ((graded (loise-data:cell point-func
+                                 scale-func
+                                 point
+                                 max
+                                 mult
+                                 graded?
+                                 grades
+                                 value-range
+                                 opts)))
+    (proplists:get_value graded legend)))

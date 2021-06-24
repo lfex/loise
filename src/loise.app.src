@@ -13,6 +13,7 @@
     loise,
     'loise-ascii',
     'loise-egd',
+    'loise-opts',
     'loise-perlin', 
     'loise-png',
     'loise-simplex', 

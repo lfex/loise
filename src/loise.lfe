@@ -70,9 +70,23 @@
 (defun simplex-point(coords size mult)
   (loise-simplex:point coords size mult))
 
+;; Data API
+(defun data ()
+  (data '()))
+
+(defun data (opts)
+  (let ((opts (loise-data:options opts)))
+    (loise-data:matrix (loise-opts:noise opts) opts)))
+
+(defun data-row (matrix index)
+  (proplists:get_value index matrix))
+
+(defun data-cell (row point)
+  (proplists:get_value point row))
+
 ;; ASCII API
 (defun ascii ()
-  (ascii (loise-ascii:options)))
+  (ascii '()))
 
 (defun ascii (opts)
   (let ((opts (loise-ascii:options opts)))

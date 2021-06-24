@@ -50,6 +50,9 @@
 (defun output-format (opts)
   (proplists:get_value 'output-format opts))
 
+(defun data-format (opts)
+  (proplists:get_value 'data-format opts))
+
 (defun fade-factor (opts)
   (proplists:get_value 'fade-factor opts))
 

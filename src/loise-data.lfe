@@ -11,7 +11,8 @@
   (options '()))
 
 (defun options (overrides)
-  (let ((opts (++ `(#(scale-func ,#'loise-util:identity/1))
+  (let ((opts (++ `(#(scale-func ,#'loise-util:identity/1)
+                    #(format flat))
                   (default-options overrides))))
     (loise-opts:update-perm-table opts)))
 
@@ -29,7 +30,7 @@
   (perlin-matrix #(0 0) end-point opts))
 
 (defun perlin-matrix (start-point end-point opts)
-  (matrix #'loise-perlin:point/4 start-point end-point opts))
+  (data #'loise-perlin:point/4 start-point end-point opts))
 
 (defun simplex-matrix ()
   (simplex-matrix (options)))
@@ -41,7 +42,7 @@
   (simplex-matrix #(0 0) end-point opts))
 
 (defun simplex-matrix (start-point end-point opts)
-  (matrix #'loise-simplex:point/4 start-point end-point opts))
+  (data #'loise-simplex:point/4 start-point end-point opts))
 
 (defun matrix (matrix-type)
   (matrix matrix-type (options)))
@@ -55,6 +56,12 @@
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+(defun data (point-func start end opts)
+  (case (loise-opts:data-format opts)
+    ('flat (flat point-func start end opts))
+    ('matrix (matrix point-func start end opts))
+    (format `#(error (lists:flatten "Unknown data format: ~p" (lists format))))))
+
 (defun matrix
   ((point-func (= `#(,start-x ,start-y) start) (= `#(,end-x ,end-y) end) opts)
    (let ((scale-func (loise-opts:scale-func opts))
@@ -63,16 +70,17 @@
          (grades (loise-opts:grades opts))
          (value-range (loise-opts:value-range opts)))
      (list-comp ((<- y (lists:seq start-y end-y)))
-       (tuple 'row
-              y
+       (tuple y
               (row point-func scale-func y start end mult graded? grades value-range opts))))))
+
+(defun flat (point-func start end opts)
+  (lists:flatten (matrix point-func start end opts)))
 
 (defun row
   ((point-func scale-func y `#(,start-x ,_) `#(,end-x ,end-y) mult graded? grades value-range opts)
    (let ((legend (loise-opts:color-map opts)))
      (list-comp ((<- x (lists:seq start-x end-x)))
-       (tuple 'cell
-              `(,x ,y)
+       (tuple `(,x ,y)
               (cell point-func
                     scale-func
                     ;; XXX why change from tuple to list here?

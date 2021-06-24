@@ -48,9 +48,9 @@
   {pkg_name, loise},
   {maintainers, ["Duncan McGreggor"]},
   {licenses, ["Apache-2"]},
-  {links,
-   [{"GitHub", "https://github.com/lfex/loise"},
+  {links, [
+    {"GitHub", "https://github.com/lfex/loise"},
     {"Hex", "https://hex.pm/packages/loise"}
-   ]}
- ]
-}.
+  ]},
+  {exclude_files, ["priv/images/*", "priv/implementations/*", "priv/make/*"]}
+]}.

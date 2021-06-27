@@ -1,7 +1,7 @@
 (defmodule loise-egd
   (export all))
 
-(include-lib "include/options.lfe")
+(include-lib "loise/include/options.lfe")
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Options and Defaults

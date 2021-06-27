@@ -1,7 +1,7 @@
 (defmodule loise-opts
   (export all))
 
-(include-lib "include/options.lfe")
+(include-lib "loise/include/options.lfe")
 
 (defun noise (opts)
   (proplists:get_value 'noise opts))

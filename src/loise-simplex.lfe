@@ -8,7 +8,7 @@
    (value-range 0)
    (which 3)))
 
-(include-lib "include/options.lfe")
+(include-lib "loise/include/options.lfe")
 
 (defun value-range () #(-1 1))
 

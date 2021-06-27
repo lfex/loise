@@ -1,17 +1,16 @@
 %% -*- erlang -*-
-{application, loise,
- [
+{application, loise, [
   %% A quick description of the application.
-  {description, "A noise-generator for LFE"},
+  {description, "A noise library for LFE/Erlang"},
 
   %% The version of the application
   {vsn, "1.3.0-dev"},
 
   %% All modules used by the application.
-  {modules,
-   [
+  {modules, [
     loise,
     'loise-ascii',
+    'loise-data',
     'loise-egd',
     'loise-opts',
     'loise-perlin', 
@@ -26,8 +25,7 @@
   %% Applications that are to be started prior to this one. This can be ignored
   %% leave it alone unless you understand it well and let the .rel files in
   %% your release handle this.
-  {applications,
-   [
+  {applications, [
     kernel,
     stdlib
    ]},

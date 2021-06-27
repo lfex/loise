@@ -5,7 +5,7 @@
 [![Erlang Versions][erlang badge]][versions]
 [![Tags][github tags badge]][github tags]
 
-*A Noise-Generator for LFE*
+*A noise library for LFE/Erlang*
 
 [![Loise project logo][logo]][logo]
 

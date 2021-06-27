@@ -37,7 +37,8 @@ jobs:
 #    - name: Dialyzer
 #      run: ./rebar3 dialyzer
     - name: Run Unit Tests
-      run: ./rebar3 as test lfe ltest -tunit
+      # XXX https://github.com/lfe-rebar3/rebar3_lfe/issues/69 -- have ro compile multiple times; wtf?
+      run: ./rebar3 as test compile; ./rebar3 as test compile; ./rebar3 as test lfe ltest -tunit
     - name: Run System Tests
       run: ./rebar3 as test lfe ltest -tsystem
     - name: Test Coverage

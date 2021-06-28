@@ -1,6 +1,7 @@
 (defmodule loise
   (export
-   (start 0))
+   (start 0)
+   (stop 0))
   (export
    (perlin 1) (perlin 2) (perlin 3) (perlin 4)
    (perlin-point 2) (perlin-point 3)
@@ -25,6 +26,9 @@
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 (defun start ()
   (application:ensure_all_started 'loise))
+
+(defun stop ()
+  (application:stop 'loise))
 
 (defun perlin (x)
   (loise-perlin:1d x (loise-perlin:options)))

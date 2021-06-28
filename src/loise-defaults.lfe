@@ -1,19 +1,11 @@
 (defmodule loise-defaults
   (export all))
 
-(defun default-noise () 'simplex)
-(defun default-multiplier () 4.0)
-(defun default-skew-factor () (/ 1.0 3.0))
-(defun default-unskew-factor () (/ 1.0 6.0))
-(defun default-mix-shift () 1.0)
-(defun default-fade-factor () 6.0)
-(defun default-fade-shift-1 () 15.0)
-(defun default-fade-shift-2 () 10.0)
-(defun default-grad-modulus () 12)
-;; (defun default-simplex-scale-factor () 70.0)
-(defun default-simplex-scale-factor () 76.5)
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Default Data
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun default-gradient-matrix ()
+(defun gradient-matrix ()
   '(( 1.0  1.0  0.0)  (-1.0  1.0  0.0)  ( 1.0 -1.0  0.0)
     (-1.0 -1.0  0.0)  ( 1.0  0.0  1.0)  (-1.0  0.0  1.0)
     ( 1.0  0.0 -1.0)  (-1.0  0.0 -1.0)  ( 0.0  1.0  1.0)
@@ -43,30 +35,28 @@
     222 114  67  29  24  72 243 141 128 195  78  66
     215  61 156 180))
 
-(defun default-permutation-table ()
+(defun permutation-table ()
   (let ((perm (half-permutation-table)))
     (++ perm perm)))
 
-(defun default-base-options ()
-  `(#(noise ,(default-noise))
-    #(random? ,(default-random?))
-    #(seed ,(default-seed))
-    #(multiplier ,(default-multiplier))
-    #(perm-table ,(default-permutation-table))
-    #(simplex-scale ,(default-simplex-scale-factor))
-    #(mix-shift ,(default-mix-shift))
-    #(skew-factor ,(default-skew-factor))
-    #(unskew-factor ,(default-unskew-factor))
-    #(fade-factor ,(default-fade-factor))
-    #(fade-shift-1 ,(default-fade-shift-1))
-    #(fade-shift-2 ,(default-fade-shift-2))
-    #(grad-modulus ,(default-grad-modulus))
-    #(grad-matrix ,(default-gradient-matrix))))
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Default Values
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun default-base-options (overrides)
-  (++ overrides (default-base-options)))
+;; Base default values
+(defun default-noise () 'simplex)
+(defun default-multiplier () 4.0)
+(defun default-skew-factor () (/ 1.0 3.0))
+(defun default-unskew-factor () (/ 1.0 6.0))
+(defun default-mix-shift () 1.0)
+(defun default-fade-factor () 6.0)
+(defun default-fade-shift-1 () 15.0)
+(defun default-fade-shift-2 () 10.0)
+(defun default-grad-modulus () 12)
+;; (defun default-simplex-scale-factor () 70.0)
+(defun default-simplex-scale-factor () 76.5)
 
-;; General output defaults + options
+;; Output default values
 (defun default-output-backend () 'undefined)
 (defun default-output-type () 'undefined)
 (defun default-output-format () 'undefined)
@@ -76,15 +66,31 @@
 (defun default-random? () 'false)
 (defun default-seed () 42)
 
-(defun default-output-options ()
-  `(#(output-backend ,(default-output-backend))
-    #(output-type ,(default-output-type))
-    #(output-format ,(default-output-format))
-    #(grades-count ,(default-grades-count))
-    #(grades ,(default-grades))
-    #(graded? ,(default-graded?))))
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Default Options
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-;; This function is for display purposes when used in the REPL
-;; and needs to be the last function in the include file.
-(defun |-- loaded include: loise/options --| ()
-  'ok)
+(defun default-base-options ()
+  `#m(noise ,(default-noise)
+      random? ,(default-random?)
+      seed ,(default-seed)
+      multiplier ,(default-multiplier)
+      simplex-scale ,(default-simplex-scale-factor)
+      mix-shift ,(default-mix-shift)
+      skew-factor ,(default-skew-factor)
+      unskew-factor ,(default-unskew-factor)
+      fade-factor ,(default-fade-factor)
+      fade-shift-1 ,(default-fade-shift-1)
+      fade-shift-2 ,(default-fade-shift-2)
+      grad-modulus ,(default-grad-modulus)))
+
+(defun default-base-options (overrides)
+  (maps:merge (default-base-options) overrides))
+
+(defun default-output-options ()
+  `#m(output-backend ,(default-output-backend)
+      output-type ,(default-output-type)
+      output-format ,(default-output-format)
+      grades-count ,(default-grades-count)
+      grades ,(default-grades)
+      graded? ,(default-graded?)))

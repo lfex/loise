@@ -26,7 +26,7 @@
     #(emulator ,(erlang:system_info 'version))
     #(driver ,(erlang:system_info 'driver_version))))
 
-(defun versions (bkend)
+(defun versions ()
   (lists:append `((,(version+name 'loise))
                   ,(versions-langs)
                   ,(versions-rebar)

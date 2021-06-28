@@ -1,5 +1,7 @@
 (defmodule loise
   (export
+   (start 0))
+  (export
    (perlin 1) (perlin 2) (perlin 3) (perlin 4)
    (perlin-point 2) (perlin-point 3)
    (simplex 1) (simplex 2) (simplex 3) (simplex 4)
@@ -21,6 +23,8 @@
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+(defun start ()
+  (application:ensure_all_started 'loise))
 
 (defun perlin (x)
   (loise-perlin:1d x (loise-perlin:options)))
@@ -123,9 +127,9 @@
 
 ;; Project metadata
 
-(defun version () (loise-util:version))
+(defun version () (loise-state:version))
 
-(defun versions () (loise-util:versions))
+(defun versions () (loise-state:versions))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Supporting functions

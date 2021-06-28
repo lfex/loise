@@ -1,3 +1,6 @@
+(defmodule loise-defaults
+  (export all))
+
 (defun default-noise () 'simplex)
 (defun default-multiplier () 4.0)
 (defun default-skew-factor () (/ 1.0 3.0))

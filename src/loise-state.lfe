@@ -15,9 +15,10 @@
   ;; server API
   (export
    (echo 1)
+   (get 0) (get 1) (get 2)
    (pid 0)
    (ping 0)
-   (version 0) (versions 0)))
+   (set 2)))
 
 ;;; ----------------
 ;;; config functions
@@ -28,7 +29,11 @@
 (defun unknown-command () #(error "Unknown command."))
 
 (defun initial-state ()
-  `#m(version ,(loise-util:version)
+  `#m(base-opts ,(loise-defaults:base-options)
+      grad-matrix ,(loise-defaults:gradient-matrix)
+      output-opts ,(loise-defaults:output-options)
+      perm-table ,(loise-defaults:permutation-table)
+      version ,(loise-util:version)
       versions ,(loise-util:versions)))
 
 ;;; -------------------------
@@ -51,8 +56,11 @@
 (defun init (state)
   `#(ok ,state))
 
-(defun handle_cast (_msg state)
-  `#(noreply ,state))
+(defun handle_cast
+  ((`#(state set ,key ,val) _from state)
+   `#(noreply ,(mref state key val)))
+  ((_msg state)
+   `#(noreply ,state)))
 
 (defun handle_call
   ((`#(echo ,msg) _from state)
@@ -61,10 +69,12 @@
    `#(reply pong ,state))
   (('#(stop) _from state)
    `#(stop shutdown ok ,state))
-  (('#(version loise) _from state)
-   `#(reply ,(mref state 'version) ,state))
-  (('#(version all) _from state)
-   `#(reply ,(mref state 'versions) ,state))
+  (('#(state get) _from state)
+   `#(reply ,state ,state))
+  ((`#(state get ,key) _from state)
+   `#(reply ,(maps:get key state 'undefined) ,state))
+  ((`#(state get ,key ,default) _from state)
+   `#(reply ,(maps:get key state default) ,state))
   ((message _from state)
    `#(reply ,(unknown-command) ,state)))
 
@@ -90,14 +100,20 @@
 (defun echo (msg)
   (gen_server:call (SERVER) `#(echo ,msg)))
 
+(defun get ()
+  (gen_server:call (SERVER) '#(state get)))
+
+(defun get (key)
+  (gen_server:call (SERVER) `#(state get ,key)))
+
+(defun get (key default)
+  (gen_server:call (SERVER) `#(state get ,key ,default)))
+
 (defun pid ()
   (erlang:whereis (SERVER)))
 
 (defun ping ()
   (gen_server:call (SERVER) '#(ping)))
 
-(defun version ()
-  (gen_server:call (SERVER) '#(version loise)))
-
-(defun versions ()
-  (gen_server:call (SERVER) '#(version all)))
+(defun set (key value)
+  (gen_server:cast (SERVER) `#(state set ,key ,value)))

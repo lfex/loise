@@ -131,14 +131,13 @@
 
 ;; Project metadata
 
-(defun version () (loise-state:version))
+(defun version () (loise-state:get 'version))
 
-(defun versions () (loise-state:versions))
+(defun versions () (loise-state:get 'versions))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
 
 (defun get-file-type (filename opts)
   ;; XXX add type-extractor (read file extension, fall back to opts

@@ -18,6 +18,9 @@
          (v2 (lists:map (lambda (x) (* -1 x)) v1)))
     (++ v1 v2)))
 
+(deftest dimensions
+  (is-equal '(256 128) (loise-opts:dimensions (loise-png:default-options))))
+
 (deftest row-without-grades
   (let* ((opts (tiny-opts))
          (scale-func (loise-opts:scale-func opts))

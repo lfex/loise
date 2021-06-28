@@ -18,3 +18,6 @@
   (is-equal 'png (loise-egd:get-image-filetype "myfile.png"))
   (is-equal 'gif (loise-egd:get-image-filetype "myfile.gif"))
   (is-equal 'jpg (loise-egd:get-image-filetype "myfile.jpg")))
+
+(deftest dimensions
+  (is-equal '(256 128) (loise-opts:dimensions (loise-egd:default-options))))

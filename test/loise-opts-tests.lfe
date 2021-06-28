@@ -10,16 +10,23 @@
     #(height 2)))
 
 (deftest dimensions
-  (is-equal '(256 128) (loise-opts:dimensions (default-egd-options)))
-  (is-equal '(56 36) (loise-opts:dimensions (default-ascii-options)))
   (is-equal '(2 2) (loise-opts:dimensions (tiny-opts))))
 
 (deftest update-perm-table
-  (let* ((opts (default-ascii-options))
-         (new-opts (loise-opts:update-perm-table opts))) 
+  (let* ((opts (default-base-options))
+         (opts2 (loise-opts:update-perm-table opts))
+         (rand-opts (loise-opts:update-perm-table (cons #(random? true) opts))))
     (is-equal (default-permutation-table)
               (loise-opts:perm-table opts))
     (is-equal '(151 160 137 91 90 15 131 13 201 95)
               (lists:sublist
-               (loise-opts:perm-table new-opts)
+               (loise-opts:perm-table opts)
+               10))
+    (is-equal '(151 160 137 91 90 15 131 13 201 95)
+              (lists:sublist
+               (loise-opts:perm-table opts2)
+               10))
+    (is-equal '(35 94 168 230 251 221 92 64 92 36)
+              (lists:sublist
+               (loise-opts:perm-table rand-opts)
                10))))

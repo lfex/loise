@@ -7,11 +7,39 @@
 ;;; Options and Defaults
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+(defun default-ascii-width () 56)
+(defun default-ascii-height () 36)
+(defun default-ascii-map () '("A" "^" "n" "*" "~" "~"))
+(defun default-ascii-colors ()
+  '(whiteb
+    yellow
+    green
+    greenb
+    blue
+    blue))
+
+(defun default-options ()
+  (default-options '()))
+
+(defun default-options (overrides)
+  (++ overrides
+      `(#(output-backend loise)
+        #(output-type ascii)
+        #(output-format text)
+        #(width ,(default-ascii-width))
+        #(height ,(default-ascii-height))
+        #(ascii-map ,(default-ascii-map))
+        #(color false)
+        #(colors ,(default-ascii-colors))
+        #(graded? true))
+      (default-output-options)
+      (default-base-options)))
+
 (defun options ()
   (options '()))
 
 (defun options (overrides)
-  (let* ((opts (default-ascii-options overrides))
+  (let* ((opts (default-options overrides))
          (grades-count (loise-opts:grades-count opts)))
     (++ `(#(grades ,(loise-util:make-gradations grades-count)))
         (loise-opts:update-perm-table opts))))

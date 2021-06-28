@@ -7,11 +7,31 @@
 ;;; Options and Defaults
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+(defun default-png-width () 256)
+(defun default-png-height () 128)
+(defun default-png-mode () #(grayscale 8))
+(defun default-png-palette () 'undefined)
+
+(defun default-options ()
+  (default-options '()))
+
+(defun default-options (overrides)
+  (++ overrides
+      `(#(output-backend png)
+        #(output-type image)
+        #(output-format png)
+        #(width ,(default-png-width))
+        #(height ,(default-png-height))
+        #(png-mode ,(default-png-mode))
+        #(png-palette ,(default-png-palette)))
+      (default-output-options)
+      (default-base-options)))
+
 (defun options ()
   (options '()))
 
 (defun options (overrides)
-  (let* ((opts (default-png-options overrides))
+  (let* ((opts (default-options overrides))
          (grades-count (loise-opts:grades-count opts))
          (grades (loise-util:make-gradations grades-count)))
     (cons `#(grades ,grades)

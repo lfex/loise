@@ -7,11 +7,27 @@
 ;;; Options and Defaults
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+(defun default-egd-width () 256)
+(defun default-egd-height () 128)
+
+(defun default-options ()
+  (default-options '()))
+
+(defun default-options (overrides)
+  (++ overrides
+      `(#(output-backend egd)
+        #(output-type image)
+        #(output-format png)
+        #(width ,(default-egd-width))
+        #(height ,(default-egd-height)))
+      (default-output-options)
+      (default-base-options)))
+
 (defun options ()
   (options '()))
 
 (defun options (overrides)
-  (let* ((opts (default-egd-options overrides)))
+  (let* ((opts (default-options overrides)))
     (loise-opts:update-perm-table opts)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -19,13 +35,13 @@
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun perlin (filename)
-  (perlin filename (default-egd-options)))
+  (perlin filename (default-options)))
 
 (defun perlin (filename opts)
   (create filename #'draw-perlin-point!/4 opts))
 
 (defun simplex (filename)
-  (simplex filename (default-egd-options)))
+  (simplex filename (default-options)))
 
 (defun simplex (filename opts)
   (create filename #'draw-simplex-point!/4 opts))
@@ -99,7 +115,7 @@
   Based on the Racket function defined here:
     http://docs.racket-lang.org/picturing-programs/#%28def._%28%28lib._picturing-programs/private/map-image..rkt%29._build-image%29%29"
   (let* ((new-opts (++ (loise-opts:update-perm-table opts)
-                        (default-options)))
+                        (default-base-options)))
          (width (loise-opts:width new-opts))
          (height (loise-opts:height new-opts))
          (image (egd:create width height)))

@@ -21,6 +21,9 @@
       "~ A *" "\n"
       "* * ~"))
 
+(deftest dimensions
+  (is-equal '(56 36) (loise-opts:dimensions (loise-ascii:default-options))))
+
 (deftest grades
   (let ((opts (loise-ascii:options)))
     (is-equal 6 (loise-opts:grades-count opts))

@@ -44,7 +44,7 @@
   (let ((perm (half-permutation-table)))
     (++ perm perm)))
 
-(defun default-options ()
+(defun default-base-options ()
   `(#(noise ,(default-noise))
     #(random? ,(default-random?))
     #(seed ,(default-seed))
@@ -60,8 +60,8 @@
     #(grad-modulus ,(default-grad-modulus))
     #(grad-matrix ,(default-gradient-matrix))))
 
-(defun default-options (overrides)
-  (++ overrides (default-options)))
+(defun default-base-options (overrides)
+  (++ overrides (default-base-options)))
 
 ;; General output defaults + options
 (defun default-output-backend () 'undefined)
@@ -80,73 +80,6 @@
     #(grades-count ,(default-grades-count))
     #(grades ,(default-grades))
     #(graded? ,(default-graded?))))
-
-;; egd defaults + options
-(defun default-egd-width () 256)
-(defun default-egd-height () 128)
-
-(defun default-egd-options ()
-  (default-egd-options '()))
-
-(defun default-egd-options (overrides)
-  (++ overrides
-      `(#(output-backend egd)
-        #(output-type image)
-        #(output-format png)
-        #(width ,(default-egd-width))
-        #(height ,(default-egd-height)))
-      (default-output-options)
-      (default-options)))
-
-;; png defaults + options
-(defun default-png-width () 256)
-(defun default-png-height () 128)
-(defun default-png-mode () #(grayscale 8))
-(defun default-png-palette () 'undefined)
-
-(defun default-png-options ()
-  (default-png-options '()))
-
-(defun default-png-options (overrides)
-  (++ overrides
-      `(#(output-backend png)
-        #(output-type image)
-        #(output-format png)
-        #(width ,(default-png-width))
-        #(height ,(default-png-height))
-        #(png-mode ,(default-png-mode))
-        #(png-palette ,(default-png-palette)))
-      (default-output-options)
-      (default-options)))
-
-;; ASCII defaults + options
-(defun default-ascii-width () 56)
-(defun default-ascii-height () 36)
-(defun default-ascii-map () '("A" "^" "n" "*" "~" "~"))
-(defun default-ascii-colors ()
-  '(whiteb
-    yellow
-    green
-    greenb
-    blue
-    blue))
-
-(defun default-ascii-options ()
-  (default-ascii-options '()))
-
-(defun default-ascii-options (overrides)
-  (++ overrides
-      `(#(output-backend loise)
-        #(output-type ascii)
-        #(output-format text)
-        #(width ,(default-ascii-width))
-        #(height ,(default-ascii-height))
-        #(ascii-map ,(default-ascii-map))
-        #(color false)
-        #(colors ,(default-ascii-colors))
-        #(graded? true))
-      (default-output-options)
-      (default-options)))
 
 ;; This function is for display purposes when used in the REPL
 ;; and needs to be the last function in the include file.

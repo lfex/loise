@@ -1,8 +1,6 @@
 (defmodule loise-egd
   (export all))
 
-(include-lib "loise/include/options.lfe")
-
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Options and Defaults
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -11,37 +9,40 @@
 (defun default-egd-height () 128)
 
 (defun default-options ()
-  (default-options '()))
+  (default-options #m()))
 
 (defun default-options (overrides)
-  (++ overrides
-      `(#(output-backend egd)
-        #(output-type image)
-        #(output-format png)
-        #(width ,(default-egd-width))
-        #(height ,(default-egd-height)))
-      (default-output-options)
-      (default-base-options)))
+  (let ((egd-opts `#m(output-backend egd
+                      output-type image
+                      output-format png
+                      width ,(default-egd-width)
+                      height ,(default-egd-height))))
+    (clj:-> (loise-state:get 'base-opts)
+            (maps:merge (loise-state:get 'output-opts))
+            (maps:merge egd-opts)
+            (maps:merge overrides)
+            (loise-opts:update-calculated-opts))))
 
 (defun options ()
-  (options '()))
+  (options #m()))
 
 (defun options (overrides)
-  (let* ((opts (default-options overrides)))
-    (loise-opts:update-perm-table opts)))
+  (case (maps:get 'egd-opts (loise-state:get) 'undefined)
+    ('undefined  (default-options overrides))
+    (stored-opts stored-opts)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun perlin (filename)
-  (perlin filename (default-options)))
+  (perlin filename (options)))
 
 (defun perlin (filename opts)
   (create filename #'draw-perlin-point!/4 opts))
 
 (defun simplex (filename)
-  (simplex filename (default-options)))
+  (simplex filename (options)))
 
 (defun simplex (filename opts)
   (create filename #'draw-simplex-point!/4 opts))
@@ -53,8 +54,8 @@
   like anything other than what this is: A toy."
   (let* ((value (funcall func
                   `(,x ,y)
-                  (loise-opts:dimensions opts)
-                  (loise-opts:multiplier opts)
+                  (mref opts 'dimensions)
+                  (mref opts 'multiplier)
                   opts))
          (adjusted (get-graded-point value opts)))
     (egd:line
@@ -69,7 +70,7 @@
   (draw-point! image x y #'loise:get-simplex-point/4 opts))
 
 (defun write-image (filename opts)
-  (case (loise-opts:noise opts)
+  (case (mref opts 'noise)
     ('perlin (perlin filename opts))
     ('simplex (simplex filename opts))))
   
@@ -95,7 +96,7 @@
 
 (defun get-graded-point (value opts)
   (let ((adjusted (lutil-math:color-scale value #(-1 1)))
-        (grades (loise-opts:grades opts)))
+        (grades (mref opts 'grades)))
     (case grades
       ('undefined
         adjusted)
@@ -114,12 +115,10 @@
 
   Based on the Racket function defined here:
     http://docs.racket-lang.org/picturing-programs/#%28def._%28%28lib._picturing-programs/private/map-image..rkt%29._build-image%29%29"
-  (let* ((new-opts (++ (loise-opts:update-perm-table opts)
-                        (default-base-options)))
-         (width (loise-opts:width new-opts))
-         (height (loise-opts:height new-opts))
+  (let* ((width (loise-opts:get 'width opts))
+         (height (loise-opts:get 'height opts))
          (image (egd:create width height)))
      (list-comp ((<- x (lists:seq 0 width))
                  (<- y (lists:seq 0 height)))
-                (funcall func image x y new-opts))
+                (funcall func image x y opts))
      image))

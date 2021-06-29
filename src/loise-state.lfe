@@ -29,10 +29,14 @@
 (defun unknown-command () #(error "Unknown command."))
 
 (defun initial-state ()
-  `#m(base-opts ,(loise-defaults:base-options)
+  `#m(ascii-opts undefined
+      base-opts ,(loise-defaults:base-options)
+      data-opts undefined
       grad-matrix ,(loise-defaults:gradient-matrix)
+      egd-opts undefined
       output-opts ,(loise-defaults:output-options)
       perm-table ,(loise-defaults:permutation-table)
+      png-opts undefined
       version ,(loise-util:version)
       versions ,(loise-util:versions)))
 
@@ -57,8 +61,8 @@
   `#(ok ,state))
 
 (defun handle_cast
-  ((`#(state set ,key ,val) _from state)
-   `#(noreply ,(mref state key val)))
+  ((`#(state set ,key ,val) state)
+   `#(noreply ,(maps:put key val state)))
   ((_msg state)
    `#(noreply ,state)))
 

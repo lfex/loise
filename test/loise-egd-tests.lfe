@@ -20,4 +20,4 @@
   (is-equal 'jpg (loise-egd:get-image-filetype "myfile.jpg")))
 
 (deftest dimensions
-  (is-equal '(256 128) (loise-opts:dimensions (loise-egd:default-options))))
+  (is-equal '(256 128) (mref (loise-egd:default-options) 'size)))

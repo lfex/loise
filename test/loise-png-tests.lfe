@@ -3,11 +3,15 @@
   (export all))
 
 (include-lib "ltest/include/ltest-macros.lfe")
-(include-lib "include/options.lfe")
+
+(defun opts ()
+  (loise-png:default-options))
 
 (defun tiny-opts ()
-  (loise-png:options `(#(width 4)
-                       #(height 4))))
+  (loise-png:default-options #m(width 4 height 4)))
+
+(defun graded-opts ()
+  (loise-png:default-options #m(width 4 height 4 graded? true)))
 
 (defun point-func
   ((`(,x ,y) `(,max-x ,max-y) mult _)
@@ -19,16 +23,16 @@
     (++ v1 v2)))
 
 (deftest dimensions
-  (is-equal '(256 128) (loise-opts:dimensions (loise-png:default-options))))
+  (is-equal '(256 128) (mref (opts) 'dim)))
 
 (deftest row-without-grades
-  (let* ((opts (tiny-opts))
-         (scale-func (loise-opts:scale-func opts))
-         (mult (loise-opts:multiplier opts))
-         (graded? (loise-opts:graded? opts))
-         (grades (loise-opts:grades opts))
-         (value-range (loise-opts:value-range opts))
-         (size (loise-opts:size opts)))
+  (let* ((scale-func (mref (tiny-opts) 'scale-func))
+         (dim (mref (tiny-opts) 'dim))
+         (mult (mref (tiny-opts) 'multiplier))
+         (graded? (mref (tiny-opts) 'graded?))
+         (grades (mref (tiny-opts) 'grades))
+         (value-range (mref (tiny-opts) 'value-range))
+         (size (mref (tiny-opts) 'size)))
     (is-equal '(143 159 175 191 207)
               (loise-png:row #'point-func/4
                              scale-func
@@ -39,17 +43,17 @@
                              graded?
                              grades
                              value-range
-                             opts))))
+                             (tiny-opts)))))
 
 
 (deftest row-with-grades
-  (let* ((opts (cons #(graded? true) (tiny-opts)))
-         (scale-func (loise-opts:scale-func opts))
-         (mult (loise-opts:multiplier opts))
-         (graded? (loise-opts:graded? opts))
-         (grades (loise-opts:grades opts))
-         (value-range (loise-opts:value-range opts))
-         (size (loise-opts:size opts)))
+  (let* ((scale-func (mref (graded-opts) 'scale-func))
+         (dim (mref (graded-opts) 'dim))
+         (mult (mref (graded-opts) 'multiplier))
+         (graded? (mref (graded-opts) 'graded?))
+         (grades (mref (graded-opts) 'grades))
+         (value-range (mref (graded-opts) 'value-range))
+         (size (mref (graded-opts) 'size)))
     (is-equal '(153.0 153.0 153.0 204.0 204.0)
               (loise-png:row #'point-func/4
                              scale-func
@@ -60,7 +64,7 @@
                              graded?
                              grades
                              value-range
-                             opts))))
+                             (graded-opts)))))
 
 (defmodule loise-png-system-tests
   (behaviour ltest-system)
@@ -75,7 +79,7 @@
                (loise-png:write-image
                 (io_lib:format (outfile-tmpl) (list noise-type x))
                 noise-type
-                (loise-png:options `(#(noise ,noise-type) #(multiplier ,x)))))
+                (loise-png:options `#m(noise ,noise-type multiplier ,x))))
              multipliers))
 
 (defun get-image-sizes (noise-type multipliers)
@@ -83,17 +87,33 @@
                (filelib:file_size (io_lib:format (outfile-tmpl) (list noise-type x))))
              multipliers))
 
-(deftest generate-perlin()
-  (let ((multipliers '(1 2 4 8 16))
-        (noise-type 'perlin))
-    (write-images noise-type multipliers)
-    (is-equal '(5010 8109 11214 14894 18256)
-              (get-image-sizes noise-type multipliers))))
+(defun set-up ()
+  (prog1
+    (loise:start)
+    (logger:set_primary_config #m(level error))))
 
-(deftest generate-simplex()
-  (let ((multipliers '(1 2 4 8 16))
-        (noise-type 'simplex))
-    (write-images noise-type multipliers)
-    (is-equal '(8833 14218 19670 23208 22549)
-              (get-image-sizes noise-type multipliers))))
+(defun tear-down (setup-result)
+  (let ((stop-result (loise:stop)))
+    (is-equal 'ok stop-result)))
 
+(deftestcase generate-perlin (setup-result)
+  (tuple "generate-perlin"
+         (let ((multipliers '(1 2 4 8 16))
+               (noise-type 'perlin))
+           (write-images noise-type multipliers)
+           (is-equal '(5010 8109 11214 14894 18256)
+                     (get-image-sizes noise-type multipliers)))))
+
+(deftestcase generate-simplex (setup-result)
+  (tuple "generate-simplex"
+         (let ((multipliers '(1 2 4 8 16))
+               (noise-type 'simplex))
+           (write-images noise-type multipliers)
+           (is-equal '(8833 14218 19670 23208 22549)
+                     (get-image-sizes noise-type multipliers)))))
+
+(deftestgen suite
+  (tuple 'foreach
+         (defsetup set-up)
+         (defteardown tear-down)
+         (deftestcases generate-perlin generate-simplex)))

@@ -1,8 +1,6 @@
 (defmodule loise-ascii
   (export all))
 
-(include-lib "loise/include/options.lfe")
-
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Options and Defaults
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -19,30 +17,31 @@
     blue))
 
 (defun default-options ()
-  (default-options '()))
+  (default-options #m()))
 
 (defun default-options (overrides)
-  (++ overrides
-      `(#(output-backend loise)
-        #(output-type ascii)
-        #(output-format text)
-        #(width ,(default-ascii-width))
-        #(height ,(default-ascii-height))
-        #(ascii-map ,(default-ascii-map))
-        #(color false)
-        #(colors ,(default-ascii-colors))
-        #(graded? true))
-      (default-output-options)
-      (default-base-options)))
+  (let ((png-opts `#m(output-backend loise
+                      output-type loise
+                      output-format text
+                      width ,(default-ascii-width)
+                      height ,(default-ascii-height)
+                      ascii-map ,(default-ascii-map)
+                      color? false
+                      colors ,(default-ascii-colors)
+                      graded? true)))
+    (clj:-> (loise-state:get 'base-opts)
+            (maps:merge (loise-state:get 'output-opts))
+            (maps:merge png-opts)
+            (maps:merge overrides)
+            (loise-opts:update-calculated-opts))))
 
 (defun options ()
-  (options '()))
+  (options #m()))
 
 (defun options (overrides)
-  (let* ((opts (default-options overrides))
-         (grades-count (loise-opts:grades-count opts)))
-    (++ `(#(grades ,(loise-util:make-gradations grades-count)))
-        (loise-opts:update-perm-table opts))))
+  (case (maps:get 'ascii-opts (loise-state:get) 'undefined)
+    ('undefined (default-options overrides))
+    (stored-opts stored-opts)))
 
 (defun cell-separator () " ")
 (defun row-separator () "\n")
@@ -101,12 +100,12 @@
 
 (defun grid
   ((point-func (= `#(,start-x ,start-y) start) (= `#(,end-x ,end-y) end) opts)
-   (let ((scale-func (loise-opts:scale-func opts))
-         (mult (loise-opts:multiplier opts))
-         (graded? (loise-opts:graded? opts))
-         (grades (loise-opts:grades opts))
-         (value-range (loise-opts:value-range opts))
-         (legend (loise-opts:color-map opts)))
+   (let ((scale-func (mref opts 'scale-func))
+         (mult (mref opts 'multiplier))
+         (graded? (mref opts 'graded?))
+         (grades (mref opts 'grades))
+         (value-range (mref opts 'value-range))
+         (legend (mref opts 'color-map)))
      (lists:join
       (row-separator)
       (list-comp ((<- y (lists:seq start-y end-y)))

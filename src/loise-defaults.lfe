@@ -70,7 +70,7 @@
 ;;; Default Options
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun default-base-options ()
+(defun base-options ()
   `#m(noise ,(default-noise)
       random? ,(default-random?)
       seed ,(default-seed)
@@ -84,10 +84,10 @@
       fade-shift-2 ,(default-fade-shift-2)
       grad-modulus ,(default-grad-modulus)))
 
-(defun default-base-options (overrides)
-  (maps:merge (default-base-options) overrides))
+(defun base-options (overrides)
+  (maps:merge (base-options) overrides))
 
-(defun default-output-options ()
+(defun output-options ()
   `#m(output-backend ,(default-output-backend)
       output-type ,(default-output-type)
       output-format ,(default-output-format)

@@ -3,7 +3,6 @@
   (export all))
 
 (include-lib "ltest/include/ltest-macros.lfe")
-(include-lib "include/options.lfe")
 
 (deftest which
   (is-equal "100110" (loise-util:int-list->str (loise-simplex:which 0 0 0)))

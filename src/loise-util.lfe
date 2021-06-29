@@ -47,13 +47,27 @@
     `#(,int-1 ,int-2 ,int-3)))
 
 (defun random-permutation-table (state)
+  (random-permutation-table state 256))
+
+(defun random-permutation-table (state half-size)
   (element 1
            (lists:foldl
             (match-lambda ((_ `#(,acc ,st1))
-                           (let ((`#(,num ,st2) (rand:uniform_s 256 st1)))
+                           (let ((`#(,num ,st2) (rand:uniform_s half-size st1)))
                              `#(,(cons num acc) ,st2))))
             `#(() ,state)
-            (lists:seq 1 512))))
+            (lists:seq 1 (* 2 half-size)))))
+
+(defun update-perm-table (opts)
+  "If 'random' is enabled (has a 'true' value), then don't use the default
+  permutation table, but rather generate a new one."
+  (case (mref opts 'random?)
+    ('true
+     (let* ((seed (mref opts 'seed))
+            (state (rand:seed_s 'exsss (seed-tuple seed)))
+            (perm-table (random-permutation-table state)))
+      (loise-state:set 'perm-table perm-table)))
+    (_ 'ok)))
 
 (defun index (data position)
   "A list-based version of element-index."
@@ -89,27 +103,27 @@
         (cons arg args)))))
 
 (defun mix (a b t opts)
-  (+ (* (- (loise-opts:mix-shift opts) t) a) (* t b)))
+  (+ (* (- (mref opts 'mix-shift) t) a) (* t b)))
 
 (defun fade (t opts)
   (* t t t
-    (+ (loise-opts:fade-shift-2 opts)
-       (* t (- (* t (loise-opts:fade-factor opts))
-               (loise-opts:fade-shift-1 opts))))))
+    (+ (mref opts 'fade-shift-2)
+       (* t (- (* t (mref opts 'fade-factor))
+               (mref opts 'fade-shift-1))))))
 
 (defun get-gradient-index (a b c opts)
-  (let ((perm (loise-opts:perm-table opts))
-        (modulus (loise-opts:grad-modulus opts)))
-    (rem (clj:->> (loise-util:index perm c)
+  (let ((perm (loise-state:get 'perm-table))
+        (modulus (mref opts 'grad-modulus)))
+    (rem (clj:->> (index perm c)
                   (+ b)
-                  (loise-util:index perm)
+                  (index perm)
                   (+ a)
-                  (loise-util:index perm))
+                  (index perm))
          modulus)))
 
 (defun get-noise-contribution (g x y z opts)
   (dot
-    (loise-util:index (loise-opts:grad-matrix opts) g)
+    (index (mref opts 'grad-matrix) g)
     x y z))
 
 (defun corner-contribution (g x y z opts)
@@ -118,11 +132,11 @@
     (if (< t 0)
       0.0
       (* t^2 t^2 (dot
-                   (index (loise-opts:grad-matrix opts) g)
+                   (index (mref opts 'grad-matrix) g)
                    x y z)))))
 
 (defun colorize (name text opts)
-  (if (loise-opts:color? opts)
+  (if (mref opts 'color?)
     (call 'color name text)
     text))
 

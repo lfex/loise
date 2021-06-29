@@ -202,9 +202,6 @@ ok
 You may either pass an integer or a list of 1, 2 or 3 integers as values
 for the `seed` option key.
 
-To see the full list of options available be sure to look at the defaults
-and options in `include/options.lfe`.
-
 ### ASCII [&#x219F;](#contents)
 
 You can also generate ASCII "images" with loise. As an example of this, we can
@@ -270,7 +267,7 @@ lfe> (loise:format-ascii opts)
 <a href="https://raw.githubusercontent.com/lfex/loise/master/priv/images/simplex-ascii-2.png"><img src="priv/images/simplex-ascii-2-small.png" /></a>
 
 By default, loise uses a pre-generated "permutation table" to generate patterns.
-You can view this table in `include/options.lfe`. If you would like to
+You can view this table in `src/loise-defaults.lfe`. If you would like to
 generate your own for more random results, you will need to enable the `random`
 option and then generate a new table:
 
@@ -283,13 +280,14 @@ would like a different result each time, you will need to pass a new seed.
 For instance:
 
 ```cl
-lfe> (loise:ascii `(#(noise perlin) #(seed 1) #(random true)))
-lfe> (loise:ascii `(#(noise perlin) #(seed 4 2) #(random true)))
-lfe> (loise:ascii `(#(noise perlin) #(seed 7 8 9) #(random true)))
+lfe> (loise:ascii `#m(noise perlin seed 1 random true))
+lfe> (loise:ascii `#m(noise perlin seed 4 2 random true))
+lfe> (loise:ascii `#m(noise perlin seed 7 8 9 random true))
 ```
 
 To see the full list of options available be sure read
-`include/options.lfe`.
+`src/loise-defaults.lfe` and the options at the top of modules that use them
+(e.g., `src/loise-png.lfe`).
 
 ## Usage [&#x219F;](#contents)
 

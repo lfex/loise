@@ -1,18 +1,12 @@
 (defmodule loise-perlin
   (export
-   (options 0)
    (1d 2)
    (2d 3)
    (3d 4)
-   (point 3) (point 4)
+   (point 4)
    (value-range 0)))
 
-(include-lib "loise/include/options.lfe")
-
 (defun value-range () #(-1 1))
-
-(defun options ()
-  (cons #(noise perlin) (default-options)))
 
 (defun 1d (a opts)
   (3d a 0.0 0.0 opts))
@@ -71,9 +65,6 @@
      (nxy1 (loise-util:mix nx01 nx11 v opts)))
      ; finally, interpolate the two last results along z and return the result
      (loise-util:mix nxy0 nxy1 w opts)))
-
-(defun point (coords dims multiplier)
-  (point coords dims multiplier (default-options)))
 
 (defun point
   ((`(,x) `(,width) multiplier opts)

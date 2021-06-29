@@ -1,20 +1,31 @@
 (defmodule loise-data
   (export all))
 
-(include-lib "loise/include/options.lfe")
-
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Options and Defaults
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+(defun default-options ()
+  (default-options #m()))
+
+(defun default-options (overrides)
+  (let ((png-opts `#m(output-backend loise
+                      scale-func ,#'loise-util:identity/1
+                      output-format data
+                      data-format flat)))
+    (clj:-> (loise-state:get 'base-opts)
+            (maps:merge (loise-state:get 'output-opts))
+            (maps:merge png-opts)
+            (maps:merge overrides)
+            (loise-opts:update-calculated-opts))))
+
 (defun options ()
-  (options '()))
+  (options #m()))
 
 (defun options (overrides)
-  (let ((opts (++ `(#(scale-func ,#'loise-util:identity/1)
-                    #(format flat))
-                  (default-options overrides))))
-    (loise-opts:update-perm-table opts)))
+  (case (maps:get 'data-opts (loise-state:get) 'undefined)
+    ('undefined (default-options overrides))
+    (stored-opts stored-opts)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
@@ -57,18 +68,18 @@
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun data (point-func start end opts)
-  (case (loise-opts:data-format opts)
+  (case (mref opts 'data-format)
     ('flat (flat point-func start end opts))
     ('matrix (matrix point-func start end opts))
     (format `#(error (lists:flatten "Unknown data format: ~p" (lists format))))))
 
 (defun matrix
   ((point-func (= `#(,start-x ,start-y) start) (= `#(,end-x ,end-y) end) opts)
-   (let ((scale-func (loise-opts:scale-func opts))
-         (mult (loise-opts:multiplier opts))
-         (graded? (loise-opts:graded? opts))
-         (grades (loise-opts:grades opts))
-         (value-range (loise-opts:value-range opts)))
+   (let ((scale-func (mref opts 'scale-func))
+         (mult (mref opts 'multiplier))
+         (graded? (mref opts 'graded?))
+         (grades (mref opts 'grades))
+         (value-range (mref opts 'value-range)))
      (list-comp ((<- y (lists:seq start-y end-y)))
        (tuple y
               (row point-func scale-func y start end mult graded? grades value-range opts))))))
@@ -78,7 +89,7 @@
 
 (defun row
   ((point-func scale-func y `#(,start-x ,_) `#(,end-x ,end-y) mult graded? grades value-range opts)
-   (let ((legend (loise-opts:color-map opts)))
+   (let ((legend (mref opts 'color-map)))
      (list-comp ((<- x (lists:seq start-x end-x)))
        (tuple `(,x ,y)
               (cell point-func

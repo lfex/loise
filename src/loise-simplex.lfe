@@ -1,19 +1,13 @@
 (defmodule loise-simplex
   (export
-   (options 0)
    (1d 2)
    (2d 3)
    (3d 4)
-   (point 3) (point 4)
+   (point 4)
    (value-range 0)
    (which 3)))
 
-(include-lib "loise/include/options.lfe")
-
 (defun value-range () #(-1 1))
-
-(defun options ()
-  (default-options))
 
 (defun 1d (a opts)
   (3d a 0.0 0.0 opts))
@@ -29,9 +23,9 @@
   in higher dimensions."
   (let*
       (;; opts for re-use
-       (unskew-factor (loise-opts:unskew-factor opts))
+       (unskew-factor (mref opts 'unskew-factor))
        ;; skew the input space to determine which simplex cell we're in
-       (s (* (+ a b c) (loise-opts:skew-factor opts)))
+       (s (* (+ a b c) (mref opts 'skew-factor)))
        (i (lutil-math:fast-floor (+ a s)))
        (j (lutil-math:fast-floor (+ b s)))
        (k (lutil-math:fast-floor (+ c s)))
@@ -80,7 +74,7 @@
     ;; The result is scaled to stay just inside [-1,1]
     ;; NOTE: This scaling factor seems to work better than the given one
     ;;       I'm not sure why
-    (* (loise-opts:simplex-scale opts) (+ n0 n1 n2 n3))))
+    (* (mref opts 'simplex-scale) (+ n0 n1 n2 n3))))
 
 (defun which (a b c)
   "For the 3D case, the simplex shape is a slightly irregular tetrahedron.
@@ -92,9 +86,6 @@
    ((< b c) (list 0 0 1 0 1 1)) ; Z Y X order
    ((< a c) (list 0 1 0 0 1 1)) ; Y Z X order
    (else (list 0 1 0 1 1 0)))) ; Y X Z order
-
-(defun point (coords dims multiplier)
-  (point coords dims multiplier (default-options)))
 
 (defun point
   ((`(,x) `(,width) multiplier opts)

@@ -1,8 +1,6 @@
 (defmodule loise-png
   (export all))
 
-(include-lib "loise/include/options.lfe")
-
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Options and Defaults
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -13,29 +11,29 @@
 (defun default-png-palette () 'undefined)
 
 (defun default-options ()
-  (default-options '()))
+  (default-options #m()))
 
 (defun default-options (overrides)
-  (++ overrides
-      `(#(output-backend png)
-        #(output-type image)
-        #(output-format png)
-        #(width ,(default-png-width))
-        #(height ,(default-png-height))
-        #(png-mode ,(default-png-mode))
-        #(png-palette ,(default-png-palette)))
-      (default-output-options)
-      (default-base-options)))
+  (let ((png-opts `#m(output-backend png
+                      output-type image
+                      output-format png
+                      width ,(default-png-width)
+                      height ,(default-png-height)
+                      png-mode ,(default-png-mode)
+                      png-palette ,(default-png-palette))))
+    (clj:-> (loise-state:get 'base-opts)
+            (maps:merge (loise-state:get 'output-opts))
+            (maps:merge png-opts)
+            (maps:merge overrides)
+            (loise-opts:update-calculated-opts))))
 
 (defun options ()
-  (options '()))
+  (options #m()))
 
 (defun options (overrides)
-  (let* ((opts (default-options overrides))
-         (grades-count (loise-opts:grades-count opts))
-         (grades (loise-util:make-gradations grades-count)))
-    (cons `#(grades ,grades)
-          (loise-opts:update-perm-table opts))))
+  (case (maps:get 'ascii-opts (loise-state:get) 'undefined)
+    ('undefined (default-options overrides))
+    (stored-opts stored-opts)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
@@ -82,11 +80,11 @@
 
 (defun image
   ((png point-func (= `#(,start-x ,start-y) start) (= `#(,end-x ,end-y) end) opts)
-   (let ((scale-func (loise-opts:scale-func opts))
-         (mult (loise-opts:multiplier opts))
-         (graded? (loise-opts:graded? opts))
-         (grades (loise-opts:grades opts))
-         (value-range (loise-opts:value-range opts)))
+   (let ((scale-func (mref opts 'scale-func))
+         (mult (mref opts 'multiplier))
+         (graded? (mref opts 'graded?))
+         (grades (mref opts 'grades))
+         (value-range (mref opts 'value-range)))
      (list-comp ((<- y (lists:seq start-y end-y)))
        (png:append png `#(row ,(list_to_binary (row point-func
                                                     scale-func

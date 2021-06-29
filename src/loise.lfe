@@ -84,7 +84,7 @@
 
 (defun data (opts)
   (let ((opts (loise-data:options opts)))
-    (loise-data:matrix (loise-opts:noise opts) opts)))
+    (loise-data:matrix (loise-opts:get 'noise opts) opts)))
 
 (defun data-row (matrix index)
   (proplists:get_value index matrix))
@@ -98,7 +98,7 @@
 
 (defun ascii (opts)
   (let ((opts (loise-ascii:options opts)))
-    (loise-ascii:grid (loise-opts:noise opts) opts)))
+    (loise-ascii:grid (loise-opts:get 'noise opts) opts)))
 
 (defun format-ascii ()
   (io:format "~s~n" `(,(ascii))))
@@ -111,19 +111,19 @@
 (defun image (filename)
   (image filename (loise-png:options)))
 
-(defun image (filename opts)
-  (case (get-file-type filename opts)
-    ('png (let ((opts (loise-png:options opts)))
-            (loise-png:write-image filename (loise-opts:noise opts) opts)))
-    ('egd (let ((opts (loise-egd:options opts)))
+(defun image (filename overrides)
+  (case (get-file-type filename overrides)
+    ('png (let ((opts (loise-png:options overrides)))
+            (loise-png:write-image filename (mref opts 'noise) opts)))
+    ('egd (let ((opts (loise-egd:options overrides)))
             (loise-egd:write-image filename opts)))
     (type `#(error ,(io_lib:format "unsupported image type '%p'" (list type))))))
 
 ;; Common operations
 
-(defun dim (opts) (loise-opts:dimensions opts))
+(defun dim (opts) (mref opts 'dim))
 
-(defun size (opts) (loise-opts:size opts))
+(defun size (opts) (mref opts 'size))
 
 (defun gradations (count) (loise-util:make-gradations count))
 
@@ -141,4 +141,4 @@
 
 (defun get-file-type (filename opts)
   ;; XXX add type-extractor (read file extension, fall back to opts
-  (loise-opts:output-format opts))
+  (mref opts 'output-format))

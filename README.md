@@ -224,14 +224,14 @@ And by this set of ASCII characters:
 By making calls like this:
 
 ```cl
-lfe> (loise:format-ascii `(#(noise perlin) #(color true)))
+lfe> (loise:format-ascii #m(noise perlin color? true))
 ```
 <img src="priv/images/perlin-ascii.png" />
 
 And this:
 
 ```cl
-lfe> (loise:format-ascii `(#(noise simplex) #(color true)))
+lfe> (loise:format-ascii #m(noise simplex color? true))
 ```
 <img src="priv/images/simplex-ascii.png" />
 
@@ -251,16 +251,16 @@ map area in the terminal:
 
 ```cl
 lfe> (set opts
-       `(#(color true)
-         #(width 282)
-         #(height 94)
-         #(multiplier 2.5)
-         #(grades-count 9)
-         #(grades ,(loise:gradations 9))
-         #(ascii-map ("A" "^" "!" "n" "*" "-" "~" "~" "~"))
-         #(colors (whiteb yellow green
+       `#m(color? true
+           width 282
+           height 94
+           multiplier 2.5
+           grades-count 9
+           grades ,(loise:gradations 9)
+           ascii-map ("A" "^" "!" "n" "*" "-" "~" "~" "~")
+           colors (whiteb yellow green
                    green greenb green
-                   blue blue blue))))
+                   blue blue blue)))
 
 lfe> (loise:format-ascii opts)
 ```

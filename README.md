@@ -368,7 +368,7 @@ Distributed under the Apache License, Version 2.0.
 ```
 
 
-<!-- Named page links below: /-->
+[//]: ---Named-Links---
 
 [org]: https://github.com/lfex
 [github]: https://github.com/lfex/loise

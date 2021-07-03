@@ -3,10 +3,21 @@
    (1d 2)
    (2d 3)
    (3d 4)
+   (options 0) (options 1)
    (point 4)
    (value-range 0)))
 
 (defun value-range () #(-1 1))
+
+(defun options ()
+  (options #m()))
+
+(defun options (overrides)
+  (clj:-> (loise-defaults:base-options)
+          (maps:merge #m(noise-type perlin
+                         output-format png
+                         value-range (value-range)))
+          (maps:merge overrides)))
 
 (defun 1d (a opts)
   (3d a 0.0 0.0 opts))
@@ -43,14 +54,14 @@
      (gi110 (loise-util:get-gradient-index (+ X 1) (+ Y 1) Z opts))
      (gi111 (loise-util:get-gradient-index (+ X 1) (+ Y 1) (+ Z 1) opts))
      ; calculate noise contributions from each of the eight corners
-     (n000 (loise-util:get-noise-contribution gi000 x y z opts))
-     (n001 (loise-util:get-noise-contribution gi001 x y (- z 1) opts))
-     (n010 (loise-util:get-noise-contribution gi010 x (- y 1) z opts))
-     (n011 (loise-util:get-noise-contribution gi011 x (- y 1) (- z 1) opts))
-     (n100 (loise-util:get-noise-contribution gi100 (- x 1) y z opts))
-     (n101 (loise-util:get-noise-contribution gi101 (- x 1) y (- z 1) opts))
-     (n110 (loise-util:get-noise-contribution gi110 (- x 1) (- y 1) z opts))
-     (n111 (loise-util:get-noise-contribution gi111 (- x 1) (- y 1) (- z 1) opts))
+     (n000 (loise-util:get-noise-contribution gi000 x y z))
+     (n001 (loise-util:get-noise-contribution gi001 x y (- z 1)))
+     (n010 (loise-util:get-noise-contribution gi010 x (- y 1) z))
+     (n011 (loise-util:get-noise-contribution gi011 x (- y 1) (- z 1)))
+     (n100 (loise-util:get-noise-contribution gi100 (- x 1) y z))
+     (n101 (loise-util:get-noise-contribution gi101 (- x 1) y (- z 1)))
+     (n110 (loise-util:get-noise-contribution gi110 (- x 1) (- y 1) z))
+     (n111 (loise-util:get-noise-contribution gi111 (- x 1) (- y 1) (- z 1)))
      ; compute the fade curve value for each of x, y, z
      (u (loise-util:fade x opts))
      (v (loise-util:fade y opts))

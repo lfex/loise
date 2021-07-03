@@ -61,41 +61,69 @@
   (is-equal '(0 255.0) (loise-util:make-gradations 2))
   (is-equal '(0 28 57 85 113 142 170 198 227 255) (lists:map #'round/1 (loise-util:make-gradations 10))))
 
-(deftest get-gradient-index
-  (is-equal 0 (loise-util:get-gradient-index 0 0 0 (loise-defaults:base-options)))
-  (is-equal 2 (loise-util:get-gradient-index 0 0 1 (loise-defaults:base-options)))
-  (is-equal 0 (loise-util:get-gradient-index 0 1 0 (loise-defaults:base-options)))
-  (is-equal 8 (loise-util:get-gradient-index 0 1 1 (loise-defaults:base-options)))
-  (is-equal 7 (loise-util:get-gradient-index 1 0 0 (loise-defaults:base-options)))
-  (is-equal 8 (loise-util:get-gradient-index 1 0 1 (loise-defaults:base-options)))
-  (is-equal 2 (loise-util:get-gradient-index 1 1 0 (loise-defaults:base-options)))
-  (is-equal 3 (loise-util:get-gradient-index 1 1 1 (loise-defaults:base-options)))
-  (is-equal 8 (loise-util:get-gradient-index 1 10 100 (loise-defaults:base-options)))
-  (is-equal 6 (loise-util:get-gradient-index 100 10 1 (loise-defaults:base-options))))
+(defmodule loise-util-system-tests
+  (behaviour ltest-system)
+  (export all))
 
-(deftest get-noise-contribution
-  (is-equal 0.0 (loise-util:get-noise-contribution 0 0 0 0 (loise-defaults:base-options)))
-  (is-equal 0.0 (loise-util:get-noise-contribution 1 0 0 0 (loise-defaults:base-options)))
-  (is-equal 0.0 (loise-util:get-noise-contribution 1 0 0 1 (loise-defaults:base-options)))
-  (is-equal 0.0 (loise-util:get-noise-contribution 1 1 1 1 (loise-defaults:base-options)))
-  (is-equal 0.0 (loise-util:get-noise-contribution 2 1 1 1 (loise-defaults:base-options)))
-  (is-equal 2.0 (loise-util:get-noise-contribution 4 1 1 1 (loise-defaults:base-options)))
-  (is-equal 20.0 (loise-util:get-noise-contribution 4 5 10 15 (loise-defaults:base-options)))
-  (is-equal 101.0 (loise-util:get-noise-contribution 4 1 10 100 (loise-defaults:base-options)))
-  (is-equal 2.0 (loise-util:get-noise-contribution 8 1 1 1 (loise-defaults:base-options)))
-  (is-equal 25.0 (loise-util:get-noise-contribution 8 5 10 15 (loise-defaults:base-options)))
-  (is-equal 110.0 (loise-util:get-noise-contribution 8 1 10 100 (loise-defaults:base-options))))
+(include-lib "ltest/include/ltest-macros.lfe")
 
-(deftest update-perm-table
-  (let* ((opts (loise-ascii:default-options))
-         (rand-opts (loise-ascii:default-options #m(random? true))))
-    (is-equal (loise-defaults:permutation-table)
-              (mref opts 'perm-table))
-    (is-equal '(151 160 137 91 90 15 131 13 201 95)
-              (lists:sublist
-               (mref opts 'perm-table)
-               10))
-    (is-equal '(35 94 168 230 251 221 92 64 92 36)
-              (lists:sublist
-               (mref rand-opts 'perm-table)
-               10))))
+(defun set-up ()
+  (prog1
+    (loise:start)
+    (logger:set_primary_config #m(level error))))
+
+(defun tear-down (setup-result)
+  (let ((stop-result (loise:stop)))
+    (is-equal 'ok stop-result)))
+
+(deftestcase get-gradient-index (setup-result)
+  (tuple "get-gradient-index"
+         (let ((opts (loise-defaults:base-options)))
+           (is-equal 0 (loise-util:get-gradient-index 0 0 0 opts))
+           (is-equal 2 (loise-util:get-gradient-index 0 0 1 opts))
+           (is-equal 0 (loise-util:get-gradient-index 0 1 0 opts))
+           (is-equal 8 (loise-util:get-gradient-index 0 1 1 opts))
+           (is-equal 7 (loise-util:get-gradient-index 1 0 0 opts))
+           (is-equal 8 (loise-util:get-gradient-index 1 0 1 opts))
+           (is-equal 2 (loise-util:get-gradient-index 1 1 0 opts))
+           (is-equal 3 (loise-util:get-gradient-index 1 1 1 opts))
+           (is-equal 8 (loise-util:get-gradient-index 1 10 100 opts))
+           (is-equal 6 (loise-util:get-gradient-index 100 10 1 opts)))))
+
+(deftestcase get-noise-contribution (setup-result)
+  (tuple "get-noise-contribution"
+         (is-equal 0.0 (loise-util:get-noise-contribution 0 0 0 0))
+         (is-equal 0.0 (loise-util:get-noise-contribution 1 0 0 0))
+         (is-equal 0.0 (loise-util:get-noise-contribution 1 0 0 1))
+         (is-equal 0.0 (loise-util:get-noise-contribution 1 1 1 1))
+         (is-equal 0.0 (loise-util:get-noise-contribution 2 1 1 1))
+         (is-equal 2.0 (loise-util:get-noise-contribution 4 1 1 1))
+         (is-equal 20.0 (loise-util:get-noise-contribution 4 5 10 15))
+         (is-equal 101.0 (loise-util:get-noise-contribution 4 1 10 100))
+         (is-equal 2.0 (loise-util:get-noise-contribution 8 1 1 1))
+         (is-equal 25.0 (loise-util:get-noise-contribution 8 5 10 15))
+         (is-equal 110.0 (loise-util:get-noise-contribution 8 1 10 100))))
+
+(deftestcase update-perm-table (setup-result)
+  (tuple "update-perm-table"
+         (let* ((opts (loise-ascii:default-options))
+                (rand-opts (loise-ascii:default-options #m(random? true))))
+           (is-equal (loise-defaults:permutation-table)
+                     (mref opts 'perm-table))
+           (is-equal '(151 160 137 91 90 15 131 13 201 95)
+                     (lists:sublist
+                      (mref opts 'perm-table)
+                      10))
+           (is-equal '(35 94 168 230 251 221 92 64 92 36)
+                     (lists:sublist
+                      (mref rand-opts 'perm-table)
+                      10)))))
+
+(deftestgen suite
+  (tuple 'foreach
+         (defsetup set-up)
+         (defteardown tear-down)
+         (deftestcases
+           get-gradient-index
+           get-noise-contribution
+           update-perm-table)))

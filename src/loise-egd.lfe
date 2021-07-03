@@ -21,15 +21,17 @@
             (maps:merge (loise-state:get 'output-opts))
             (maps:merge egd-opts)
             (maps:merge overrides)
-            (loise-opts:update-calculated-opts))))
+            (loise-opts:update-calculated))))
 
 (defun options ()
   (options #m()))
 
 (defun options (overrides)
   (case (maps:get 'egd-opts (loise-state:get) 'undefined)
-    ('undefined  (default-options overrides))
-    (stored-opts stored-opts)))
+    ('undefined (let ((opts (default-options overrides)))
+                  (loise-state:set 'egd-opts opts)
+                  opts))
+    (stored-opts (maps:merge stored-opts (loise-opts:maybe-update overrides)))))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
@@ -64,10 +66,10 @@
       (egd:color `#(,adjusted ,adjusted ,adjusted)))))
 
 (defun draw-perlin-point! (image x y opts)
-  (draw-point! image x y #'loise:get-perlin-point/4 opts))
+  (draw-point! image x y #'loise-perlin:point/4 opts))
 
 (defun draw-simplex-point! (image x y opts)
-  (draw-point! image x y #'loise:get-simplex-point/4 opts))
+  (draw-point! image x y #'loise-simplex:point/4 opts))
 
 (defun write-image (filename opts)
   (case (mref opts 'noise)
@@ -96,12 +98,12 @@
 
 (defun get-graded-point (value opts)
   (let ((adjusted (lutil-math:color-scale value #(-1 1)))
-        (grades (mref opts 'grades)))
+        (grades (maps:get 'grades opts 'undefined)))
     (case grades
       ('undefined
         adjusted)
       (_
-        (lutil-math:get-closest adjusted grades)))))
+        (lutil-math:get-closest (float adjusted) grades)))))
 
 (defun get-image-filetype (filename)
   (list_to_atom (cdr (filename:extension filename))))

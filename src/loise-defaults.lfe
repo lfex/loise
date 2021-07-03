@@ -60,6 +60,7 @@
 (defun default-output-backend () 'undefined)
 (defun default-output-type () 'undefined)
 (defun default-output-format () 'undefined)
+(defun default-image-format () 'png)
 (defun default-grades-count () 6)
 (defun default-grades () '())
 (defun default-graded? () 'false)
@@ -74,6 +75,8 @@
   `#m(noise ,(default-noise)
       random? ,(default-random?)
       seed ,(default-seed)
+      size undefined
+      dim undefined
       multiplier ,(default-multiplier)
       simplex-scale ,(default-simplex-scale-factor)
       mix-shift ,(default-mix-shift)
@@ -82,7 +85,11 @@
       fade-factor ,(default-fade-factor)
       fade-shift-1 ,(default-fade-shift-1)
       fade-shift-2 ,(default-fade-shift-2)
-      grad-modulus ,(default-grad-modulus)))
+      grad-modulus ,(default-grad-modulus)
+      grades-count ,(default-grades-count)
+      grades ,(default-grades)
+      graded? ,(default-graded?)
+      scale-func undefined))
 
 (defun base-options (overrides)
   (maps:merge (base-options) overrides))
@@ -90,7 +97,4 @@
 (defun output-options ()
   `#m(output-backend ,(default-output-backend)
       output-type ,(default-output-type)
-      output-format ,(default-output-format)
-      grades-count ,(default-grades-count)
-      grades ,(default-grades)
-      graded? ,(default-graded?)))
+      output-format ,(default-output-format)))

@@ -11,6 +11,10 @@
    (ascii 0) (ascii 1)
    (format-ascii 0) (format-ascii 1))
   (export
+   (data 0) (data 1)
+   (data-cell 2)
+   (data-row 2))
+  (export
    (image 1) (image 2))
   (export
    (dim 1)
@@ -36,23 +40,27 @@
 (defun perlin
   ((x y) (when (orelse (is_float y) (is_integer y)))
    (loise-perlin:2d x y (loise-perlin:options)))
-  ((x opts)
-   (loise-perlin:1d x opts)))
+  ((x overrides)
+   (loise-perlin:1d x (loise-perlin:options overrides))))
 
 (defun perlin
   ((x y z) (when (orelse (is_float z) (is_integer z)))
    (loise-perlin:3d x y z (loise-perlin:options)))
-  ((x y opts)
-   (loise-perlin:2d x y opts)))
+  ((x y overrides)
+   (loise-perlin:2d x y (loise-perlin:options overrides))))
 
-(defun perlin(x y z opts)
-  (loise-perlin:3d x y z opts))
+(defun perlin(x y z overrides)
+  (loise-perlin:3d x y z (loise-perlin:options overrides)))
 
-(defun perlin-point(coords opts)
-  (loise-perlin:point coords opts))
+(defun perlin-point(coords overrides)
+  (let ((opts (loise-perlin:options overrides)))
+    (loise-perlin:point coords
+                        (mref opts 'size)
+                        (mref opts 'multiplier)
+                        opts)))
 
 (defun perlin-point(coords size mult)
-  (loise-perlin:point coords size mult))
+  (loise-perlin:point coords size mult (loise-perlin:options)))
 
 (defun simplex (x)
   (loise-simplex:1d x (loise-simplex:options)))
@@ -60,45 +68,49 @@
 (defun simplex
   ((x y) (when (orelse (is_float y) (is_integer y)))
    (loise-simplex:2d x y (loise-simplex:options)))
-  ((x opts)
-   (loise-simplex:1d x opts)))
+  ((x overrides)
+   (loise-simplex:1d x (loise-simplex:options overrides))))
 
 (defun simplex
   ((x y z) (when (orelse (is_float z) (is_integer z)))
    (loise-simplex:3d x y z (loise-simplex:options)))
-  ((x y opts)
-   (loise-simplex:2d x y opts)))
+  ((x y overrides)
+   (loise-simplex:2d x y (loise-simplex:options overrides))))
 
 (defun simplex (x y z opts)
   (loise-simplex:3d x y z opts))
 
-(defun simplex-point(coords opts)
-  (loise-simplex:point coords opts))
+(defun simplex-point(coords overrides)
+  (let ((opts (loise-simplex:options overrides)))
+    (loise-simplex:point coords
+                         (mref opts 'size)
+                         (mref opts 'multiplier)
+                         opts)))
 
 (defun simplex-point(coords size mult)
-  (loise-simplex:point coords size mult))
+  (loise-simplex:point coords size mult (loise-simplex:options)))
 
 ;; Data API
 (defun data ()
-  (data '()))
+  (data #m()))
 
-(defun data (opts)
-  (let ((opts (loise-data:options opts)))
-    (loise-data:matrix (loise-opts:get 'noise opts) opts)))
-
-(defun data-row (matrix index)
-  (proplists:get_value index matrix))
+(defun data (overrides)
+  (let ((opts (loise-data:options overrides)))
+    (loise-data:matrix (mref opts 'noise) opts)))
 
 (defun data-cell (row point)
   (proplists:get_value point row))
 
+(defun data-row (matrix index)
+  (proplists:get_value index matrix))
+
 ;; ASCII API
 (defun ascii ()
-  (ascii '()))
+  (ascii #m()))
 
-(defun ascii (opts)
-  (let ((opts (loise-ascii:options opts)))
-    (loise-ascii:grid (loise-opts:get 'noise opts) opts)))
+(defun ascii (overrides)
+  (let ((opts (loise-ascii:options overrides)))
+    (loise-ascii:grid (mref opts 'noise) opts)))
 
 (defun format-ascii ()
   (io:format "~s~n" `(,(ascii))))
@@ -141,4 +153,4 @@
 
 (defun get-file-type (filename opts)
   ;; XXX add type-extractor (read file extension, fall back to opts
-  (mref opts 'output-format))
+  (maps:get 'output-format opts (loise-defaults:default-image-format)))

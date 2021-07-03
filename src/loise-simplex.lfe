@@ -3,11 +3,22 @@
    (1d 2)
    (2d 3)
    (3d 4)
+   (options 0) (options 1)
    (point 4)
    (value-range 0)
    (which 3)))
 
 (defun value-range () #(-1 1))
+
+(defun options ()
+  (options #m()))
+
+(defun options (overrides)
+  (clj:-> (loise-defaults:base-options)
+          (maps:merge #m(noise-type perlin
+                         output-format png
+                         value-range (value-range)))
+          (maps:merge overrides)))
 
 (defun 1d (a opts)
   (3d a 0.0 0.0 opts))
@@ -66,10 +77,10 @@
        (gi2 (loise-util:get-gradient-index (+ ii i2) (+ jj j2) (+ kk k2) opts))
        (gi3 (loise-util:get-gradient-index (+ ii 1) (+ jj 1) (+ kk 1) opts))
        ;; Calculate the contribution from the four corners
-       (n0 (loise-util:corner-contribution gi0 x0 y0 z0 opts))
-       (n1 (loise-util:corner-contribution gi1 x1 y1 z1 opts))
-       (n2 (loise-util:corner-contribution gi2 x2 y2 z2 opts))
-       (n3 (loise-util:corner-contribution gi3 x3 y3 z3 opts)))
+       (n0 (loise-util:corner-contribution gi0 x0 y0 z0))
+       (n1 (loise-util:corner-contribution gi1 x1 y1 z1))
+       (n2 (loise-util:corner-contribution gi2 x2 y2 z2))
+       (n3 (loise-util:corner-contribution gi3 x3 y3 z3)))
     ;; Add contributions from each corner to get the final noise value.
     ;; The result is scaled to stay just inside [-1,1]
     ;; NOTE: This scaling factor seems to work better than the given one

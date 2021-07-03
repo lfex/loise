@@ -17,15 +17,17 @@
             (maps:merge (loise-state:get 'output-opts))
             (maps:merge png-opts)
             (maps:merge overrides)
-            (loise-opts:update-calculated-opts))))
+            (loise-opts:update-calculated))))
 
 (defun options ()
   (options #m()))
 
 (defun options (overrides)
   (case (maps:get 'data-opts (loise-state:get) 'undefined)
-    ('undefined (default-options overrides))
-    (stored-opts stored-opts)))
+    ('undefined (let ((opts (default-options overrides)))
+                  (loise-state:set 'data-opts opts)
+                  opts))
+    (stored-opts (maps:merge stored-opts (loise-opts:maybe-update overrides)))))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
@@ -79,7 +81,7 @@
          (mult (mref opts 'multiplier))
          (graded? (mref opts 'graded?))
          (grades (mref opts 'grades))
-         (value-range (mref opts 'value-range)))
+         (value-range (loise-opts:value-range opts)))
      (list-comp ((<- y (lists:seq start-y end-y)))
        (tuple y
               (row point-func scale-func y start end mult graded? grades value-range opts))))))

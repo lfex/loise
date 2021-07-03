@@ -25,15 +25,17 @@
             (maps:merge (loise-state:get 'output-opts))
             (maps:merge png-opts)
             (maps:merge overrides)
-            (loise-opts:update-calculated-opts))))
+            (loise-opts:update-calculated))))
 
 (defun options ()
   (options #m()))
 
 (defun options (overrides)
-  (case (maps:get 'ascii-opts (loise-state:get) 'undefined)
-    ('undefined (default-options overrides))
-    (stored-opts stored-opts)))
+  (case (maps:get 'png-opts (loise-state:get) 'undefined)
+    ('undefined (let ((opts (default-options overrides)))
+                  (loise-state:set 'png-opts opts)
+                  opts))
+    (stored-opts (maps:merge stored-opts (loise-opts:maybe-update overrides)))))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API
@@ -84,7 +86,7 @@
          (mult (mref opts 'multiplier))
          (graded? (mref opts 'graded?))
          (grades (mref opts 'grades))
-         (value-range (mref opts 'value-range)))
+         (value-range (loise-opts:value-range opts)))
      (list-comp ((<- y (lists:seq start-y end-y)))
        (png:append png `#(row ,(list_to_binary (row point-func
                                                     scale-func
@@ -100,15 +102,15 @@
 (defun row
   ((point-func scale-func y `#(,start-x ,_) `#(,end-x ,end-y) mult graded? grades value-range opts)
    (list-comp ((<- x (lists:seq start-x end-x)))
-     (loise-data:cell point-func
-                      scale-func
-                      `(,x ,y)
-                      `(,end-x ,end-y)
-                      mult
-                      graded?
-                      grades
-                      value-range
-                      opts))))
+     (trunc (loise-data:cell point-func
+                             scale-func
+                             `(,x ,y)
+                             `(,end-x ,end-y)
+                             mult
+                             graded?
+                             grades
+                             value-range
+                             opts)))))
 
 ;;; Example from https://github.com/yuce/png/blob/master/examples/grayscale_8.escript,
 ;;; converted to LFE, for use in the REPL:

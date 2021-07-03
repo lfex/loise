@@ -20,7 +20,7 @@
   (default-options #m()))
 
 (defun default-options (overrides)
-  (let ((png-opts `#m(output-backend loise
+  (let ((ascii-opts `#m(output-backend loise
                       output-type loise
                       output-format text
                       width ,(default-ascii-width)
@@ -28,20 +28,23 @@
                       ascii-map ,(default-ascii-map)
                       color? false
                       colors ,(default-ascii-colors)
+                      color-map undefined
                       graded? true)))
     (clj:-> (loise-state:get 'base-opts)
             (maps:merge (loise-state:get 'output-opts))
-            (maps:merge png-opts)
+            (maps:merge ascii-opts)
             (maps:merge overrides)
-            (loise-opts:update-calculated-opts))))
+            (loise-opts:update-calculated))))
 
 (defun options ()
   (options #m()))
 
 (defun options (overrides)
   (case (maps:get 'ascii-opts (loise-state:get) 'undefined)
-    ('undefined (default-options overrides))
-    (stored-opts stored-opts)))
+    ('undefined (let ((opts (default-options overrides)))
+                  (loise-state:set 'ascii-opts opts)
+                  opts))
+    (stored-opts (maps:merge stored-opts (loise-opts:maybe-update overrides)))))
 
 (defun cell-separator () " ")
 (defun row-separator () "\n")
@@ -104,7 +107,7 @@
          (mult (mref opts 'multiplier))
          (graded? (mref opts 'graded?))
          (grades (mref opts 'grades))
-         (value-range (mref opts 'value-range))
+         (value-range (loise-opts:value-range opts))
          (legend (mref opts 'color-map)))
      (lists:join
       (row-separator)

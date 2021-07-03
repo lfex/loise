@@ -121,18 +121,18 @@
                   (index perm))
          modulus)))
 
-(defun get-noise-contribution (g x y z opts)
+(defun get-noise-contribution (g x y z)
   (dot
-    (index (mref opts 'grad-matrix) g)
+    (index (loise-state:get 'grad-matrix) g)
     x y z))
 
-(defun corner-contribution (g x y z opts)
+(defun corner-contribution (g x y z)
   (let* ((t (- 0.5 (* x x) (* y y) (* z z)))
          (t^2 (* t t)))
     (if (< t 0)
       0.0
       (* t^2 t^2 (dot
-                   (index (mref opts 'grad-matrix) g)
+                   (index (loise-state:get 'grad-matrix) g)
                    x y z)))))
 
 (defun colorize (name text opts)

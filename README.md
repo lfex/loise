@@ -15,13 +15,13 @@
 * [Introduction](#introduction-)
 * [Background](#background-)
 * [Dependencies](#dependencies-)
-* [Eye Candy](#eye-candy-)
+* [Usage](#usage-)
+  * [Starting](#starting-)
   * [Perlin](#perlin-)
   * [Simplex](#simplex-)
   * [ASCII](#ascii-)
-* [Usage](#usage-)
-  * [From the REPL](#from-the-repl-)
-  * [In a Module](#in-a-module-)
+  * [Basics: From the REPL](#basics--from-the-repl-)
+  * [Basics: In a Module](#basics--in-a-module-)
 * [License](#license-)
 
 
@@ -58,12 +58,29 @@ This project requires that you have Erlang installed (tested with R15B03, R16B03
 installed somwhere in your ``$PATH``.
 
 
-## Eye Candy [&#x219F;](#contents)
+## Usage [&#x219F;](#contents)
 
 The data generated with the ``perlin`` and ``simplex`` functions can be used to
 create images. Erlang is not a good language for image generation, however this
 library does provide some convenience functions for generating images.
 
+Preliminary steps:
+
+```bash
+$ rebar3 compile
+$ rebar3 lfe repl
+```
+
+### Starting [&#x219F;](#contents)
+
+The loise library maintains state and as such must be run in order to use:
+
+``` cl
+lfe> (loise:start)
+#(ok (loise))
+```
+
+Once this is done, the examples below will be ready to run.
 
 ### Perlin [&#x219F;](#contents)
 
@@ -82,17 +99,16 @@ Below are 5 perlin noise images generated at 1x, 2x, 4x, 8x, and 16x respectivel
 These were generated with the following from the REPL:
 
 ```cl
-lfe> (set opts `(#(noise perlin) 
-                 #(output-format png)))
-lfe> (loise:image "perlin-1.png" (cons #(multiplier 1) opts))
+lfe> (set opts )
+lfe> (loise:image "perlin-1.png" #m(noise perlin multiplier 1))
 ok
-lfe> (loise:image "perlin-2.png" (cons #(multiplier 2) opts))
+lfe> (loise:image "perlin-2.png" #m(noise perlin multiplier 2))
 ok
-lfe> (loise:image "perlin-4.png" (cons #(multiplier 4) opts))
+lfe> (loise:image "perlin-4.png" #m(noise perlin multiplier 4))
 ok
-lfe> (loise:image "perlin-8.png" (cons #(multiplier 8) opts))
+lfe> (loise:image "perlin-8.png" #m(noise perlin multiplier 8))
 ok
-lfe> (loise:image "perlin-16.png" (cons #(multiplier 16) opts))
+lfe> (loise:image "perlin-16.png" #m(noise perlin multiplier 16))
 ok
 ```
 
@@ -100,20 +116,20 @@ You can also limit the number of gradations for the shades of grey, giving
 the images a more "layered" or "topographical" look:
 
 ```cl
-> (set grades (loise:gradations 7))
+lfe> (set grades (loise:gradations 7))
 (0 42.5 85.0 127.5 170.0 212.5 255.0)
-> (set opts `(#(multiplier 8)
-              #(grades ,grades)))
-(#(multiplier 8) #(grades (0 42.5 85.0 127.5 170.0 212.5 255.0)))
-> (loise-egd:perlin "simplex-7-shades.png" opts)
+lfe> (set opts `#m(multiplier 8
+                   graded? true
+                   grades ,grades))
+lfe> (loise:image "simplex-7-shades.png" opts)
 ok
 ```
 
 ```cl
-lfe> (set opts (++ `(#(graded? true)
-                     #(grades-count 8)
-                     #(multiplier 4))
-                     opts))
+lfe> (set opts `#m(noise perlin
+                   multiplier 4
+                   graded? true
+                   grades-count 8))
 lfe> (loise:image "perlin-8-shades.png" opts)
 ok
 ```
@@ -126,8 +142,8 @@ You may also change the permutation table from the default, to one generated
 with a random seed:
 
 ```cl
-lfe> (set opts (++ `(#(random? true)
-                     #(graded? false)) opts))
+lfe> (set opts (maps:merge opts #m(random? true)
+                                   graded? false))
 lfe> (loise:image "perlin-rand-1.png" (++ '(#(seed 4)) opts))
 ok
 lfe> (loise:image "perlin-rand-2.png" (++ '(#(seed (4 2))) opts))
@@ -174,9 +190,9 @@ Just as with perlin, simplex allows you to limit the number of gradations for
 the shades of grey:
 
 ```cl
-lfe> (set opts (++ `(#(graded? true)
-                     #(grades-count 5)
-                     #(multiplier 4))))
+lfe> (set opts #m(graded? true
+                  grades-count 5
+                  multiplier 4))
 lfe> (loise:image "simplex-5-shades.png" opts)
 ok
 ```
@@ -289,25 +305,11 @@ To see the full list of options available be sure read
 `src/loise-defaults.lfe` and the options at the top of modules that use them
 (e.g., `src/loise-png.lfe`).
 
-## Usage [&#x219F;](#contents)
-
-The first place to start is ensuring that the code you obtained works as
-expected. To find out, run the unit tests:
-
-```bash
-$ cd loise
-$ make check
-```
 
 ### From the REPL [&#x219F;](#contents)
 
-Once everything is working, start up an LFE REPL:
-
-```bash
-$ make repl
-```
-
-You can now use loise by itself, if you so desire. Here is some example usage:
+You can now use the loise noise functions by themseves, if you so desire
+(without having to render output, etc.). Here is some example usage:
 
 ```cl
 lfe> (loise:perlin 3.14 1.59 2.65)
@@ -364,7 +366,6 @@ Copyright © 2013-2021 Duncan McGreggor
 
 Distributed under the Apache License, Version 2.0.
 ```
-
 
 [//]: ---Named-Links---
 

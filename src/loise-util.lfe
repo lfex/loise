@@ -84,7 +84,8 @@
   expects a different parameter: 'divisions'. In other words, 'Tell me how many
   divisions you want in the given range.' These two parameters differ by one.
 
-  Loise uses the same color range that Erlang's egd does: 0 to 255."
+  Loise uses the same color range that the Erlang's png library does for
+  greyscale images: 0 to 255."
   ((count) (when (< count 2))
    #(error "there must be two or more gradations"))
   ((count)

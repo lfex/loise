@@ -33,7 +33,6 @@
       base-opts ,(loise-defaults:base-options)
       data-opts undefined
       grad-matrix ,(loise-defaults:gradient-matrix)
-      egd-opts undefined
       output-opts ,(loise-defaults:output-options)
       perm-table ,(loise-defaults:permutation-table)
       png-opts undefined

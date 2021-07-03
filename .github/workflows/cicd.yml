@@ -32,10 +32,10 @@ jobs:
       run: DEBUG=1 ./rebar3 --version
     - name: Compile
       run: ./rebar3 compile
-#    - name: Xref Checks
-#      run: ./rebar3 xref
-#    - name: Dialyzer
-#      run: ./rebar3 dialyzer
+    - name: Xref Checks
+      run: ./rebar3 xref
+    - name: Dialyzer
+      run: ./rebar3 dialyzer
     - name: Run Unit Tests
       # XXX https://github.com/lfe-rebar3/rebar3_lfe/issues/69 -- have ro compile multiple times; wtf?
       run: ./rebar3 as test compile; ./rebar3 as test compile; ./rebar3 as test lfe ltest -tunit

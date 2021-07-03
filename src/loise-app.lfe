@@ -3,7 +3,7 @@
   ;; app implementation
   (export
    (start 2)
-   (stop 0)))
+   (stop 0) (stop 1)))
 
 ;;; --------------------------
 ;;; application implementation
@@ -16,3 +16,6 @@
 (defun stop ()
   (loise-sup:stop)
   'ok)
+
+(defun stop (_state)
+  (stop))

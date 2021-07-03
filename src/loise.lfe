@@ -127,8 +127,6 @@
   (case (get-file-type filename overrides)
     ('png (let ((opts (loise-png:options overrides)))
             (loise-png:write-image filename (mref opts 'noise) opts)))
-    ('egd (let ((opts (loise-egd:options overrides)))
-            (loise-egd:write-image filename opts)))
     (type `#(error ,(io_lib:format "unsupported image type '%p'" (list type))))))
 
 ;; Common operations

@@ -14,7 +14,6 @@
     'loise-state',
     'loise-ascii',
     'loise-data',
-    'loise-egd',
     'loise-opts',
     'loise-perlin', 
     'loise-png',

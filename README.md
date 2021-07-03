@@ -376,7 +376,7 @@ Distributed under the Apache License, Version 2.0.
 [gh-actions-badge]: https://github.com/lfex/loise/workflows/ci%2Fcd/badge.svg
 [gh-actions]: https://github.com/lfex/loise/actions
 [logo]: priv/images/loise.jpg
-[lfe]: https://github.com/rvirding/lfe
+[lfe]: https://github.com/lfe/lfe
 [lfe badge]: https://img.shields.io/badge/lfe-2.0-blue.svg
 [erlang badge]: https://img.shields.io/badge/erlang-19%20to%2024-blue.svg
 [versions]: https://github.com/lfex/loise/blob/master/.github/workflows/cicd.yml

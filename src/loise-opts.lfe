@@ -1,6 +1,46 @@
 (defmodule loise-opts
   (export all))
 
+(defun trigger-opts ()
+  "The set of options returned by this function impact calculated values of
+  other options."
+  (sets:from_list '(width
+                    height
+                    grades-count
+                    graded?
+                    ascii-map
+                    grades
+                    colors)))
+
+(defun triggers-intersection (opts)
+  (sets:intersection (sets:from_list (maps:keys opts))
+                     (trigger-opts)))
+
+(defun empty-triggers? (opts)
+  (sets:is_empty
+   (triggers-intersection opts)))
+
+(defun triggers? (opts)
+  (not (empty-triggers? opts)))
+
+(defun trigger-update?
+  (((= #m() map)) (when (== (map_size map) 0))
+   'false)
+  (('())
+   'false)
+  ((opts) (when (is_map opts))
+   (triggers? opts))
+  ((_)
+   'false))
+
+(defun match-list
+  (('())
+   'false))
+
+(defun tu
+  ((())
+   'false))
+
 (defun get (opts)
   (maps:merge (loise-state:get) opts))
 
@@ -32,16 +72,22 @@
                   (colors (loise-opts:get 'colors opts)))
              (if (or (== 'undefined ascii-map) (== 'undefined colors))
                opts
-               (lists:zip grades
-                          (lists:zip ascii-map colors)))))
+               (mupd opts
+                     'color-map
+                     (lists:zip grades
+                                (lists:zip ascii-map colors))))))
     (_ opts)))
 
 (defun update-scale-func (opts)
+  (let* ((val (loise-opts:get 'scale-func opts))
+         (checked (case val
+                    ('undefined  #'lutil-math:color-scale/2)
+                    (_ val))))
   (mupd opts
         'scale-func
-        (loise-opts:get 'scale-func opts #'lutil-math:color-scale/2)))
+        checked)))
 
-(defun update-calculated-opts (opts)
+(defun update-calculated (opts)
   (loise-util:update-perm-table opts)
   (clj:-> opts
           (update-sizes)
@@ -49,8 +95,15 @@
           (update-colors)
           (update-scale-func)))
 
+(defun maybe-update (opts)
+  (if (trigger-update? opts)
+    (update-calculated opts)
+    opts))
+
 (defun value-range (opts)
   ;; Update as we support more types of noise ...
-  (case (loise-opts:get 'noise opts)
-    ('perlin (loise-perlin:value-range))
-    ('simplex (loise-simplex:value-range))))
+  (case (maps:get 'value-range opts 'undefined)
+    ('undefined (case (loise-opts:get 'noise opts)
+                  ('perlin (loise-perlin:value-range))
+                  ('simplex (loise-simplex:value-range))))
+    (val val)))

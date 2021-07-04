@@ -41,5 +41,5 @@ jobs:
       run: ./rebar3 as test compile; ./rebar3 as test compile; ./rebar3 as test lfe ltest -tunit
     - name: Run System Tests
       run: ./rebar3 as test lfe ltest -tsystem
-    - name: Test Coverage
-      run: ./rebar3 as test do proper -c, cover -v --min_coverage=0
+    #- name: Test Coverage
+    #  run: ./rebar3 as test do proper -c, cover -v --min_coverage=0

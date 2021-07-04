@@ -18,7 +18,9 @@
    (get 0) (get 1) (get 2)
    (set 2)
    (get-layer 1) (get-layers 0)
-   (set-layer 2)
+   (set-layer 1) (set-layer 2) (set-layer 3)
+   (render-ascii 1)
+   (render-image 2)
    (pid 0)
    (ping 0)
    (set 2)))
@@ -68,7 +70,7 @@
    `#(noreply ,(maps:put key val state)))
   ((`#(state set layer ,name ,data) state)
    (let ((layers (mref state 'layers)))
-     `#(noreply ,(mupd state 'layers (mupd layers name data)))))
+     `#(noreply ,(mupd state 'layers (mset layers name data)))))
   ((_msg state)
    `#(noreply ,state)))
 
@@ -83,12 +85,28 @@
    `#(reply ,state ,state))
   ((`#(state get ,key) _from state)
    `#(reply ,(maps:get key state 'undefined) ,state))
+  ((`#(state get layer ,name) _from state)
+   ;; Note: attemtping to use clj:get-in instead of the nested map calls
+   ;; results in a dialyzer error not being able to read Erlang data from
+   ;; clj.beam ... depsite there being other calls in loise that use that
+   ;; module (?)
+   (io:format "~p~n" (list name))
+   `#(reply ,(maps:get name (mref state 'layers) 'undefined) ,state))
   ((`#(state get ,key ,default) _from state)
    `#(reply ,(maps:get key state default) ,state))
-  ((`#(state get layer ,name) _from state)
-   ;;`#(reply ,(clj:get-in state `(layers ,name)) ,state))
-   `#(reply ,(maps:get name (mref state 'layers) 'undefined) ,state))
-  ((message _from state)
+  ((`#(state render ascii ,layer-name) _from state)
+   ;; XXX Depends upon: https://github.com/lfex/loise/issues/55
+   ;; XXX pull data from state
+   ;; XXX convert it to ASCII format or insert it into the appropriate point
+   ;;     of the ASCII-processing pipeline
+   `#(reply not-implemented ,state))
+  ((`#(state render image ,layer-name ,filename) _from state)
+   ;; XXX Depends upon: https://github.com/lfex/loise/issues/55
+   ;; XXX pull data from state
+   ;; XXX convert it to ASCII format or insert it into the appropriate point
+   ;;     of the ASCII-processing pipeline
+   `#(reply not-implemented ,state))
+  ((_ _from state)
    `#(reply ,(unknown-command) ,state)))
 
 (defun handle_info
@@ -131,7 +149,13 @@
 (defun set (key value)
   (gen_server:cast (SERVER) `#(state set ,key ,value)))
 
-(defun set-layer (name data)
+(defun set-layer (name)
+  (set-layer name #m()))
+
+(defun set-layer (name overrides)
+  (set-layer name (loise:data overrides) overrides))
+
+(defun set-layer (name data _)
   (gen_server:cast (SERVER) `#(state set layer ,name ,data)))
 
 (defun get-layer (name)
@@ -139,3 +163,10 @@
 
 (defun get-layers ()
   (loise-state:get 'layers))
+
+(defun render-image (layer-name filename)
+  (gen_server:call (SERVER) `#(state render image ,layer-name ,filename)))
+
+(defun render-ascii (layer-name)
+  (io:format "~p~n"
+             (list (gen_server:call (SERVER) `#(state render ascii ,layer-name)))))

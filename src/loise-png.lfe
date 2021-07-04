@@ -35,7 +35,8 @@
     ('undefined (let ((opts (default-options overrides)))
                   (loise-state:set 'png-opts opts)
                   opts))
-    (stored-opts (maps:merge stored-opts (loise-opts:maybe-update overrides)))))
+    (stored-opts (loise-opts:update-calculated
+                  (maps:merge stored-opts overrides)))))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; API

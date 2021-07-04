@@ -99,16 +99,17 @@ Below are 5 perlin noise images generated at 1x, 2x, 4x, 8x, and 16x respectivel
 These were generated with the following from the REPL:
 
 ```cl
-lfe> (set opts )
-lfe> (loise:image "perlin-1.png" #m(noise perlin multiplier 1))
+lfe> (set opts #m(noise perlin multiplier 1))
+#M(noise perlin)
+lfe> (loise:image "perlin-1.png")
 ok
-lfe> (loise:image "perlin-2.png" #m(noise perlin multiplier 2))
+lfe> (loise:image "perlin-2.png" (mupd opts 'multiplier 2))
 ok
-lfe> (loise:image "perlin-4.png" #m(noise perlin multiplier 4))
+lfe> (loise:image "perlin-4.png" (mupd opts 'multiplier 4))
 ok
-lfe> (loise:image "perlin-8.png" #m(noise perlin multiplier 8))
+lfe> (loise:image "perlin-8.png" (mupd opts 'multiplier 8))
 ok
-lfe> (loise:image "perlin-16.png" #m(noise perlin multiplier 16))
+lfe> (loise:image "perlin-16.png" (mupd opts 'multiplier 16))
 ok
 ```
 
@@ -116,11 +117,9 @@ You can also limit the number of gradations for the shades of grey, giving
 the images a more "layered" or "topographical" look:
 
 ```cl
-lfe> (set grades (loise:gradations 7))
-(0 42.5 85.0 127.5 170.0 212.5 255.0)
 lfe> (set opts `#m(multiplier 8
                    graded? true
-                   grades ,grades))
+                   grades-count 7))
 lfe> (loise:image "simplex-7-shades.png" opts)
 ok
 ```
@@ -142,13 +141,14 @@ You may also change the permutation table from the default, to one generated
 with a random seed:
 
 ```cl
-lfe> (set opts (maps:merge opts #m(random? true)
-                                   graded? false))
-lfe> (loise:image "perlin-rand-1.png" (++ '(#(seed 4)) opts))
+lfe> (set opts (maps:merge opts #m(random? true
+                                   graded? false
+                                   seed 4)))
+lfe> (loise:image "perlin-rand-1.png" opts)
 ok
-lfe> (loise:image "perlin-rand-2.png" (++ '(#(seed (4 2))) opts))
+lfe> (loise:image "perlin-rand-2.png" (mupd opts 'seed '(4 2)))
 ok
-lfe> (loise:image "perlin-rand-3.png" (++ '(#(seed (4 2 42))) opts))
+lfe> (loise:image "perlin-rand-3.png" (mupd opts 'seed (4 2 42)))
 ok
 ```
 

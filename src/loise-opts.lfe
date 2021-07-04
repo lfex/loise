@@ -17,7 +17,7 @@
                      (trigger-opts)))
 
 (defun empty-triggers? (opts)
-  (sets:is_empty
+  (loise-util:empty-set?
    (triggers-intersection opts)))
 
 (defun triggers? (opts)

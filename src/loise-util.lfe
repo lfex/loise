@@ -143,3 +143,11 @@
 
 (defun identity (x)
   x)
+
+(defun empty-set? (set)
+  (try
+      (sets:is_empty set)
+    (catch (`#(,_ undef ,_)
+            (if (== 0 (sets:size set))
+              'true
+              'false)))))

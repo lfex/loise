@@ -89,7 +89,11 @@
       grades-count ,(default-grades-count)
       grades ,(default-grades)
       graded? ,(default-graded?)
-      scale-func undefined))
+      scale-func undefined
+      colors? undefined
+      colors ()
+      ascii-map ()
+      color-map ()))
 
 (defun base-options (overrides)
   (maps:merge (base-options) overrides))

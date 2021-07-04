@@ -61,13 +61,16 @@
 (defun update-perm-table (opts)
   "If 'random' is enabled (has a 'true' value), then don't use the default
   permutation table, but rather generate a new one."
-  (case (mref opts 'random?)
-    ('true
-     (let* ((seed (mref opts 'seed))
-            (state (rand:seed_s 'exsss (seed-tuple seed)))
-            (perm-table (random-permutation-table state)))
-      (loise-state:set 'perm-table perm-table)))
-    (_ 'ok)))
+  (let (;; exrop is used since it is available in all supported versions of
+        ;; Erlang
+        (default-alg 'exrop))
+    (case (mref opts 'random?)
+      ('true
+       (let* ((seed (mref opts 'seed))
+              (state (rand:seed_s default-alg (seed-tuple seed)))
+              (perm-table (random-permutation-table state)))
+         (loise-state:set 'perm-table perm-table)))
+      (_ 'ok))))
 
 (defun index (data position)
   "A list-based version of element-index."

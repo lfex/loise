@@ -86,7 +86,8 @@
   ((`#(state get ,key ,default) _from state)
    `#(reply ,(maps:get key state default) ,state))
   ((`#(state get layer ,name) _from state)
-   `#(reply ,(clj:get-in state `(layers ,name)) ,state))
+   ;;`#(reply ,(clj:get-in state `(layers ,name)) ,state))
+   `#(reply ,(maps:get name (mref state 'layers) 'undefined) ,state))
   ((message _from state)
    `#(reply ,(unknown-command) ,state)))
 

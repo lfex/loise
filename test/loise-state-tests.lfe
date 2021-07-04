@@ -20,8 +20,17 @@
   (tuple "ping-check"
          (is-equal 'pong (loise-state:ping))))
 
+(deftestcase layers (setup-result)
+  (tuple "set-and-get-layer"
+         (loise-state:set-layer 'test-layer '(1 2 3))
+         (is-equal '(1 2 3)
+                   (loise-state:get-layer 'test-layer))))
+
 (deftestgen suite
   (tuple 'foreach
          (defsetup set-up)
          (defteardown tear-down)
-         (deftestcases start-up ping-check)))
+         (deftestcases
+           start-up
+           ping-check
+           layers)))

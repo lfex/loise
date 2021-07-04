@@ -16,6 +16,9 @@
   (export
    (echo 1)
    (get 0) (get 1) (get 2)
+   (set 2)
+   (get-layer 1) (get-layers 0)
+   (set-layer 2)
    (pid 0)
    (ping 0)
    (set 2)))
@@ -33,6 +36,7 @@
       base-opts ,(loise-defaults:base-options)
       data-opts undefined
       grad-matrix ,(loise-defaults:gradient-matrix)
+      layers #m()
       output-opts ,(loise-defaults:output-options)
       perm-table ,(loise-defaults:permutation-table)
       png-opts undefined
@@ -62,6 +66,9 @@
 (defun handle_cast
   ((`#(state set ,key ,val) state)
    `#(noreply ,(maps:put key val state)))
+  ((`#(state set layer ,name ,data) state)
+   (let ((layers (mref state 'layers)))
+     `#(noreply ,(mupd state 'layers (mupd layers name data)))))
   ((_msg state)
    `#(noreply ,state)))
 
@@ -78,6 +85,8 @@
    `#(reply ,(maps:get key state 'undefined) ,state))
   ((`#(state get ,key ,default) _from state)
    `#(reply ,(maps:get key state default) ,state))
+  ((`#(state get layer ,name) _from state)
+   `#(reply ,(clj:get-in state `(layers ,name)) ,state))
   ((message _from state)
    `#(reply ,(unknown-command) ,state)))
 
@@ -120,3 +129,12 @@
 
 (defun set (key value)
   (gen_server:cast (SERVER) `#(state set ,key ,value)))
+
+(defun set-layer (name data)
+  (gen_server:cast (SERVER) `#(state set layer ,name ,data)))
+
+(defun get-layer (name)
+  (gen_server:call (SERVER) `#(state get layer ,name)))
+
+(defun get-layers ()
+  (loise-state:get 'layers))

@@ -144,5 +144,12 @@
     (call 'color name text)
     text))
 
-(defun identity (x)
-  x)
+(defun identity (a)
+  a)
+
+(defun first
+  ((`(,a . ,_))
+   a))
+
+(defun first (a b)
+  a)

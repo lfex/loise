@@ -10,7 +10,7 @@
 
 (defun default-options (overrides)
   (let ((png-opts `#m(output-backend loise
-                      scale-func ,#'loise-util:identity/1
+                      scale-func ,#'loise-util:first/2
                       output-format data
                       data-format flat)))
     (clj:-> (loise-state:get 'base-opts)

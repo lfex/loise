@@ -377,7 +377,7 @@ Distributed under the Apache License, Version 2.0.
 [logo]: priv/images/loise.jpg
 [lfe]: https://github.com/lfe/lfe
 [lfe badge]: https://img.shields.io/badge/lfe-2.0-blue.svg
-[erlang badge]: https://img.shields.io/badge/erlang-19%20to%2024-blue.svg
+[erlang badge]: https://img.shields.io/badge/erlang-21%20to%2024-blue.svg
 [versions]: https://github.com/lfex/loise/blob/master/.github/workflows/cicd.yml
 [github tags]: https://github.com/lfex/loise/tags
 [github tags badge]: https://img.shields.io/github/tag/lfex/loise.svg

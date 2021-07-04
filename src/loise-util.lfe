@@ -143,10 +143,3 @@
 
 (defun identity (x)
   x)
-
-(defun empty-set? (set)
-  ;; sets:is_empty/1 causes xref checks to fail for Erlang 19 and 20; when we're
-  ;; at 21+ we can use that instead. For now:
-  (if (== 0 (sets:size set))
-    'true
-    'false))

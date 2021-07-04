@@ -100,7 +100,7 @@ These were generated with the following from the REPL:
 
 ```cl
 lfe> (set opts #m(noise perlin multiplier 1))
-#M(noise perlin)
+#M(multiplier 1 noise perlin)
 lfe> (loise:image "perlin-1.png")
 ok
 lfe> (loise:image "perlin-2.png" (mupd opts 'multiplier 2))
@@ -115,14 +115,6 @@ ok
 
 You can also limit the number of gradations for the shades of grey, giving
 the images a more "layered" or "topographical" look:
-
-```cl
-lfe> (set opts `#m(multiplier 8
-                   graded? true
-                   grades-count 7))
-lfe> (loise:image "simplex-7-shades.png" opts)
-ok
-```
 
 ```cl
 lfe> (set opts `#m(noise perlin
@@ -169,30 +161,25 @@ Below are 5 simplex noise images generated at 1x, 2x, 4x, 8x, and 16x respective
 These were generated with the following from the REPL:
 
 ```cl
-lfe> (set opts `(#(noise simplex) 
-                 #(output-format png)))
-lfe> (loise:image "simplex-1.png" (cons #(multiplier 1) opts))
+lfe> (set opts #m(noise simplex multiplier 1))
+#M(multiplier 1 noise simplex)
+lfe> (loise:image "simplex-1.png")
 ok
-lfe> (loise:image "simplex-2.png" (cons #(multiplier 2) opts))
+lfe> (loise:image "simplex-2.png" (mupd opts 'multiplier 2))
 ok
-lfe> (loise:image "simplex-4.png" (cons #(multiplier 4) opts))
+lfe> (loise:image "simplex-2.png" (mupd opts 'multiplier 2))
 ok
-lfe> (loise:image "simplex-8.png" (cons #(multiplier 8) opts))
+lfe> (loise:image "simplex-8.png" (mupd opts 'multiplier 8))
 ok
-lfe> (loise:image "simplex-16.png" (cons #(multiplier 16) opts))
+lfe> (loise:image "simplex-16.png" (mupd opts 'multiplier 16))
 ok
 ```
-
-(set opts `(#(noise simplex) #(grades-count 5) #(output-format png) #(graded? true) #(multiplier 4)))
-(loise:image "simplex-4-graded.png" opts)
 
 Just as with perlin, simplex allows you to limit the number of gradations for
 the shades of grey:
 
 ```cl
-lfe> (set opts #m(graded? true
-                  grades-count 5
-                  multiplier 4))
+lfe> (set opts (mset opts 'graded? 'true 'grades-count 5 'multiplier 4))
 lfe> (loise:image "simplex-5-shades.png" opts)
 ok
 ```
@@ -205,39 +192,22 @@ You may also change the permutation table from the default, to one generated
 with a random seed:
 
 ```cl
-lfe> (set opts (++ `(#(random? true)
-                     #(graded? false)) opts))
-lfe> (loise:image "simplex-rand-1.png" (++ '(#(seed 4)) opts))
+lfe> (set opts (mset opts 'random? 'true 'graded? 'false 'seed 4))
+lfe> (loise:image "simplex-rand-1.png")
 ok
-lfe> (loise:image "simplex-rand-2.png" (++ '(#(seed (4 2))) opts))
+lfe> (loise:image "simplex-rand-2.png" (mupd opts 'seed '(4 2)))
 ok
-lfe> (loise:image "simplex-rand-3.png" (++ '(#(seed (4 2 42))) opts))
+lfe> (loise:image "simplex-rand-3.png" (mupd opts 'seed '(4 2 42)))
 ok
 ```
 
 You may either pass an integer or a list of 1, 2 or 3 integers as values
-for the `seed` option key.
+for the `seed` option key. Note that without different seeds, the same image
+would be generated for multiple calls to `loise:image`.
 
 ### ASCII [&#x219F;](#contents)
 
-You can also generate ASCII "images" with loise. As an example of this, we can
-map the default values represented by this range:
-
-```cl
-lfe> (loise:gradations 6)
-(0 51.0 102.0 153.0 204.0 255.0)
-```
-
-And by this set of ASCII characters:
-
-* Level 6 - ``A``
-* Level 5 - ``^``
-* Level 4 - ``n``
-* Level 3 - ``*``
-* Level 2 - ``~``
-* Level 1 - ``~``
-
-By making calls like this:
+You can also generate ASCII "images" with loise:
 
 ```cl
 lfe> (loise:format-ascii #m(noise perlin color? true))
@@ -251,36 +221,37 @@ lfe> (loise:format-ascii #m(noise simplex color? true))
 ```
 <img src="priv/images/simplex-ascii.png" />
 
-The default noise type is `simplex` and colors are not used in the
-ASCII noise output by default:
+The ASCII annlog to the greyscale PNG noise images is simply a
+gride without color:
 
 ``` cl
-lfe> (loise:format-ascii)
+lfe> (loise:format-ascii #m(noise simplex color? false))
 ```
 
 <img src="priv/images/simplex-ascii-no-color.png" />
 
-
-We can pass new options to the function. The following shows the
-addition of alpine forests and grasslands and greatly increasing the
+You are not bound to the default ASCII represnetation nor default
+color scheme. In the following example, we can generate a landscape
+that includes alpine forests and grasslands and greatly increase the
 map area in the terminal:
 
 ```cl
-lfe> (set opts
-       `#m(color? true
-           width 282
-           height 94
-           multiplier 2.5
-           grades-count 9
-           grades ,(loise:gradations 9)
-           ascii-map ("A" "^" "!" "n" "*" "-" "~" "~" "~")
-           colors (whiteb yellow green
-                   green greenb green
-                   blue blue blue)))
+lfe> (set opts #m(color? true
+                  width 282
+                  height 94
+                  multiplier 2.5
+                  graded? true
+                  grades-count 9
+                  ascii-map ("A" "^" "!" "n" "*" "-" "~" "~" "~")
+                  colors (whiteb yellow green green greenb green
+                          blue blue blue)))
 
 lfe> (loise:format-ascii opts)
 ```
 <a href="https://raw.githubusercontent.com/lfex/loise/master/priv/images/simplex-ascii-2.png"><img src="priv/images/simplex-ascii-2-small.png" /></a>
+
+As with the PNG images, ASCII output may be randomized by setting different seeds:
+
 
 By default, loise uses a pre-generated "permutation table" to generate patterns.
 You can view this table in `src/loise-defaults.lfe`. If you would like to
@@ -288,23 +259,11 @@ generate your own for more random results, you will need to enable the `random`
 option and then generate a new table:
 
 ```cl
-> (set opts (++ `(#(random true)) opts))
+lfe> (set opts #m(random? true graded? true seed 4))
+lfe> (loise:format-ascii opts)
+lfe> (loise:format-ascii (mupd opts 'seed '(4 2)))
+lfe> (loise:format-ascii (mupd opts 'seed '(4 2 42)))
 ```
-
-If you do not provide your own seed, the provided default will be used. If you
-would like a different result each time, you will need to pass a new seed.
-For instance:
-
-```cl
-lfe> (loise:ascii `#m(noise perlin seed 1 random true))
-lfe> (loise:ascii `#m(noise perlin seed 4 2 random true))
-lfe> (loise:ascii `#m(noise perlin seed 7 8 9 random true))
-```
-
-To see the full list of options available be sure read
-`src/loise-defaults.lfe` and the options at the top of modules that use them
-(e.g., `src/loise-png.lfe`).
-
 
 ### From the REPL [&#x219F;](#contents)
 
@@ -321,6 +280,9 @@ lfe> (loise:simplex 0.1 0.2)
 lfe> (loise:simplex 0.1 0.2 0.9)
 -0.07602014100000003
 ```
+
+Note that, depending upon your random and seed settings, you may get different values
+than those shown above.
 
 Or, iterating over some values in one dimension:
 

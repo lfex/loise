@@ -1,4 +1,4 @@
-(defmodule loise-sup
+(defmodule loise-traver-sup
   (beehaviour supervisor)
   ;; supervisor implementation
   (export
@@ -15,9 +15,9 @@
 (defun SERVER () (MODULE))
 (defun supervisor-opts () '())
 (defun sup-flags ()
-  `#M(strategy one_for_one
-      intensity 3
-      period 60))
+  `#M(strategy simple_one_for_one
+      intensity 0
+      period 1))
 
 ;;; -------------------------
 ;;; supervisor implementation
@@ -35,19 +35,17 @@
 ;;; callback implementation
 ;;; -----------------------
 
-(defun init (_args)
+(defun init (args)
   `#(ok #(,(sup-flags)
-          (,(child 'loise-state 'start_link 'worker)
-           ,(child 'loise-traver-sup 'start_link 'supervisor)))))
+          ,(child args))))
 
 ;;; -----------------
 ;;; private functions
 ;;; -----------------
 
-(defun child (mod fun type)
-  `#M(id ,mod
-      start #(,mod ,fun ())
-      restart permanent
-      shutdown 2000
-      type ,type
-      modules (,mod)))
+(defun child (args)
+  `(#m(id traversal_worker
+       start #(loise-traver-work start_link ,args)
+       shutdown brutal_kill
+       restart temporary
+       type worker)))

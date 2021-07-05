@@ -90,7 +90,6 @@
    ;; results in a dialyzer error not being able to read Erlang data from
    ;; clj.beam ... depsite there being other calls in loise that use that
    ;; module (?)
-   (io:format "~p~n" (list name))
    `#(reply ,(maps:get name (mref state 'layers) 'undefined) ,state))
   ((`#(state get ,key ,default) _from state)
    `#(reply ,(maps:get key state default) ,state))

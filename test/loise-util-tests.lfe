@@ -11,12 +11,6 @@
   `(#(width 2)
     #(height 2)))
 
-(deftest seed-tuple
-  (is-equal #(42 0 0) (loise-util:seed-tuple 42))
-  (is-equal #(0 42 0) (loise-util:seed-tuple '(0 42)))
-  (is-equal #(0 0 42) (loise-util:seed-tuple '(0 0 42)))
-  (is-equal #(42 42 42) (loise-util:seed-tuple '(42 42 42))))
-
 (deftest index
   (is-equal 42 (loise-util:index '(99 4 7 42 13) 3))
   (is-equal '(-1.0 -1.0 0.0) (get-grad 3)))
@@ -104,26 +98,10 @@
          (is-equal 25.0 (loise-util:get-noise-contribution 8 5 10 15))
          (is-equal 110.0 (loise-util:get-noise-contribution 8 1 10 100))))
 
-(deftestcase update-perm-table (setup-result)
-  (tuple "update-perm-table"
-         (let* ((opts (loise-ascii:default-options))
-                (rand-opts (loise-ascii:default-options #m(random? true))))
-           (is-equal (loise-defaults:permutation-table)
-                     (mref opts 'perm-table))
-           (is-equal '(151 160 137 91 90 15 131 13 201 95)
-                     (lists:sublist
-                      (mref opts 'perm-table)
-                      10))
-           (is-equal '(35 94 168 230 251 221 92 64 92 36)
-                     (lists:sublist
-                      (mref rand-opts 'perm-table)
-                      10)))))
-
 (deftestgen suite
   (tuple 'foreach
          (defsetup set-up)
          (defteardown tear-down)
          (deftestcases
            get-gradient-index
-           get-noise-contribution
-           update-perm-table)))
+           get-noise-contribution)))

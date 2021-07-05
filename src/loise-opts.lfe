@@ -88,7 +88,7 @@
         checked)))
 
 (defun update-calculated (opts)
-  (loise-util:update-perm-table opts)
+  (loise-rand:update-perm-table opts)
   (clj:-> opts
           (update-sizes)
           (update-grades)

@@ -13,7 +13,8 @@
   (export
    (data 0) (data 1)
    (data-cell 2)
-   (data-row 2))
+   (data-row 2)
+   (add-layer 2))
   (export
    (image 1) (image 2))
   (export
@@ -103,6 +104,12 @@
 
 (defun data-row (matrix index)
   (proplists:get_value index matrix))
+
+(defun add-layer
+  ((name overrides) (when (is_list name))
+   (add-layer (list_to_atom name) overrides))
+  ((name overrides) (when (is_atom name))
+   (loise-state:set-layer name overrides)))
 
 ;; ASCII API
 (defun ascii ()

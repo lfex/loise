@@ -83,7 +83,7 @@
          (graded? (mref opts 'graded?))
          (grades (mref opts 'grades))
          (value-range (loise-opts:value-range opts)))
-     (list-comp ((<- y (lists:seq start-y end-y)))
+     (list-comp ((<- y (lists:seq start-y (- end-y 1))))
        (tuple y
               (row point-func scale-func y start end mult graded? grades value-range opts))))))
 
@@ -93,7 +93,7 @@
 (defun row
   ((point-func scale-func y `#(,start-x ,_) `#(,end-x ,end-y) mult graded? grades value-range opts)
    (let ((legend (mref opts 'color-map)))
-     (list-comp ((<- x (lists:seq start-x end-x)))
+     (list-comp ((<- x (lists:seq start-x (- end-x 1))))
        (tuple `(,x ,y)
               (cell point-func
                     scale-func

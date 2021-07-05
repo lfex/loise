@@ -25,6 +25,13 @@
   (let ((stop-result (loise:stop)))
     (is-equal 'ok stop-result)))
 
+(deftestcase choose (setup-result)
+  (tuple "choose"
+         (let ((fruits '(apple blueberries kiwi mango orange strawberries)))
+           (is-equal "XXX"
+                     (list-comp ((<- _ (lists:seq 1 10)))
+                       (loise-rand:choose fruits #m(seed 42)))))))
+
 (deftestcase update-perm-table-default (setup-result)
   (tuple "update-perm-table-default"
          (let* ((opts (loise-ascii:default-options))
@@ -50,5 +57,6 @@
          (defsetup set-up)
          (defteardown tear-down)
          (deftestcases
+           choose
            update-perm-table-default
            update-perm-table)))

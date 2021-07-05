@@ -14,7 +14,8 @@
    (data 0) (data 1)
    (data-cell 2)
    (data-row 2)
-   (add-layer 2))
+   (add-layer 1) (add-layer 2)
+   (get-layer 1))
   (export
    (image 1) (image 2))
   (export
@@ -105,11 +106,17 @@
 (defun data-row (matrix index)
   (proplists:get_value index matrix))
 
+(defun add-layer (name)
+  (add-layer name '#m()))
+
 (defun add-layer
   ((name overrides) (when (is_list name))
-   (add-layer (list_to_atom name) overrides))
+   (add-layer (list_to_atom name) (loise-data:options overrides)))
   ((name overrides) (when (is_atom name))
-   (loise-state:set-layer name overrides)))
+   (loise-state:set-layer name (loise-data:options overrides))))
+
+(defun get-layer (name)
+  (loise-state:get-layer name))
 
 ;; ASCII API
 (defun ascii ()

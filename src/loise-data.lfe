@@ -12,7 +12,10 @@
   (let ((png-opts `#m(output-backend loise
                       scale-func ,#'loise-util:first/2
                       output-format data
-                      data-format flat)))
+                      data-format flat
+                      ;; Use ASCII width/height as a sane default
+                      width ,(loise-ascii:default-width)
+                      height ,(loise-ascii:default-height))))
     (clj:-> (loise-state:get 'base-opts)
             (maps:merge (loise-state:get 'output-opts))
             (maps:merge png-opts)

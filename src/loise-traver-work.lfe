@@ -15,7 +15,11 @@
   ;; server API
   (export
    (echo 2)
+   (execute 4)
+   (set-results 3)
+   (get-results 2)
    (get 1) (get 2) (get 3)
+   (set 3)
    (ping 1)))
 
 ;;; ----------------
@@ -71,6 +75,8 @@
    `#(reply ,(maps:get name (mref state 'layers) 'undefined) ,state))
   ((`#(state get ,key ,default) _from state)
    `#(reply ,(maps:get key state default) ,state))
+  ((`#(state set ,key ,val) _from state)
+   `#(reply ,val ,(mset state key val)))
   ((`#(ping) _from state)
    `#(reply pong ,state))
   (('#(stop) _from state)
@@ -109,5 +115,17 @@
 (defun get (pid key default)
   (gen_server:call pid `#(state get ,key ,default)))
 
+(defun set (pid key value)
+  (gen_server:call pid `#(state set ,key ,value)))
+
 (defun ping (pid)
   (gen_server:call pid '#(ping)))
+
+(defun execute (pid id func args)
+  (set-results pid id (apply func args)))
+
+(defun set-results (pid id results)
+  (set pid `#(results ,id) results))
+
+(defun get-results (pid id)
+  (get pid `#(results ,id)))

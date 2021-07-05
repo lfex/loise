@@ -22,6 +22,7 @@
   * [ASCII](#ascii-)
   * [Basics: From the REPL](#basics--from-the-repl-)
   * [Basics: In a Module](#basics--in-a-module-)
+* [Traversing Noise Planes](#traversing-noise-planes-)
 * [License](#license-)
 
 
@@ -320,6 +321,23 @@ lfe> (list-comp ((<- x input))
   (loise:simplex 3.14 1.59 2.65))
 ```
 
+## Traversing Noise Planes [&#x219F;](#contents)
+
+### Brownian Motion / Random Walk
+
+``` cl
+lfe> (loise:start)
+#(ok (loise))
+lfe> (set opts `#m(scale-func ,#'lutil-math:midi-scale/2))
+lfe> (loise:add-layer 'pitch opts)
+ok
+lfe> (loise:add-layer 'velocity opts)
+ok
+lfe> (set pitch-path (loise-traverse:brownian 'pitch #(0 0) opts))
+lfe> (set velocity-path (loise-traverse:brownian 'velocity #(0 0) opts))
+lfe> (lists:sublist pitch-path 1 10)
+lfe> (lists:sublist velocity-path 1 10)
+```
 
 ## License [&#x219F;](#contents)
 

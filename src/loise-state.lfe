@@ -19,6 +19,8 @@
    (set 2)
    (get-layer 1) (get-layers 0)
    (set-layer 1) (set-layer 2) (set-layer 3)
+   (get-layer-opts 1)
+   (set-layer-opts 2)
    (render-ascii 1)
    (render-image 2)
    (pid 0)
@@ -39,9 +41,11 @@
       data-opts undefined
       grad-matrix ,(loise-defaults:gradient-matrix)
       layers #m()
+      layer-opts #m()
       output-opts ,(loise-defaults:output-options)
       perm-table ,(loise-defaults:permutation-table)
       png-opts undefined
+      rand-state undefined
       version ,(loise-util:version)
       versions ,(loise-util:versions)))
 
@@ -71,6 +75,9 @@
   ((`#(state set layer ,name ,data) state)
    (let ((layers (mref state 'layers)))
      `#(noreply ,(mupd state 'layers (mset layers name data)))))
+  ((`#(state set layer-opts ,layer-name ,opts) state)
+   (let ((layer-opts (mref state 'layer-opts)))
+     `#(noreply ,(mupd state 'layer-opts (mset layer-opts layer-name opts)))))
   ((_msg state)
    `#(noreply ,state)))
 
@@ -91,6 +98,8 @@
    ;; clj.beam ... depsite there being other calls in loise that use that
    ;; module (?)
    `#(reply ,(maps:get name (mref state 'layers) 'undefined) ,state))
+  ((`#(state get layer-opts ,name) _from state)
+   `#(reply ,(maps:get name (mref state 'layer-opts) 'undefined) ,state))
   ((`#(state get ,key ,default) _from state)
    `#(reply ,(maps:get key state default) ,state))
   ((`#(state render ascii ,layer-name) _from state)
@@ -151,17 +160,24 @@
 (defun set-layer (name)
   (set-layer name #m()))
 
-(defun set-layer (name overrides)
-  (set-layer name (loise:data overrides) overrides))
+(defun set-layer (name opts)
+  (set-layer name (loise:data opts) opts))
 
-(defun set-layer (name data _)
-  (gen_server:cast (SERVER) `#(state set layer ,name ,data)))
+(defun set-layer (name data opts)
+  (gen_server:cast (SERVER) `#(state set layer ,name ,data))
+  (set-layer-opts name opts))
 
 (defun get-layer (name)
   (gen_server:call (SERVER) `#(state get layer ,name)))
 
 (defun get-layers ()
   (loise-state:get 'layers))
+
+(defun set-layer-opts (name opts)
+  (gen_server:cast (SERVER) `#(state set layer-opts ,name ,opts)))
+
+(defun get-layer-opts (name)
+  (gen_server:call (SERVER) `#(state get layer-opts ,name)))
 
 (defun render-image (layer-name filename)
   (gen_server:call (SERVER) `#(state render image ,layer-name ,filename)))

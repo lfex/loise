@@ -5,10 +5,10 @@
 ;;; Options and Defaults
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defun default-ascii-width () 56)
-(defun default-ascii-height () 36)
-(defun default-ascii-map () '("A" "^" "n" "*" "~" "~"))
-(defun default-ascii-colors ()
+(defun default-width () 56)
+(defun default-height () 36)
+(defun default-map () '("A" "^" "n" "*" "~" "~"))
+(defun default-colors ()
   '(whiteb
     yellow
     green
@@ -23,11 +23,11 @@
   (let ((ascii-opts `#m(output-backend loise
                       output-type loise
                       output-format text
-                      width ,(default-ascii-width)
-                      height ,(default-ascii-height)
-                      ascii-map ,(default-ascii-map)
+                      width ,(default-width)
+                      height ,(default-height)
+                      ascii-map ,(default-map)
                       color? false
-                      colors ,(default-ascii-colors)
+                      colors ,(default-colors)
                       color-map undefined
                       graded? true)))
     (clj:-> (loise-state:get 'base-opts)

@@ -7,6 +7,8 @@
 (defun default-type () 'random-neighbor)
 (defun default-radius () 1)
 (defun default-include-center? () 'false)
+(defun default-reverse? () 'true)
+(defun default-func () #'loise-traverse:random-walk/2)
 
 (defun options ()
   (options #m()))
@@ -18,7 +20,8 @@
                   type ,(default-type)
                   duration undefined
                   radius ,(default-radius)
-                  include-center? ,(default-include-center?))
+                  include-center? ,(default-include-center?)
+                  reverse? ,(default-reverse?))
               overrides))
 
 (defun neighbors (point opts)
@@ -57,28 +60,44 @@
           (`#(,p2 ,st2) (loise-rand:choose neighbs st1)))
      `#(,(cons p2 acc) ,p2 ,st2 ,opts))))
 
-(defun random-walk (point opts)
+(defun random-walk (start-point opts)
   (let* ((count (mref opts 'count))
          (st0 (loise-rand:state opts))
          (`#(,steps ,_ ,st1 ,_) (lists:foldl #'random-step/2
-                                             `#(() ,point ,st0 ,opts)
+                                             `#((,start-point) ,start-point ,st0 ,opts)
                                              (lists:seq 1 count))))
     (loise-rand:set-state st1)
     steps))
 
-(defun brownian (layer-name)
-  (brownian layer-name #m(type random-neighbor)))
+(defun get-func (type)
+  (case type
+    ('random-neighbor #'loise-traverse:random-walk/2)
+    (_ (default-func))))
 
-(defun brownian (layer-name overrides)
-  (let ((`#(ok ,pid) (supervisor:start_child
-                      (sup)
-                      (list layer-name
-                            (loise-state:get-layer layer-name)
-                            (options overrides)))))
+(defun brownian (layer-name start-point)
+  (brownian layer-name start-point #m(type random-neighbor)))
+
+(defun brownian (layer-name start-point overrides)
+  (let* ((opts (clj:-> (options)
+                       (maps:merge (loise-state:get-layer-opts layer-name))
+                       (maps:merge overrides)))
+         (traverse-func (get-func (mref opts 'type)))
+         (`#(ok ,pid) (supervisor:start_child
+                       (sup)
+                       (list layer-name
+                             (loise-state:get-layer layer-name)
+                             opts))))
     (prog1
-      (list
-       (loise-traver-work:ping pid)
-       (loise-traver-work:get pid))
+        (let ((hash (crypto:hash
+                     'sha
+                     (list_to_binary
+                      (io_lib:format "~p~p~p"
+                                     (list traverse-func start-point opts))))))
+          (loise-traver-work:execute pid hash traverse-func `(,start-point ,opts))
+          (let ((results (loise-traver-work:get-results pid hash)))
+            (if (mref opts 'reverse?)
+              (lists:reverse results)
+              results)))
       (supervisor:terminate_child
        (sup)
        pid))))

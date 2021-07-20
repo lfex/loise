@@ -102,9 +102,9 @@ lfe> (loise:format-ascii #m(noise simplex color? true))
     * [Basic Usage](docs/USAGE-REPL-BASIC.md)
     * [Perlin Noise](docs/USAGE-REPL-PERLIN.md)
     * [Simplex Noise](docs/USAGE-REPL-SIMPLEX.md)
-    * [Layer Management](docs/USAGE-REPL-ASCII.md)
+    * [Layer Management](docs/USAGE-REPL-LAYERS.md)
       * [Creating Layers](docs/USAGE-LAYERS.md#create-layers)
-      * [Random Walks](docs/USAGE-REPL-ASCII.md#)
+      * [Random Walks](docs/USAGE-LAYERS.md#brownian-motion--random-walk)
 
 ## License [&#x219F;](#contents)
 

@@ -40,6 +40,21 @@
   (let ((`#(,idx ,st2) (rand:uniform_s (length list-data) st1)))
     `#(,(lists:nth idx list-data) ,st2)))
 
+(defun choose* (list-data st)
+  (element 1 (choose list-data st)))
+
+(defun choose-next*
+  ((_count `#(,acc ,list-data ,st1))
+   (let ((`#(,choice ,st2) (choose list-data st1)))
+     `#(,(cons choice acc) ,list-data ,st2))))
+
+(defun choose* (list-data count st0)
+  (let ((`#(,choices ,_ ,st1) (lists:foldl #'choose-next*/2
+                                        `#(() ,list-data ,st0)
+                                        (lists:seq 1 count))))
+    (set-state st1)
+    choices))
+
 (defun permutation-table (state)
   (permutation-table state 256))
 

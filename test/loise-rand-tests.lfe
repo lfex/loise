@@ -16,47 +16,60 @@
 
 (include-lib "ltest/include/ltest-macros.lfe")
 
-(defun set-up ()
-  (prog1
-    (loise:start)
-    (logger:set_primary_config #m(level error))))
+(defun set-up () (loise-tests-support:set-up))
+(defun tear-down (setup-result) (loise-tests-support:tear-down setup-result))
 
-(defun tear-down (setup-result)
-  (let ((stop-result (loise:stop)))
-    (is-equal 'ok stop-result)))
+(defun opts ()
+  (loise-ascii:default-options))
 
-(deftestcase choose (setup-result)
-  (tuple "choose"
-         (let ((fruits '(apple blueberries kiwi mango orange strawberries)))
-           (is-equal "XXX"
-                     (list-comp ((<- _ (lists:seq 1 10)))
-                       (loise-rand:choose fruits #m(seed 42)))))))
+(defun rand-opts ()
+  (loise-ascii:default-options #m(random? true)))
+
+(defun test-data ()
+  '(apple blueberries kiwi mango orange strawberries))
+
+(deftestcase choose-one (setup-result)
+  (is-equal 'orange
+            (element 1 (loise-rand:choose (test-data)
+                                          (loise-rand:state #m(seed 42))))))
+
+(deftestcase choose*-one (setup-result)
+  (is-equal 'orange
+            (loise-rand:choose* (test-data)
+                                (loise-rand:state #m(seed 42)))))
+
+(deftestcase choose*-many (setup-result)
+  (is-equal '(mango strawberries orange strawberries apple
+              kiwi strawberries orange blueberries orange)
+            (loise-rand:choose* (test-data)
+                                10
+                                (loise-rand:state #m(seed 42)))))
 
 (deftestcase update-perm-table-default (setup-result)
-  (tuple "update-perm-table-default"
-         (let* ((opts (loise-ascii:default-options))
-                (rand-opts (loise-ascii:default-options #m(random? true))))
-           (is-equal (loise-defaults:permutation-table)
-                     (mref opts 'perm-table)))))
+  (is-equal (loise-defaults:permutation-table)
+            (loise-state:get 'perm-table)))
 
-(deftestcase update-perm-table (setup-result)
-  (tuple "update-perm-table"
-         (let* ((opts (loise-ascii:default-options))
-                (rand-opts (loise-ascii:default-options #m(random? true))))
-           (is-equal '(151 160 137 91 90 15 131 13 201 95)
-                     (lists:sublist
-                      (mref opts 'perm-table)
-                      10))
-           (is-equal '(35 94 168 230 251 221 92 64 92 36)
-                     (lists:sublist
-                      (mref rand-opts 'perm-table)
-                      10)))))
+(deftestcase update-perm-table-without-random (setup-result)
+  (opts)
+  (is-equal '(151 160 137 91 90 15 131 13 201 95)
+            (lists:sublist
+             (loise-state:get 'perm-table)
+             10)))
+(deftestcase update-perm-table-with-random (setup-result)
+  (rand-opts)
+  (is-equal '(189 69 252 70 95 138 96 186 227 118)
+            (lists:sublist
+             (loise-state:get 'perm-table)
+             10)))
 
 (deftestgen suite
   (tuple 'foreach
          (defsetup set-up)
          (defteardown tear-down)
          (deftestcases
-           choose
+           choose-one
+           choose*-one
+           choose*-many
            update-perm-table-default
-           update-perm-table)))
+           update-perm-table-without-random
+           update-perm-table-with-random)))

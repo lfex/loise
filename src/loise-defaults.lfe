@@ -78,6 +78,7 @@
       size undefined
       dim undefined
       multiplier ,(default-multiplier)
+      perm-table ()
       simplex-scale ,(default-simplex-scale-factor)
       mix-shift ,(default-mix-shift)
       skew-factor ,(default-skew-factor)

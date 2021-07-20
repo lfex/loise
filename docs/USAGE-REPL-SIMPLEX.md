@@ -2,6 +2,11 @@
 
 ## Simplex
 
+``` cl
+lfe> (loise:start)
+#(ok (loise)
+```
+
 Below are 5 simplex noise images generated at 1x, 2x, 4x, 8x, and 16x respectively.
 
 <img src="priv/images/simplex-1.png" />

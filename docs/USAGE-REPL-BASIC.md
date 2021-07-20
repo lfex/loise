@@ -4,6 +4,11 @@
 
 Simple usage of the noise functions in losie is demonstrated below.
 
+``` cl
+lfe> (loise:start)
+#(ok (loise)
+```
+
 ```cl
 lfe> (loise:perlin 3.14 1.59 2.65)
 -0.3772216257243449

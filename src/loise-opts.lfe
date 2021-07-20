@@ -67,15 +67,17 @@
 
 (defun update-colors (opts)
   (case (loise-opts:get 'graded? opts)
-    ('true (let* ((grades (mref opts 'grades))
-                  (ascii-map (loise-opts:get 'ascii-map opts))
-                  (colors (loise-opts:get 'colors opts)))
-             (if (or (== 'undefined ascii-map) (== 'undefined colors))
+    ('true (let ((colors (loise-opts:get 'colors opts)))
+             (if (== colors '())
                opts
-               (mupd opts
-                     'color-map
-                     (lists:zip grades
-                                (lists:zip ascii-map colors))))))
+               (let ((grades (mref opts 'grades))
+                     (ascii-map (loise-opts:get 'ascii-map opts)))
+                 (if (or (== 'undefined ascii-map) (== 'undefined colors))
+                   opts
+                   (mupd opts
+                         'color-map
+                         (lists:zip grades
+                                    (lists:zip ascii-map colors))))))))
     (_ opts)))
 
 (defun update-scale-func (opts)

@@ -12,9 +12,6 @@
   (let ((data-opts `#m(output-backend loise
                        scale-func ,#'loise-util:first/2
                        output-format data
-                       data-format flat
-                       round? false
-                       precision 5
                        ;; Use ASCII width/height as a sane default
                        width ,(loise-ascii:default-width)
                        height ,(loise-ascii:default-height))))

@@ -90,6 +90,9 @@
       grades ,(default-grades)
       graded? ,(default-graded?)
       scale-func undefined
+      round? false
+      precision 5
+      data-format flat
       colors? undefined
       colors ()
       ascii-map ()

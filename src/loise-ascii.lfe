@@ -21,15 +21,15 @@
 
 (defun default-options (overrides)
   (let ((ascii-opts `#m(output-backend loise
-                      output-type loise
-                      output-format text
-                      width ,(default-width)
-                      height ,(default-height)
-                      ascii-map ,(default-map)
-                      color? false
-                      colors ,(default-colors)
-                      color-map undefined
-                      graded? true)))
+                        output-type loise
+                        output-format text
+                        width ,(default-width)
+                        height ,(default-height)
+                        ascii-map ,(default-map)
+                        color? false
+                        colors ,(default-colors)
+                        color-map undefined
+                        graded? true)))
     (clj:-> (loise-state:get 'base-opts)
             (maps:merge (loise-state:get 'output-opts))
             (maps:merge ascii-opts)

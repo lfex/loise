@@ -6,7 +6,7 @@ Simple usage of the noise functions in losie is demonstrated below.
 
 ``` cl
 lfe> (loise:start)
-#(ok (loise)
+#(ok (loise))
 ```
 
 ```cl

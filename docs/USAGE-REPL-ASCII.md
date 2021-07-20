@@ -4,7 +4,7 @@
 
 ``` cl
 lfe> (loise:start)
-#(ok (loise)
+#(ok (loise))
 ```
 
 You can also generate ASCII "images" with loise:

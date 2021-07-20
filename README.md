@@ -48,7 +48,7 @@ when simply used as a library. From the REPL:
 
 ``` cl
 lfe> (loise:start)
-#(ok (loise)
+#(ok (loise))
 ```
 
 For non-REPL use, in your project, simply add `loise` to the `applications` 

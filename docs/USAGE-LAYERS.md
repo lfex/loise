@@ -6,7 +6,7 @@
 
 ``` cl
 lfe> (loise:start)
-#(ok (loise)
+#(ok (loise))
 ```
 
 Might be good to create some options now, too:

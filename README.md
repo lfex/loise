@@ -68,10 +68,36 @@ The following usage example is just the merest fraction of what you can do with
 loise. Be sure to see the [Documentation](#documentation-) section below for
 links to usage examples for specific features.
 
+Perlin smooth:
+
+```cl
+lfe> (set opts #m(noise perlin multiplier 1))
+#M(multiplier 1 noise perlin)
+lfe> (loise:image "perlin-4.png" (mupd opts 'multiplier 4))
+ok
+```
+
+<img src="priv/images/perlin-4.png" />
+
+Perlin graded:
+
+```cl
+lfe> (set opts `#m(noise perlin
+                   multiplier 4
+                   graded? true
+                   grades-count 8))
+lfe> (loise:image "perlin-8-shades.png" opts)
+ok
+```
+
+<img src="priv/images/perlin-8-shades.png" />
+
 Simplex smooth:
 
 ``` cl
-lfe> (loise:image "simplex-4.png" (mupd opts 'multiplier 4))
+lfe> (set opts #m(noise simplex multiplier 4))
+#M(multiplier 4 noise simplex)
+lfe> (loise:image "simplex-4.png" opts)
 ok
 ```
 <img src="priv/images/simplex-4.png" />
@@ -79,7 +105,9 @@ ok
 Simplex graded:
 
 ```cl
-lfe> (set opts (mset opts 'graded? 'true 'grades-count 5 'multiplier 4))
+lfe> (set opts (mset opts 'graded? 'true
+                          'grades-count 5
+                          'multiplier 4))
 lfe> (loise:image "simplex-5-shades.png" opts)
 ok
 ```
@@ -102,7 +130,7 @@ lfe> (loise:format-ascii #m(noise simplex color? true))
     * [Basic Usage](docs/USAGE-REPL-BASIC.md)
     * [Perlin Noise](docs/USAGE-REPL-PERLIN.md)
     * [Simplex Noise](docs/USAGE-REPL-SIMPLEX.md)
-    * [Layer Management](docs/USAGE-REPL-LAYERS.md)
+    * [Layer Management](docs/USAGE-LAYERS.md)
       * [Creating Layers](docs/USAGE-LAYERS.md#create-layers)
       * [Random Walks](docs/USAGE-LAYERS.md#brownian-motion--random-walk)
 

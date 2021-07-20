@@ -1,4 +1,4 @@
-(defmodule loise-traverse-tests
+(defmodule loise-traversal-tests
   (behaviour ltest-unit)
   (export all))
 
@@ -6,19 +6,19 @@
 
 (deftest neighbor-check
   (let ((opts #m(width 4 height 3)))
-    (is-equal #(0 0) (loise-traverse:neighbor-check #(1 1) #(0 0) opts))
-    (is-equal #(1 1) (loise-traverse:neighbor-check #(2 2) #(1 1) opts))
-    (is-equal 'false (loise-traverse:neighbor-check #(1 1) #(1 1) opts))
-    (is-equal #(3 2) (loise-traverse:neighbor-check #(2 2) #(3 2) opts))
+    (is-equal #(0 0) (loise-traversal:neighbor-check #(1 1) #(0 0) opts))
+    (is-equal #(1 1) (loise-traversal:neighbor-check #(2 2) #(1 1) opts))
+    (is-equal 'false (loise-traversal:neighbor-check #(1 1) #(1 1) opts))
+    (is-equal #(3 2) (loise-traversal:neighbor-check #(2 2) #(3 2) opts))
     ;; Exceed lower bounds
-    (is-equal #(0 2) (loise-traverse:neighbor-check #(1 1) #(-1 2) opts))
-    (is-equal #(2 0) (loise-traverse:neighbor-check #(1 1) #(2 -4) opts))
+    (is-equal #(0 2) (loise-traversal:neighbor-check #(1 1) #(-1 2) opts))
+    (is-equal #(2 0) (loise-traversal:neighbor-check #(1 1) #(2 -4) opts))
     ;; Exceed upper bounds
-    (is-equal #(3 1) (loise-traverse:neighbor-check #(2 2) #(14 1) opts))
-    (is-equal #(1 2) (loise-traverse:neighbor-check #(2 2) #(1 23) opts))
+    (is-equal #(3 1) (loise-traversal:neighbor-check #(2 2) #(14 1) opts))
+    (is-equal #(1 2) (loise-traversal:neighbor-check #(2 2) #(1 23) opts))
     ;; Exceed both bounds
-    (is-equal #(0 0) (loise-traverse:neighbor-check #(1 1) #(-22 -4) opts))
-    (is-equal #(3 2) (loise-traverse:neighbor-check #(2 2) #(14 23) opts))))
+    (is-equal #(0 0) (loise-traversal:neighbor-check #(1 1) #(-22 -4) opts))
+    (is-equal #(3 2) (loise-traversal:neighbor-check #(2 2) #(14 23) opts))))
 
 (defun nbr-data-1 ()
   '((#(-1 -1) #(-1 0) #(-1 1))
@@ -51,15 +51,15 @@
 
 (deftest neighbors-with-center
   (is-equal (nbr-data-1)
-            (loise-traverse:neighbors #(0 0) 1 #m(include-center? true)))
+            (loise-traversal:neighbors #(0 0) 1 #m(include-center? true)))
   (is-equal (nbr-data-2)
-            (loise-traverse:neighbors #(0 0) 2 #m(include-center? true)))
+            (loise-traversal:neighbors #(0 0) 2 #m(include-center? true)))
   (is-equal (nbr-data-3)
-            (loise-traverse:neighbors #(2 2) 1 #m(include-center? true)))
+            (loise-traversal:neighbors #(2 2) 1 #m(include-center? true)))
   (is-equal (nbr-data-4)
-            (loise-traverse:neighbors #(3 3) 2 #m(include-center? true)))
+            (loise-traversal:neighbors #(3 3) 2 #m(include-center? true)))
   (is-equal (nbr-data-5)
-            (loise-traverse:neighbors #(93 17) 1 #m(include-center? true))))
+            (loise-traversal:neighbors #(93 17) 1 #m(include-center? true))))
 
 (defun nbr-data-nc-1 ()
   '((#(-1 -1) #(-1 0) #(-1 1))
@@ -92,15 +92,15 @@
 
 (deftest neighbors-without-center
   (is-equal (nbr-data-nc-1)
-            (loise-traverse:neighbors #(0 0) 1 #m(include-center? false)))
+            (loise-traversal:neighbors #(0 0) 1 #m(include-center? false)))
   (is-equal (nbr-data-nc-2)
-            (loise-traverse:neighbors #(0 0) 2 #m(include-center? false)))
+            (loise-traversal:neighbors #(0 0) 2 #m(include-center? false)))
   (is-equal (nbr-data-nc-3)
-            (loise-traverse:neighbors #(2 2) 1 #m(include-center? false)))
+            (loise-traversal:neighbors #(2 2) 1 #m(include-center? false)))
   (is-equal (nbr-data-nc-4)
-            (loise-traverse:neighbors #(3 3) 2 #m(include-center? false)))
+            (loise-traversal:neighbors #(3 3) 2 #m(include-center? false)))
   (is-equal (nbr-data-nc-5)
-            (loise-traverse:neighbors #(93 17) 1 #m(include-center? false))))
+            (loise-traversal:neighbors #(93 17) 1 #m(include-center? false))))
 
 (defun nbr-data-f-1 ()
   '(       #(0 1)
@@ -139,23 +139,23 @@
     #(4 2) #(4 3)       ))
 
 (deftest neighbors-radius-1
-  (let ((opts (loise-traverse:options #m(width 3 height 3 radius 1))))
+  (let ((opts (loise-traversal:options #m(width 3 height 3 radius 1))))
     (is-equal (nbr-data-f-1)
-              (loise-traverse:neighbors #(0 0) opts))
+              (loise-traversal:neighbors #(0 0) opts))
     (is-equal (nbr-data-f-2)
-              (loise-traverse:neighbors #(1 1) opts))
+              (loise-traversal:neighbors #(1 1) opts))
     (is-equal (nbr-data-f-3)
-              (loise-traverse:neighbors #(2 2) opts))
+              (loise-traversal:neighbors #(2 2) opts))
     (is-equal '(#(2 2))
-              (loise-traverse:neighbors #(93 17) opts))))
+              (loise-traversal:neighbors #(93 17) opts))))
 
 (deftest neighbors-radius-2
-  (let ((opts (loise-traverse:options #m(width 5 height 5 radius 2))))
+  (let ((opts (loise-traversal:options #m(width 5 height 5 radius 2))))
     (is-equal (nbr-data-f-4)
-              (loise-traverse:neighbors #(0 0) opts))
+              (loise-traversal:neighbors #(0 0) opts))
     (is-equal (nbr-data-f-5)
-              (loise-traverse:neighbors #(1 1) opts))
+              (loise-traversal:neighbors #(1 1) opts))
     (is-equal (nbr-data-f-6)
-              (loise-traverse:neighbors #(2 2) opts))
+              (loise-traversal:neighbors #(2 2) opts))
     (is-equal (nbr-data-f-7)
-              (loise-traverse:neighbors #(4 4) opts))))
+              (loise-traversal:neighbors #(4 4) opts))))

@@ -1,4 +1,4 @@
-(defmodule loise-traverse
+(defmodule loise-traversal
   (export all))
 
 (defun sup () 'loise-traver-sup)

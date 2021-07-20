@@ -4,6 +4,9 @@
 
 (include-lib "ltest/include/ltest-macros.lfe")
 
+(defun set-up () (loise-tests-support:set-up))
+(defun tear-down (setup-result) (loise-tests-support:tear-down setup-result))
+
 (defun opts ()
   (loise-png:default-options))
 
@@ -37,78 +40,65 @@
                (filelib:file_size (io_lib:format (outfile-tmpl) (list noise-type x))))
              multipliers))
 
-(defun set-up ()
-  (prog1
-    (loise:start)
-    (logger:set_primary_config #m(level error))))
-
-(defun tear-down (setup-result)
-  (let ((stop-result (loise:stop)))
-    (is-equal 'ok stop-result)))
-
 (deftestcase dimensions (setup-result)
-  (tuple "dimensions"
-         (is-equal '(256 128) (mref (opts) 'dim))))
+  (is-equal '(256 128) (mref (opts) 'dim)))
 
 (deftestcase generate-perlin (setup-result)
-  (tuple "generate-perlin"
-         (let ((multipliers '(1 2 4 8 16))
-               (noise-type 'perlin))
-           (write-images noise-type multipliers)
-           (is-equal '(5010 8109 11214 14894 18256)
-                     (get-image-sizes noise-type multipliers)))))
+  ;;(let ((multipliers '(1 2 4 8 16)) <-- perlin code is too slow for all of these in a test
+  (let ((multipliers '(1 2))
+        (noise-type 'perlin))
+    (write-images noise-type multipliers)
+    (is-equal '(5010 8109)
+              (get-image-sizes noise-type multipliers))))
 
 (deftestcase generate-simplex (setup-result)
-  (tuple "generate-simplex"
-         (let ((multipliers '(1 2 4 8 16))
-               (noise-type 'simplex))
-           (write-images noise-type multipliers)
-           (is-equal '(8833 14218 19670 23208 22549)
-                     (get-image-sizes noise-type multipliers)))))
+  (let ((multipliers '(1 2 4 8 16))
+        (noise-type 'simplex))
+    (write-images noise-type multipliers)
+    (is-equal '(8833 14218 19670 23208 22549)
+              (get-image-sizes noise-type multipliers))))
 
 (deftestcase row-with-grades (setup-result)
-  (tuple "row-with-grades"
-         (let* ((opts (graded-opts))
-                (scale-func (mref opts 'scale-func))
-                (dim (mref opts 'dim))
-                (mult (mref opts 'multiplier))
-                (graded? (mref opts 'graded?))
-                (grades (mref opts 'grades))
-                (value-range (loise-opts:value-range opts))
-                (size (mref opts 'size)))
-           (is-equal '(153.0 153.0 153.0 204.0 204.0)
-                     (loise-png:row #'point-func/4
-                                    scale-func
-                                    1
-                                    #(0 0)
-                                    size
-                                    mult
-                                    graded?
-                                    grades
-                                    value-range
-                                    opts)))))
+  (let* ((opts (graded-opts))
+         (scale-func (mref opts 'scale-func))
+         (dim (mref opts 'dim))
+         (mult (mref opts 'multiplier))
+         (graded? (mref opts 'graded?))
+         (grades (mref opts 'grades))
+         (value-range (loise-opts:value-range opts))
+         (size (mref opts 'size)))
+    (is-equal '(153 153 153 204 204)
+              (loise-png:row #'point-func/4
+                             scale-func
+                             1
+                             #(0 0)
+                             size
+                             mult
+                             graded?
+                             grades
+                             value-range
+                             opts))))
 
 (deftestcase row-without-grades (setup-result)
-  (tuple "row-without-grades"
-         (let* ((opts (tiny-opts))
-                (scale-func (mref opts 'scale-func))
-                (dim (mref opts 'dim))
-                (mult (mref opts 'multiplier))
-                (graded? (mref opts 'graded?))
-                (grades (mref opts 'grades))
-                (value-range (loise-opts:value-range opts))
-                (size (mref opts 'size)))
-           (is-equal '(143 159 175 191 207)
-                     (loise-png:row #'point-func/4
-                                    scale-func
-                                    1
-                                    #(0 0)
-                                    size
-                                    mult
-                                    graded?
-                                    grades
-                                    value-range
-                                    opts)))))
+  (let* ((opts (tiny-opts))
+         (scale-func (mref opts 'scale-func))
+         (dim (mref opts 'dim))
+         (mult (mref opts 'multiplier))
+         (graded? (mref opts 'graded?))
+         (grades (mref opts 'grades))
+         (value-range (loise-opts:value-range opts))
+         (size (mref opts 'size)))
+    (is-equal '(143 159 175 191 207)
+              (loise-png:row #'point-func/4
+                             scale-func
+                             1
+                             #(0 0)
+                             size
+                             mult
+                             graded?
+                             grades
+                             value-range
+                             opts))))
 
 (deftestgen suite
   (tuple 'foreach

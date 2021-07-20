@@ -15,7 +15,7 @@
 * [Introduction](#introduction-)
 * [Dependencies](#dependencies-)
 * [Building and Starting](#building-and-starting-)
-* [Usage Example](#usage-example)
+* [Usage Examples](#usage-examples-)
 * [Documentation](#documentation-)
 * [License](#license-)
 
@@ -62,7 +62,7 @@ list:
 ]},
 ```
 
-## Usage [&#x219F;](#contents)
+## Usage Examples [&#x219F;](#contents)
 
 The following usage example is just the merest fraction of what you can do with
 loise. Be sure to see the [Documentation](#documentation-) section below for
@@ -72,7 +72,6 @@ Perlin smooth:
 
 ```cl
 lfe> (set opts #m(noise perlin multiplier 1))
-#M(multiplier 1 noise perlin)
 lfe> (loise:image "perlin-4.png" (mupd opts 'multiplier 4))
 ok
 ```
@@ -96,7 +95,6 @@ Simplex smooth:
 
 ``` cl
 lfe> (set opts #m(noise simplex multiplier 4))
-#M(multiplier 4 noise simplex)
 lfe> (loise:image "simplex-4.png" opts)
 ok
 ```
@@ -116,7 +114,7 @@ ok
 Simplex as coloured ASCII:
 
 ```cl
-lfe> (loise:format-ascii #m(noise simplex color? true))
+lfe> (loise:format-ascii #m(color? true))
 ```
 <img src="priv/images/simplex-ascii.png" />
 

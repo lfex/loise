@@ -9,16 +9,18 @@
   (default-options #m()))
 
 (defun default-options (overrides)
-  (let ((png-opts `#m(output-backend loise
-                      scale-func ,#'loise-util:first/2
-                      output-format data
-                      data-format flat
-                      ;; Use ASCII width/height as a sane default
-                      width ,(loise-ascii:default-width)
-                      height ,(loise-ascii:default-height))))
+  (let ((data-opts `#m(output-backend loise
+                       scale-func ,#'loise-util:first/2
+                       output-format data
+                       data-format flat
+                       round? false
+                       precision 5
+                       ;; Use ASCII width/height as a sane default
+                       width ,(loise-ascii:default-width)
+                       height ,(loise-ascii:default-height))))
     (clj:-> (loise-state:get 'base-opts)
             (maps:merge (loise-state:get 'output-opts))
-            (maps:merge png-opts)
+            (maps:merge data-opts)
             (maps:merge overrides)
             (loise-opts:update-calculated))))
 
@@ -69,13 +71,17 @@
     ('perlin (perlin-matrix opts))
     ('simplex (simplex-matrix opts))))
 
+(defun flatten (matrix-data)
+  (lists:flatten
+   (list-comp ((<- `#(,_idx ,row) matrix-data)) row)))
+
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Supporting functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defun data (point-func start end opts)
   (case (mref opts 'data-format)
-    ('flat (flat point-func start end opts))
+    ('flat (flatten (matrix point-func start end opts)))
     ('matrix (matrix point-func start end opts))
     (format `#(error (lists:flatten "Unknown data format: ~p" (lists format))))))
 
@@ -89,9 +95,6 @@
      (list-comp ((<- y (lists:seq start-y (- end-y 1))))
        (tuple y
               (row point-func scale-func y start end mult graded? grades value-range opts))))))
-
-(defun flat (point-func start end opts)
-  (lists:flatten (matrix point-func start end opts)))
 
 (defun row
   ((point-func scale-func y `#(,start-x ,_) `#(,end-x ,end-y) mult graded? grades value-range opts)
@@ -111,7 +114,12 @@
 
 (defun cell (point-func scale-func point max mult graded? grades value-range opts)
   (let* ((value (apply point-func (list point max mult opts)))
-         (scaled (apply scale-func (list value value-range))))
+         (scaled (maybe-round (apply scale-func (list value value-range)) opts)))
     (if graded?
       (lutil-math:get-closest scaled grades)
       scaled)))
+
+(defun maybe-round (value opts)
+  (if (== 'true (mref opts 'round?))
+    (lutil-math:round value (mref opts 'precision))
+    value))

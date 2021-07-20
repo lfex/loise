@@ -159,3 +159,50 @@
               (loise-traversal:neighbors #(2 2) opts))
     (is-equal (nbr-data-f-7)
               (loise-traversal:neighbors #(4 4) opts))))
+
+(defmodule loise-traversal-system-tests
+  (behaviour ltest-system)
+  (export all))
+
+(include-lib "ltest/include/ltest-macros.lfe")
+
+(defun set-up () (loise-tests-support:set-up))
+(defun tear-down (setup-result) (loise-tests-support:tear-down setup-result))
+
+(deftestcase brownian-path (setup-result)
+  (let* ((opts (loise-traversal:options))
+         (layer-name 'test-layer)
+         (_ (loise:add-layer layer-name opts))
+         (path (loise-traversal:brownian layer-name #(42 16) opts)))
+    (is-equal '(#(42 16) #(43 16) #(42 16) #(42 17) #(41 17)
+                #(42 17) #(41 18) #(42 17) #(42 18) #(42 17))
+              (lists:sublist path 1 10))))
+
+(deftestcase walk-path (setup-result)
+  (let* ((opts (loise-traversal:options #m(round? true)))
+         (layer-name 'test-layer)
+         (_ (loise:add-layer layer-name opts))
+         (path (loise-traversal:brownian layer-name #(0 0) opts))
+         (values (loise-traversal:walk layer-name path opts)))
+    (is-equal '(0.0 0.32779 0.57816 0.69742 0.57816
+                0.32779 0.92603 0.69742 0.82776 0.68234)
+              (lists:sublist values 1 10))))
+
+(deftestcase walk-path-scaled (setup-result)
+  (let* ((opts (loise-traversal:options
+               `#m(scale-func ,#'lutil-math:midi-scale/2)))
+         (layer-name 'test-layer)
+         (_ (loise:add-layer layer-name opts))
+         (path (loise-traversal:brownian layer-name #(0 0) opts))
+         (values (loise-traversal:walk layer-name path opts)))
+    (is-equal '(64 84 100 108 100 84 122 108 116 107)
+              (lists:sublist values 1 10))))
+
+(deftestgen suite
+  (tuple 'foreach
+         (defsetup set-up)
+         (defteardown tear-down)
+         (deftestcases
+           brownian-path
+           walk-path
+           walk-path-scaled)))

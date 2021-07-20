@@ -31,12 +31,16 @@ ok
 
 ### Brownian Motion / Random Walk
 
-Create finite paths (default length is 100 points) and get the first 10
-coordiantes for those paths:
+Create finite paths (default length is 100 points):
 
 ``` cl
-lfe> (set pitch-path (loise-traverse:brownian 'pitch #(0 0) opts))
-lfe> (set velocity-path (loise-traverse:brownian 'velocity #(0 0) opts))
+lfe> (set pitch-path (loise:get-path 'brownian 'pitch #(0 0)))
+lfe> (set velocity-path (loise:get-path 'brownian 'velocity #(0 0)))
+```
+
+Walk those paths to get the value at each step's coorindates:
+
+``` cl
 lfe> (lists:sublist pitch-path 1 10)
 lfe> (lists:sublist velocity-path 1 10)
 ```

@@ -15,8 +15,9 @@
    (data-cell 2)
    (data-row 2)
    (add-layer 1) (add-layer 2)
-   (get-layer 1)
-   (get-path 3))
+   (get-layer 1) (get-layer 2)
+   (get-path 2) (get-path 3)
+   (traverse 2) (traverse 3))
   (export
    (image 1) (image 2))
   (export
@@ -52,17 +53,17 @@
   ((x y overrides)
    (loise-perlin:2d x y (loise-perlin:options overrides))))
 
-(defun perlin(x y z overrides)
+(defun perlin (x y z overrides)
   (loise-perlin:3d x y z (loise-perlin:options overrides)))
 
-(defun perlin-point(coords overrides)
+(defun perlin-point (coords overrides)
   (let ((opts (loise-perlin:options overrides)))
     (loise-perlin:point coords
                         (mref opts 'size)
                         (mref opts 'multiplier)
                         opts)))
 
-(defun perlin-point(coords size mult)
+(defun perlin-point (coords size mult)
   (loise-perlin:point coords size mult (loise-perlin:options)))
 
 (defun simplex (x)
@@ -83,14 +84,14 @@
 (defun simplex (x y z opts)
   (loise-simplex:3d x y z opts))
 
-(defun simplex-point(coords overrides)
+(defun simplex-point (coords overrides)
   (let ((opts (loise-simplex:options overrides)))
     (loise-simplex:point coords
                          (mref opts 'size)
                          (mref opts 'multiplier)
                          opts)))
 
-(defun simplex-point(coords size mult)
+(defun simplex-point (coords size mult)
   (loise-simplex:point coords size mult (loise-simplex:options)))
 
 ;; Data API
@@ -116,12 +117,31 @@
   ((name overrides) (when (is_atom name))
    (loise-state:set-layer name (loise-data:options overrides))))
 
-(defun get-layer (name)
-  (loise-state:get-layer name))
+(defun get-layer (layer-name)
+  (loise-state:get-layer layer-name))
 
-(defun get-path (type name start-point)
-  (let ((opts (loise-state:get-layer-opts name)))
-    (call 'loise-traversal type name start-point opts)))
+(defun get-layer (layer-name opts)
+  (let ((layer (get-layer layer-name)))
+    (if (== 'true (maps:get 'flatten opts 'false))
+      (loise-data:flatten layer)
+      layer)))
+
+(defun get-path (type layer-name)
+  (get-path type layer-name #(0 0)))
+
+(defun get-path (type layer-name start-point)
+  (let ((opts (loise-state:get-layer-opts layer-name)))
+    (call 'loise-traversal type layer-name start-point opts)))
+
+(defun traverse
+  ((layer-name points) (when (is_list points))
+   (let ((opts (loise-state:get-layer-opts layer-name)))
+     (loise-traversal:walk layer-name points opts)))
+  ((layer-name type) (when (is_atom type))
+   (traverse layer-name (get-path type layer-name))))
+
+(defun traverse (layer-name type start-point)
+  (traverse layer-name (get-path type layer-name start-point)))
 
 ;; ASCII API
 (defun ascii ()

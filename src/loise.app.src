@@ -16,12 +16,13 @@
     'loise-opts',
     'loise-perlin', 
     'loise-png',
+    'loise-rand',
     'loise-simplex', 
     'loise-state',
     'loise-sup',
     'loise-traver-sup',
     'loise-traver-work',
-    'loise-traverse',
+    'loise-traversal',
     'loise-util'
    ]},
 

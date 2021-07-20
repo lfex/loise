@@ -8,7 +8,7 @@
 (defun default-radius () 1)
 (defun default-include-center? () 'false)
 (defun default-reverse? () 'true)
-(defun default-func () #'loise-traverse:random-walk/2)
+(defun default-func () #'loise-traversal:random-walk/2)
 
 (defun options ()
   (options #m()))
@@ -71,7 +71,7 @@
 
 (defun get-func (type)
   (case type
-    ('random-neighbor #'loise-traverse:random-walk/2)
+    ('random-neighbor #'random-walk/2)
     (_ (default-func))))
 
 (defun brownian (layer-name start-point)
@@ -101,3 +101,14 @@
       (supervisor:terminate_child
        (sup)
        pid))))
+
+(defun walk (layer-name points overrides)
+  (let ((opts (clj:-> (options)
+                       (maps:merge (loise-state:get-layer-opts layer-name))
+                       (maps:merge overrides)))
+        (layer (loise:get-layer layer-name)))
+    (list-comp ((<- point points))
+      (let ((val (proplists:get_value (tuple_to_list point) layer)))
+        (if (== 'true (mref opts 'round?))
+          (lutil-math:round val (mref opts 'precision))
+          val)))))

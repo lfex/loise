@@ -15,7 +15,8 @@
    (data-cell 2)
    (data-row 2)
    (add-layer 1) (add-layer 2)
-   (get-layer 1))
+   (get-layer 1)
+   (traverse 3))
   (export
    (image 1) (image 2))
   (export
@@ -117,6 +118,10 @@
 
 (defun get-layer (name)
   (loise-state:get-layer name))
+
+(defun traverse (type name start-point)
+  (let ((opts (loise-state:get-layer-opts name)))
+    (call 'loise-traverse type name start-point opts)))
 
 ;; ASCII API
 (defun ascii ()

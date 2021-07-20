@@ -15,6 +15,10 @@ Might be good to create some options now, too:
 lfe> (set opts `#m(scale-func ,#'lutil-math:midi-scale/2))
 ```
 
+A scaling function is a 2-arity one that takes a given value and a tuple of the
+valid range for any value of this type and then performs a transformation to a
+different scale.
+
 ### Create Layers
 
 
@@ -26,6 +30,9 @@ ok
 ```
 
 ### Brownian Motion / Random Walk
+
+Create finite paths (default length is 100 points) and get the first 10
+coordiantes for those paths:
 
 ``` cl
 lfe> (set pitch-path (loise-traverse:brownian 'pitch #(0 0) opts))

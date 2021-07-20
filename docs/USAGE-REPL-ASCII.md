@@ -12,14 +12,14 @@ You can also generate ASCII "images" with loise:
 ```cl
 lfe> (loise:format-ascii #m(noise perlin color? true))
 ```
-<img src="priv/images/perlin-ascii.png" />
+<img src="../priv/images/perlin-ascii.png" />
 
 And this:
 
 ```cl
 lfe> (loise:format-ascii #m(noise simplex color? true))
 ```
-<img src="priv/images/simplex-ascii.png" />
+<img src="../priv/images/simplex-ascii.png" />
 
 The ASCII annlog to the greyscale PNG noise images is simply a
 gride without color:
@@ -28,7 +28,7 @@ gride without color:
 lfe> (loise:format-ascii #m(noise simplex color? false))
 ```
 
-<img src="priv/images/simplex-ascii-no-color.png" />
+<img src="../priv/images/simplex-ascii-no-color.png" />
 
 You are not bound to the default ASCII represnetation nor default
 color scheme. In the following example, we can generate a landscape
@@ -48,7 +48,7 @@ lfe> (set opts #m(color? true
 
 lfe> (loise:format-ascii opts)
 ```
-<a href="https://raw.githubusercontent.com/lfex/loise/master/priv/images/simplex-ascii-2.png"><img src="priv/images/simplex-ascii-2-small.png" /></a>
+<a href="https://raw.githubusercontent.com/lfex/loise/master/priv/images/simplex-ascii-2.png"><img src="../priv/images/simplex-ascii-2-small.png" /></a>
 
 As with the PNG images, ASCII output may be randomized by setting different seeds:
 

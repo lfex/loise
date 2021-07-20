@@ -9,15 +9,15 @@ lfe> (loise:start)
 
 Below are 5 simplex noise images generated at 1x, 2x, 4x, 8x, and 16x respectively.
 
-<img src="priv/images/simplex-1.png" />
+<img src="../priv/images/simplex-1.png" />
 
-<img src="priv/images/simplex-2.png" />
+<img src="../priv/images/simplex-2.png" />
 
-<img src="priv/images/simplex-4.png" />
+<img src="../priv/images/simplex-4.png" />
 
-<img src="priv/images/simplex-8.png" />
+<img src="../priv/images/simplex-8.png" />
 
-<img src="priv/images/simplex-16.png" />
+<img src="../priv/images/simplex-16.png" />
 
 These were generated with the following from the REPL:
 
@@ -47,7 +47,7 @@ ok
 
 Which will create the following:
 
-<img src="priv/images/simplex-5-shades.png" />
+<img src="../priv/images/simplex-5-shades.png" />
 
 You may also change the permutation table from the default, to one generated
 with a random seed:

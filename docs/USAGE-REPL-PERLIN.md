@@ -9,15 +9,15 @@ lfe> (loise:start)
 
 Below are 5 perlin noise images generated at 1x, 2x, 4x, 8x, and 16x respectively.
 
-<img src="priv/images/perlin-1.png" />
+<img src="../priv/images/perlin-1.png" />
 
-<img src="priv/images/perlin-2.png" />
+<img src="../priv/images/perlin-2.png" />
 
-<img src="priv/images/perlin-4.png" />
+<img src="../priv/images/perlin-4.png" />
 
-<img src="priv/images/perlin-8.png" />
+<img src="../priv/images/perlin-8.png" />
 
-<img src="priv/images/perlin-16.png" />
+<img src="../priv/images/perlin-16.png" />
 
 These were generated with the following from the REPL:
 
@@ -50,7 +50,7 @@ ok
 
 Which will create the following:
 
-<img src="priv/images/perlin-8-shades.png" />
+<img src="../priv/images/perlin-8-shades.png" />
 
 You may also change the permutation table from the default, to one generated
 with a random seed:

@@ -109,6 +109,6 @@
         (layer (loise:get-layer layer-name)))
     (list-comp ((<- point points))
       (let ((val (proplists:get_value (tuple_to_list point) layer)))
-        (if (== 'true (mref opts 'round?))
+        (if (== 'true (maps:get 'round? opts 'false))
           (lutil-math:round val (mref opts 'precision))
           val)))))

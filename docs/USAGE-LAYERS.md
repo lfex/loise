@@ -29,18 +29,31 @@ lfe> (loise:add-layer 'velocity opts)
 ok
 ```
 
-### Brownian Motion / Random Walk
+### Finite Traversals
 
-Create finite paths (default length is 100 points):
+#### Brownian Motion / Random Walk
+
+You can perform a random walk on a noise plane, returning values with the
+following:
 
 ``` cl
-lfe> (set pitch-path (loise:get-path 'brownian 'pitch #(0 0)))
-lfe> (set velocity-path (loise:get-path 'brownian 'velocity #(0 0)))
+lfe> (set pitches (loise:traverse 'pitch 'brownian))
+(64 84 100 108 100 84 122 108 116 107 100 107 124 116 121 92 73 63 78
+ 73 59 54 59 63 78 106 120 124 124 121 ...)
+
 ```
 
-Walk those paths to get the value at each step's coorindates:
+You can also perform this with an explicit path:
 
 ``` cl
-lfe> (lists:sublist pitch-path 1 10)
+lfe> (set velocity-path (loise:get-path 'velocity 'brownian #(0 0)))
 lfe> (lists:sublist velocity-path 1 10)
+(#(0 0) #(0 1) #(0 0) #(0 1) #(0 2) #(0 1) #(0 0) #(0 1) #(0 2) #(0 1))
+lfe> (lists:sublist (loise:traverse 'velocity velocity-path) 1 10)
+(64 94 64 94 108 94 64 94 108 94)
+
 ```
+
+### Infinite Traversals
+
+TBD

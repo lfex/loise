@@ -126,10 +126,10 @@
       (loise-data:flatten layer)
       layer)))
 
-(defun get-path (type layer-name)
-  (get-path type layer-name #(0 0)))
+(defun get-path (layer-name type)
+  (get-path layer-name type #(0 0)))
 
-(defun get-path (type layer-name start-point)
+(defun get-path (layer-name type start-point)
   (let ((opts (loise-state:get-layer-opts layer-name)))
     (call 'loise-traversal type layer-name start-point opts)))
 
@@ -138,10 +138,10 @@
    (let ((opts (loise-state:get-layer-opts layer-name)))
      (loise-traversal:walk layer-name points opts)))
   ((layer-name type) (when (is_atom type))
-   (traverse layer-name (get-path type layer-name))))
+   (traverse layer-name (get-path layer-name type))))
 
 (defun traverse (layer-name type start-point)
-  (traverse layer-name (get-path type layer-name start-point)))
+  (traverse layer-name (get-path layer-name type start-point)))
 
 ;; ASCII API
 (defun ascii ()

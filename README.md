@@ -9,7 +9,6 @@
 
 [![Loise project logo][logo]][logo]
 
-
 #### Contents
 
 * [Introduction](#introduction-)
@@ -18,7 +17,6 @@
 * [Usage Examples](#usage-examples-)
 * [Documentation](#documentation-)
 * [License](#license-)
-
 
 ## Introduction [&#x219F;](#contents)
 
@@ -39,8 +37,8 @@ installed somwhere in your ``$PATH``.
 Preliminary steps:
 
 ```bash
-$ rebar3 compile
-$ rebar3 lfe repl
+rebar3 compile
+rebar3 lfe repl
 ```
 
 The loise library maintains state and as such must be run in order to use, even
@@ -51,7 +49,7 @@ lfe> (loise:start)
 #(ok (loise))
 ```
 
-For non-REPL use, in your project, simply add `loise` to the `applications` 
+For non-REPL use, in your project, simply add `loise` to the `applications`
 list:
 
 ``` erlang
@@ -98,6 +96,7 @@ lfe> (set opts #m(noise simplex multiplier 4))
 lfe> (loise:image "simplex-4.png" opts)
 ok
 ```
+
 <img src="priv/images/simplex-4.png" />
 
 Simplex graded:
@@ -109,6 +108,7 @@ lfe> (set opts (mset opts 'graded? 'true
 lfe> (loise:image "simplex-5-shades.png" opts)
 ok
 ```
+
 <img src="priv/images/simplex-5-shades.png" />
 
 Simplex as coloured ASCII:
@@ -116,8 +116,8 @@ Simplex as coloured ASCII:
 ```cl
 lfe> (loise:format-ascii #m(color? true))
 ```
-<img src="priv/images/simplex-ascii.png" />
 
+<img src="priv/images/simplex-ascii.png" />
 
 ## Documentation [&#x219F;](#contents)
 
@@ -136,26 +136,19 @@ lfe> (loise:format-ascii #m(color? true))
 ## License [&#x219F;](#contents)
 
 ```
-Copyright © 2013-2021 Duncan McGreggor
+Copyright © 2013-2023 Duncan McGreggor
 
 Distributed under the Apache License, Version 2.0.
 ```
 
 [//]: ---Named-Links---
 
-[org]: https://github.com/lfex
-[github]: https://github.com/lfex/loise
-[gitlab]: https://gitlab.com/lfex/loise
 [gh-actions-badge]: https://github.com/lfex/loise/workflows/ci%2Fcd/badge.svg
 [gh-actions]: https://github.com/lfex/loise/actions
 [logo]: priv/images/loise.jpg
 [lfe]: https://github.com/lfe/lfe
-[lfe badge]: https://img.shields.io/badge/lfe-2.0-blue.svg
-[erlang badge]: https://img.shields.io/badge/erlang-21%20to%2024-blue.svg
+[lfe badge]: https://img.shields.io/badge/lfe-2.1-blue.svg
+[erlang badge]: https://img.shields.io/badge/erlang-20%20to%2025-blue.svg
 [versions]: https://github.com/lfex/loise/blob/master/.github/workflows/cicd.yml
 [github tags]: https://github.com/lfex/loise/tags
 [github tags badge]: https://img.shields.io/github/tag/lfex/loise.svg
-[github downloads]: https://img.shields.io/github/downloads/lfex/loise/total.svg
-[hex badge]: https://img.shields.io/hexpm/v/loise.svg?maxAge=2592000
-[hex package]: https://hex.pm/packages/loise
-[hex downloads]: https://img.shields.io/hexpm/dt/loise.svg

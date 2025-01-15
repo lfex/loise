@@ -1,9 +1,10 @@
 # Loise
 
 [![Build Status][gh-actions-badge]][gh-actions]
-[![LFE Versions][lfe badge]][lfe]
-[![Erlang Versions][erlang badge]][versions]
-[![Tags][github tags badge]][github tags]
+[![LFE Versions][lfe-badge]][lfe]
+[![Erlang Versions][erlang-badge]][versions]
+[![Tags][github-tags-badge]][github-tags]
+[![Downloads][hex-downloads]][hex-package]
 
 *A noise library for LFE/Erlang*
 
@@ -136,7 +137,8 @@ lfe> (loise:format-ascii #m(color? true))
 ## License [&#x219F;](#contents)
 
 ```
-Copyright © 2013-2023 Duncan McGreggor
+
+Copyright © 2013-2025 Duncan McGreggor
 
 Distributed under the Apache License, Version 2.0.
 ```
@@ -147,8 +149,12 @@ Distributed under the Apache License, Version 2.0.
 [gh-actions]: https://github.com/lfex/loise/actions
 [logo]: priv/images/loise.jpg
 [lfe]: https://github.com/lfe/lfe
-[lfe badge]: https://img.shields.io/badge/lfe-2.1-blue.svg
-[erlang badge]: https://img.shields.io/badge/erlang-20%20to%2025-blue.svg
+[lfe-badge]: https://img.shields.io/badge/lfe-2.1+-blue.svg
+[erlang-badge]: https://img.shields.io/badge/erlang-20+-blue.svg
 [versions]: https://github.com/lfex/loise/blob/master/.github/workflows/cicd.yml
-[github tags]: https://github.com/lfex/loise/tags
-[github tags badge]: https://img.shields.io/github/tag/lfex/loise.svg
+[github-tags]: https://github.com/lfex/loise/tags
+[github-tags-badge]: https://img.shields.io/github/tag/lfex/loise.svg
+[github-downloads]: https://img.shields.io/github/downloads/lfex/loise/total.svg
+[hex-badge]: https://img.shields.io/hexpm/v/loise.svg?maxAge=2592000
+[hex-package]: https://hex.pm/packages/loise
+[hex-downloads]: https://img.shields.io/hexpm/dt/loise.svg
